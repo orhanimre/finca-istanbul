@@ -280,6 +280,24 @@
             color: white;
             font-size: 16px;
         }
+        .error-message {
+            background: #ff4444;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        .debug-info {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 12px;
+            font-family: monospace;
+            word-break: break-all;
+        }
     </style>
 </head>
 <body>
@@ -371,30 +389,72 @@
             </div>
         </div>
 
+        <div id="errorContainer"></div>
+        <div id="debugInfo"></div>
         <div id="loadingIndicator" class="loading">Cargando pagos...</div>
         <div class="payments-list" id="paymentsList"></div>
     </div>
 
     <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        // Enhanced error logging
+        function showError(message, error) {
+            console.error(message, error);
+            const errorContainer = document.getElementById('errorContainer');
+            errorContainer.innerHTML = `
+                <div class="error-message">
+                    ❌ ${message}: ${error?.message || error}
+                </div>
+            `;
+            document.getElementById('loadingIndicator').style.display = 'none';
+        }
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyDocypAXYXHbqxRIrBv9VSXfeBCb29p83Y",
-            authDomain: "finca-istanbul.firebaseapp.com",
-            projectId: "finca-istanbul",
-            storageBucket: "finca-istanbul.firebasestorage.app",
-            messagingSenderId: "2342946040",
-            appId: "1:2342946040:web:6b63ce44b12279c091270d",
-            measurementId: "G-22VREQ36X8"
-        };
+        function showDebug(message) {
+            console.log('DEBUG:', message);
+            const debugInfo = document.getElementById('debugInfo');
+            debugInfo.innerHTML = `
+                <div class="debug-info">
+                    🔍 ${message}
+                </div>
+            `;
+        }
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        showDebug('Starting app initialization...');
 
+        let app, db;
         let payments = [];
         let editingId = null;
         let currentPeriod = 'all';
+
+        // Initialize Firebase
+        try {
+            showDebug('Importing Firebase modules...');
+            
+            const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+            const { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, orderBy } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+
+            showDebug('Firebase modules imported successfully');
+
+            const firebaseConfig = {
+                apiKey: "AIzaSyDocypAXYXHbqxRIrBv9VSXfeBCb29p83Y",
+                authDomain: "finca-istanbul.firebaseapp.com",
+                projectId: "finca-istanbul",
+                storageBucket: "finca-istanbul.firebasestorage.app",
+                messagingSenderId: "2342946040",
+                appId: "1:2342946040:web:6b63ce44b12279c091270d",
+                measurementId: "G-22VREQ36X8"
+            };
+
+            showDebug('Initializing Firebase app...');
+            app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            showDebug('Firebase initialized successfully! Project: ' + firebaseConfig.projectId);
+
+            // Load payments
+            await loadPayments();
+
+        } catch (error) {
+            showError('Error initializing Firebase', error);
+        }
 
         function formatCurrency(amount) {
             return '$' + parseFloat(amount).toLocaleString('en-US', {
@@ -493,62 +553,70 @@
             const container = document.getElementById('paymentsList');
             document.getElementById('loadingIndicator').style.display = 'none';
             
+            showDebug(`Rendering ${payments.length} payments`);
+            
             if (payments.length === 0) {
-                container.innerHTML = \`
+                container.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-state-icon">📋</div>
                         <p>No hay pagos todavía. ¡Agrega tu primer pago arriba!</p>
                     </div>
-                \`;
+                `;
                 updateSummary();
                 return;
             }
 
-            container.innerHTML = payments.map((payment, index) => \`
+            container.innerHTML = payments.map((payment, index) => `
                 <div class="payment-card">
-                    <div class="payment-number">\${index + 1}</div>
+                    <div class="payment-number">${index + 1}</div>
                     <div class="payment-header">
-                        <div class="payment-beneficiary">\${payment.beneficiary}</div>
-                        <div class="payment-amount">\${formatCurrency(payment.amount)}</div>
+                        <div class="payment-beneficiary">${payment.beneficiary}</div>
+                        <div class="payment-amount">${formatCurrency(payment.amount)}</div>
                     </div>
                     <div class="payment-detail">
                         <span class="label">Concepto:</span>
-                        <span class="value">\${payment.concept}</span>
+                        <span class="value">${payment.concept}</span>
                     </div>
                     <div class="payment-detail">
                         <span class="label">Categoría:</span>
-                        <span class="value">\${payment.category}</span>
+                        <span class="value">${payment.category}</span>
                     </div>
                     <div class="payment-detail">
                         <span class="label">Fecha:</span>
-                        <span class="value">\${formatDate(payment.date)}</span>
+                        <span class="value">${formatDate(payment.date)}</span>
                     </div>
                     <div class="payment-detail">
                         <span class="label">Método:</span>
-                        <span class="value">\${payment.method}</span>
+                        <span class="value">${payment.method}</span>
                     </div>
                     <div class="action-buttons">
-                        <button class="edit-btn" onclick="editPayment('\${payment.id}')">Editar</button>
-                        <button class="delete-btn" onclick="deletePayment('\${payment.id}')">Eliminar</button>
+                        <button class="edit-btn" onclick="editPayment('${payment.id}')">Editar</button>
+                        <button class="delete-btn" onclick="deletePayment('${payment.id}')">Eliminar</button>
                     </div>
                 </div>
-            \`).join('');
+            `).join('');
 
             updateSummary();
         }
 
         async function loadPayments() {
             try {
+                showDebug('Loading payments from Firestore...');
+                
+                const { collection, getDocs, query, orderBy } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+                
                 const q = query(collection(db, 'payments'), orderBy('date', 'desc'));
                 const querySnapshot = await getDocs(q);
+                
                 payments = [];
                 querySnapshot.forEach((doc) => {
                     payments.push({ id: doc.id, ...doc.data() });
                 });
+                
+                showDebug(`Loaded ${payments.length} payments successfully`);
                 sortPayments();
             } catch (error) {
-                console.error('Error loading payments:', error);
-                document.getElementById('loadingIndicator').textContent = 'Error al cargar pagos';
+                showError('Error loading payments', error);
             }
         }
 
@@ -596,11 +664,15 @@
             };
             
             try {
+                const { collection, addDoc, updateDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+                
                 if (editingId) {
                     await updateDoc(doc(db, 'payments', editingId), paymentData);
+                    showDebug('Payment updated successfully');
                     window.cancelEdit();
                 } else {
                     await addDoc(collection(db, 'payments'), paymentData);
+                    showDebug('Payment added successfully');
                     this.reset();
                     document.getElementById('date').valueAsDate = new Date();
                 }
@@ -608,8 +680,7 @@
                 await loadPayments();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } catch (error) {
-                console.error('Error saving payment:', error);
-                alert('Error al guardar el pago. Por favor intenta de nuevo.');
+                showError('Error saving payment', error);
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = editingId ? 'Actualizar Pago' : '+ Agregar Pago';
@@ -619,17 +690,17 @@
         window.deletePayment = async function(id) {
             if (confirm('¿Estás seguro de que quieres eliminar este pago?')) {
                 try {
+                    const { deleteDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
                     await deleteDoc(doc(db, 'payments', id));
+                    showDebug('Payment deleted successfully');
                     await loadPayments();
                 } catch (error) {
-                    console.error('Error deleting payment:', error);
-                    alert('Error al eliminar el pago. Por favor intenta de nuevo.');
+                    showError('Error deleting payment', error);
                 }
             }
         }
 
         document.getElementById('date').valueAsDate = new Date();
-        loadPayments();
     </script>
 </body>
 </html>
