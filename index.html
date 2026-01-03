@@ -386,6 +386,23 @@
                 <button class="tab-btn" onclick="changeSummaryPeriod('week')">Esta Semana</button>
                 <button class="tab-btn" onclick="changeSummaryPeriod('month')">Este Mes</button>
                 <button class="tab-btn" onclick="changeSummaryPeriod('year')">Este Año</button>
+                <button class="tab-btn" onclick="toggleCustomRange()">📅 Personalizado</button>
+            </div>
+            
+            <div id="customRangePanel" style="display: none; margin-top: 10px; padding: 12px; background: #f5f5f5; border-radius: 8px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+                    <div>
+                        <label style="font-size: 11px; color: #666; display: block; margin-bottom: 4px;">Desde</label>
+                        <input type="date" id="startDate" style="width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px;">
+                    </div>
+                    <div>
+                        <label style="font-size: 11px; color: #666; display: block; margin-bottom: 4px;">Hasta</label>
+                        <input type="date" id="endDate" style="width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px;">
+                    </div>
+                </div>
+                <button onclick="applyCustomRange()" style="width: 100%; padding: 8px; background: #667eea; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;">
+                    Aplicar Rango
+                </button>
             </div>
 
             <div class="total-box">
@@ -489,6 +506,8 @@
         let payments = [];
         let editingId = null;
         let currentPeriod = 'all';
+        let customStartDate = null;
+        let customEndDate = null;
 
         function formatCurrency(amount) {
             return '$' + parseFloat(amount).toLocaleString('en-US', {
@@ -510,6 +529,15 @@
             const now = new Date();
             
             if (currentPeriod === 'all') return payments;
+            
+            if (currentPeriod === 'custom' && customStartDate && customEndDate) {
+                return payments.filter(p => {
+                    const pDate = new Date(p.date + 'T00:00:00');
+                    const start = new Date(customStartDate + 'T00:00:00');
+                    const end = new Date(customEndDate + 'T23:59:59');
+                    return pDate >= start && pDate <= end;
+                });
+            }
             
             return payments.filter(p => {
                 const pDate = new Date(p.date + 'T00:00:00');
@@ -542,7 +570,8 @@
                 'all': 'Todo',
                 'week': 'Esta Semana',
                 'month': 'Este Mes',
-                'year': 'Este Año'
+                'year': 'Este Año',
+                'custom': 'Rango Personalizado'
             };
 
             document.getElementById('periodLabel').textContent = `Total Pagado - ${labels[currentPeriod]}`;
@@ -555,6 +584,58 @@
             currentPeriod = period;
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
+            
+            if (period !== 'custom') {
+                document.getElementById('customRangePanel').style.display = 'none';
+            }
+            
+            updateSummary();
+        }
+        
+        window.toggleCustomRange = function() {
+            const panel = document.getElementById('customRangePanel');
+            const isVisible = panel.style.display !== 'none';
+            
+            if (isVisible) {
+                panel.style.display = 'none';
+                if (currentPeriod === 'custom') {
+                    currentPeriod = 'all';
+                    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                    document.querySelector('.tab-btn').classList.add('active');
+                    updateSummary();
+                }
+            } else {
+                panel.style.display = 'block';
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                event.target.classList.add('active');
+                
+                // Set default dates (last 30 days)
+                const today = new Date();
+                const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+                
+                document.getElementById('endDate').valueAsDate = today;
+                document.getElementById('startDate').valueAsDate = thirtyDaysAgo;
+            }
+        }
+        
+        window.applyCustomRange = function() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            if (!startDate || !endDate) {
+                alert('Por favor selecciona ambas fechas');
+                return;
+            }
+            
+            if (new Date(startDate) > new Date(endDate)) {
+                alert('La fecha de inicio debe ser anterior a la fecha final');
+                return;
+            }
+            
+            customStartDate = startDate;
+            customEndDate = endDate;
+            currentPeriod = 'custom';
+            
             updateSummary();
         }
 
