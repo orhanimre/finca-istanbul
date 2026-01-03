@@ -415,6 +415,51 @@
             color: #666;
             margin-top: 2px;
         }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 20px;
+            }
+            .container {
+                max-width: 100%;
+                padding: 0;
+            }
+            .form-card, .controls, #breakdownPanel, 
+            .swipe-actions, .desktop-actions,
+            .breakdown-tab, #loadingIndicator,
+            .summary-tabs, #customRangePanel {
+                display: none !important;
+            }
+            .header {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                page-break-inside: avoid;
+            }
+            .payment-card-wrapper {
+                page-break-inside: avoid;
+                margin-bottom: 15px;
+            }
+            .payment-card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+            .total-box {
+                background: white !important;
+                color: black !important;
+                border: 2px solid #667eea;
+            }
+            .summary-item {
+                background: #f5f5f5 !important;
+                color: black !important;
+            }
+            .payment-amount {
+                color: black !important;
+            }
+            .print-button {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -566,9 +611,13 @@
         </div>
 
         <div style="background: white; padding: 12px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-            <button onclick="toggleBreakdown()" style="width: 100%; padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <button onclick="toggleBreakdown()" style="width: 100%; padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px;">
                 <span>📊</span>
                 <span id="breakdownButtonText">Ver Desglose Detallado</span>
+            </button>
+            <button onclick="printPayments()" class="print-button" style="width: 100%; padding: 10px; background: #2196F3; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <span>🖨️</span>
+                <span>Imprimir Lista de Pagos</span>
             </button>
         </div>
 
@@ -771,6 +820,10 @@
         }
 
         window.sortPayments = sortPayments;
+
+        window.printPayments = function() {
+            window.print();
+        }
 
         window.toggleBreakdown = function() {
             const panel = document.getElementById('breakdownPanel');
