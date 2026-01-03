@@ -19,6 +19,107 @@
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }
+        
+        /* Login Screen Styles */
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        .login-title {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .login-subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.3s;
+        }
+        
+        .login-btn:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .google-icon {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .app-container {
+            display: none;
+        }
+        
+        .app-container.active {
+            display: block;
+        }
+        
+        .user-info {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 12px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+        
+        .user-name {
+            flex: 1;
+            font-size: 13px;
+            color: white;
+            font-weight: 500;
+        }
+        
+        .logout-btn {
+            background: rgba(255,255,255,0.3);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
         .container {
             max-width: 100%;
             margin: 0;
@@ -502,7 +603,8 @@
             .swipe-actions, .desktop-actions,
             #loadingIndicator,
             .summary-tabs, #customRangePanel,
-            .breakdown-button-container {
+            .breakdown-button-container,
+            .user-info {
                 display: none !important;
             }
             .header {
@@ -552,204 +654,217 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div style="margin-bottom: 10px;">
-
-    <!-- Icons row (right aligned) -->
-    <div style="display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 6px;">
-        <button onclick="exportToExcel()" class="print-button"
-            style="padding: 8px; background: transparent; color: #10793F; border: none; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
-            title="Exportar a Excel">
-            ⬇️
-        </button>
-
-        <button onclick="printPayments()" class="print-button"
-            style="padding: 8px; background: transparent; color: #2196F3; border: none; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
-            title="Imprimir lista de pagos">
-            🖨️
-        </button>
-
-        <button onclick="showPrintOptions()" class="print-button"
-            style="padding: 8px; background: transparent; color: #4CAF50; border: none; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
-            title="Opciones de impresión">
-            ⚙️
-        </button>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-card">
+            <div style="font-size: 48px; margin-bottom: 20px;">💰</div>
+            <h1 class="login-title">Pagos de Construcción</h1>
+            <p class="login-subtitle">Inicia sesión para gestionar tus pagos de construcción</p>
+            <button id="loginButton" class="login-btn">
+                <svg class="google-icon" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                Continuar con Google
+            </button>
+        </div>
     </div>
 
-    <!-- Title -->
-    <h1 style="margin: 0; font-size: 20px; line-height: 1.3;">
-        💰 Pagos de Construcción
-    </h1>
-
-</div>
-
-            
-            <div class="summary-tabs">
-                <button class="tab-btn active" onclick="changeSummaryPeriod('all')">Todo</button>
-                <button class="tab-btn" onclick="changeSummaryPeriod('week')">Esta Semana</button>
-                <button class="tab-btn" onclick="changeSummaryPeriod('month')">Este Mes</button>
-                <button class="tab-btn" onclick="changeSummaryPeriod('year')">Este Año</button>
-                <button class="tab-btn" onclick="toggleCustomRange()">📅 Personalizado</button>
-            </div>
-            
-            <div id="customRangePanel" style="display: none; margin-top: 10px; padding: 12px; background: #f5f5f5; border-radius: 8px;">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
-                    <div>
-                        <label style="font-size: 11px; color: #666; display: block; margin-bottom: 4px;">Desde</label>
-                        <input type="date" id="startDate" style="width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px;">
+    <!-- Main App -->
+    <div id="appContainer" class="app-container">
+        <div class="container">
+            <div class="header">
+                <div class="user-info">
+                    <img id="userAvatar" class="user-avatar" src="" alt="">
+                    <span id="userName" class="user-name"></span>
+                    <button id="logoutButton" class="logout-btn">Salir</button>
+                </div>
+                
+                <div style="margin-bottom: 10px;">
+                    <div style="display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 6px;">
+                        <button onclick="exportToExcel()" class="print-button"
+                            style="padding: 8px; background: transparent; color: #10793F; border: none; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
+                            title="Exportar a Excel">
+                            ⬇️
+                        </button>
+                        <button onclick="printPayments()" class="print-button"
+                            style="padding: 8px; background: transparent; color: #2196F3; border: none; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
+                            title="Imprimir lista de pagos">
+                            🖨️
+                        </button>
+                        <button onclick="showPrintOptions()" class="print-button"
+                            style="padding: 8px; background: transparent; color: #4CAF50; border: none; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
+                            title="Opciones de impresión">
+                            ⚙️
+                        </button>
                     </div>
-                    <div>
-                        <label style="font-size: 11px; color: #666; display: block; margin-bottom: 4px;">Hasta</label>
-                        <input type="date" id="endDate" style="width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px;">
+                    <h1 style="margin: 0; font-size: 20px; line-height: 1.3;">
+                        💰 Pagos de Construcción
+                    </h1>
+                </div>
+                
+                <div class="summary-tabs">
+                    <button class="tab-btn active" onclick="changeSummaryPeriod('all')">Todo</button>
+                    <button class="tab-btn" onclick="changeSummaryPeriod('week')">Esta Semana</button>
+                    <button class="tab-btn" onclick="changeSummaryPeriod('month')">Este Mes</button>
+                    <button class="tab-btn" onclick="changeSummaryPeriod('year')">Este Año</button>
+                    <button class="tab-btn" onclick="toggleCustomRange()">📅 Personalizado</button>
+                </div>
+                
+                <div id="customRangePanel" style="display: none; margin-top: 10px; padding: 12px; background: #f5f5f5; border-radius: 8px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+                        <div>
+                            <label style="font-size: 11px; color: #666; display: block; margin-bottom: 4px;">Desde</label>
+                            <input type="date" id="startDate" style="width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px;">
+                        </div>
+                        <div>
+                            <label style="font-size: 11px; color: #666; display: block; margin-bottom: 4px;">Hasta</label>
+                            <input type="date" id="endDate" style="width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px;">
+                        </div>
+                    </div>
+                    <button onclick="applyCustomRange()" style="width: 100%; padding: 8px; background: #667eea; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;">
+                        Aplicar Rango
+                    </button>
+                </div>
+
+                <div class="total-box" style="display:flex; gap:12px; align-items:center;">
+                    <div style="flex:2; text-align:left;">
+                        <div class="total-label" id="periodLabel">Total Pagado - Todo</div>
+                        <div class="total-amount" id="totalAmount">$0.00</div>
+                    </div>
+                    <div style="flex:1; text-align:center; background: rgba(255,255,255,0.2); border-radius:8px; padding:8px;">
+                        <div class="label" style="font-size:12px; opacity:0.9;">Pagos</div>
+                        <div class="value" id="paymentCount" style="font-size:20px; font-weight:bold;">0</div>
                     </div>
                 </div>
-                <button onclick="applyCustomRange()" style="width: 100%; padding: 8px; background: #667eea; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;">
-                    Aplicar Rango
+            </div>
+
+            <div class="form-card">
+                <div class="form-title" id="formTitle">Agregar Nuevo Pago</div>
+                <form id="paymentForm">
+                    <div class="form-group">
+                        <label>Fecha</label>
+                        <input type="date" id="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Beneficiario</label>
+                        <input type="text" id="beneficiary" placeholder="ej., Constructora ABC" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Concepto</label>
+                        <input type="text" id="concept" placeholder="ej., Cemento gris" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Cantidad y Unidad (opcional)</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                            <input type="number" id="quantity" placeholder="0" step="0.01" min="0">
+                            <select id="unit">
+                                <option value="">Seleccionar</option>
+                                <option>kg</option>
+                                <option>lt</option>
+                                <option>m</option>
+                                <option>m²</option>
+                                <option>m³</option>
+                                <option>unidades</option>
+                                <option>bolsas</option>
+                                <option>cajas</option>
+                                <option>días</option>
+                                <option>horas</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Categoría</label>
+                        <select id="category" required>
+                            <option value="">Seleccionar categoría</option>
+                            <option>Mano de obra</option>
+                            <option>Materiales</option>
+                            <option>Instalaciones</option>
+                            <option>Transporte</option>
+                            <option>Acabados</option>
+                            <option>Equipos</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Área/Lugar de la Construcción</label>
+                        <select id="location" required>
+                            <option value="">Seleccionar área</option>
+                            <option>Cimentación</option>
+                            <option>Estructura</option>
+                            <option>Paredes/Muros</option>
+                            <option>Techo</option>
+                            <option>Pisos</option>
+                            <option>Baños</option>
+                            <option>Cocina</option>
+                            <option>Habitaciones</option>
+                            <option>Sala/Comedor</option>
+                            <option>Fachada</option>
+                            <option>Instalación eléctrica</option>
+                            <option>Instalación sanitaria</option>
+                            <option>Ventanas/Puertas</option>
+                            <option>Pintura</option>
+                            <option>Jardinería</option>
+                            <option>General</option>
+                            <option>Otros</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Monto Pagado ($)</label>
+                        <input type="number" id="amount" placeholder="0" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Método de Pago</label>
+                        <select id="method" required>
+                            <option value="">Seleccionar método</option>
+                            <option>Transferencia</option>
+                            <option>Efectivo</option>
+                        </select>
+                    </div>
+                    <div id="updateButtons" style="display: none;">
+                        <button type="submit" class="btn update-btn">Actualizar Pago</button>
+                        <button type="button" class="btn cancel-btn" onclick="cancelEdit()">Cancelar</button>
+                    </div>
+                    <button type="submit" class="btn add-btn" id="addButton">+ Agregar Pago</button>
+                </form>
+            </div>
+
+            <div class="controls">
+                <div class="sort-group">
+                    <label>Ordenar por:</label>
+                    <select id="sortBy" onchange="sortPayments()">
+                        <option value="date-desc">Fecha (Más reciente)</option>
+                        <option value="date-asc">Fecha (Más antigua)</option>
+                        <option value="amount-desc">Monto (Mayor a menor)</option>
+                        <option value="amount-asc">Monto (Menor a mayor)</option>
+                        <option value="beneficiary">Beneficiario (A-Z)</option>
+                        <option value="category">Categoría</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="background: white; padding: 12px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" class="breakdown-button-container">
+                <button onclick="toggleBreakdown()" style="width: 100%; padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <span>📊</span>
+                    <span id="breakdownButtonText">Ver Desglose Detallado</span>
                 </button>
             </div>
 
-            <div class="total-box" style="display:flex; gap:12px; align-items:center;">
-    
-    <!-- Total Pagado -->
-    <div style="flex:2; text-align:left;">
-        <div class="total-label" id="periodLabel">Total Pagado - Todo</div>
-        <div class="total-amount" id="totalAmount">$0.00</div>
-    </div>
-
-    <!-- Pagos -->
-    <div style="flex:1; text-align:center; background: rgba(255,255,255,0.2); border-radius:8px; padding:8px;">
-        <div class="label" style="font-size:12px; opacity:0.9;">Pagos</div>
-        <div class="value" id="paymentCount" style="font-size:20px; font-weight:bold;">0</div>
-    </div>
-
-</div>
-
-        </div>
-
-        <div class="form-card">
-            <div class="form-title" id="formTitle">Agregar Nuevo Pago</div>
-            <form id="paymentForm">
-                <div class="form-group">
-                    <label>Fecha</label>
-                    <input type="date" id="date" required>
+            <div id="breakdownPanel" style="display: none; background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <div style="display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto;">
+                    <button class="breakdown-tab active" onclick="changeBreakdownTab('beneficiary')">Por Beneficiario</button>
+                    <button class="breakdown-tab" onclick="changeBreakdownTab('category')">Por Categoría</button>
+                    <button class="breakdown-tab" onclick="changeBreakdownTab('location')">Por Área</button>
+                    <button class="breakdown-tab" onclick="changeBreakdownTab('concept')">Por Concepto</button>
+                    <button class="breakdown-tab" onclick="changeBreakdownTab('method')">Por Método</button>
                 </div>
-                <div class="form-group">
-                    <label>Beneficiario</label>
-                    <input type="text" id="beneficiary" placeholder="ej., Constructora ABC" required>
-                </div>
-                <div class="form-group">
-                    <label>Concepto</label>
-                    <input type="text" id="concept" placeholder="ej., Cemento gris" required>
-                </div>
-                <div class="form-group">
-                    <label>Cantidad y Unidad (opcional)</label>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                        <input type="number" id="quantity" placeholder="0" step="0.01" min="0">
-                        <select id="unit">
-                            <option value="">Seleccionar</option>
-                            <option>kg</option>
-                            <option>lt</option>
-                            <option>m</option>
-                            <option>m²</option>
-                            <option>m³</option>
-                            <option>unidades</option>
-                            <option>bolsas</option>
-                            <option>cajas</option>
-                            <option>días</option>
-                            <option>horas</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Categoría</label>
-                    <select id="category" required>
-                        <option value="">Seleccionar categoría</option>
-                        <option>Mano de obra</option>
-                        <option>Materiales</option>
-                        <option>Instalaciones</option>
-                        <option>Transporte</option>
-                        <option>Acabados</option>
-                        <option>Equipos</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Área/Lugar de la Construcción</label>
-                    <select id="location" required>
-                        <option value="">Seleccionar área</option>
-                        <option>Cimentación</option>
-                        <option>Estructura</option>
-                        <option>Paredes/Muros</option>
-                        <option>Techo</option>
-                        <option>Pisos</option>
-                        <option>Baños</option>
-                        <option>Cocina</option>
-                        <option>Habitaciones</option>
-                        <option>Sala/Comedor</option>
-                        <option>Fachada</option>
-                        <option>Instalación eléctrica</option>
-                        <option>Instalación sanitaria</option>
-                        <option>Ventanas/Puertas</option>
-                        <option>Pintura</option>
-                        <option>Jardinería</option>
-                        <option>General</option>
-                        <option>Otros</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Monto Pagado ($)</label>
-                    <input type="number" id="amount" placeholder="0" step="0.01" required>
-                </div>
-                <div class="form-group">
-                    <label>Método de Pago</label>
-                    <select id="method" required>
-                        <option value="">Seleccionar método</option>
-                        <option>Transferencia</option>
-                        <option>Efectivo</option>
-                    </select>
-                </div>
-                <div id="updateButtons" style="display: none;">
-                    <button type="submit" class="btn update-btn">Actualizar Pago</button>
-                    <button type="button" class="btn cancel-btn" onclick="cancelEdit()">Cancelar</button>
-                </div>
-                <button type="submit" class="btn add-btn" id="addButton">+ Agregar Pago</button>
-            </form>
-        </div>
-
-        <div class="controls">
-            <div class="sort-group">
-                <label>Ordenar por:</label>
-                <select id="sortBy" onchange="sortPayments()">
-                    <option value="date-desc">Fecha (Más reciente)</option>
-                    <option value="date-asc">Fecha (Más antigua)</option>
-                    <option value="amount-desc">Monto (Mayor a menor)</option>
-                    <option value="amount-asc">Monto (Menor a mayor)</option>
-                    <option value="beneficiary">Beneficiario (A-Z)</option>
-                    <option value="category">Categoría</option>
-                </select>
+                <div id="breakdownContent"></div>
             </div>
-        </div>
 
-        <div style="background: white; padding: 12px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" class="breakdown-button-container">
-            <button onclick="toggleBreakdown()" style="width: 100%; padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                <span>📊</span>
-                <span id="breakdownButtonText">Ver Desglose Detallado</span>
-            </button>
+            <div id="loadingIndicator" class="loading">Cargando pagos...</div>
+            <div class="payments-list" id="paymentsList"></div>
         </div>
-
-        <div id="breakdownPanel" style="display: none; background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-            <div style="display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto;">
-                <button class="breakdown-tab active" onclick="changeBreakdownTab('beneficiary')">Por Beneficiario</button>
-                <button class="breakdown-tab" onclick="changeBreakdownTab('category')">Por Categoría</button>
-                <button class="breakdown-tab" onclick="changeBreakdownTab('location')">Por Área</button>
-                <button class="breakdown-tab" onclick="changeBreakdownTab('concept')">Por Concepto</button>
-                <button class="breakdown-tab" onclick="changeBreakdownTab('method')">Por Método</button>
-            </div>
-            <div id="breakdownContent"></div>
-        </div>
-
-        <div id="loadingIndicator" class="loading">Cargando pagos...</div>
-        <div class="payments-list" id="paymentsList"></div>
     </div>
 
     <div class="print-modal" id="printModal">
@@ -785,6 +900,7 @@
 
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
         import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
         const firebaseConfig = {
@@ -798,7 +914,9 @@
         };
 
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
         const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
 
         let payments = [];
         let editingId = null;
@@ -807,22 +925,87 @@
         let customEndDate = null;
         let currentBreakdownTab = 'beneficiary';
         let isBreakdownOpen = false;
+        let currentUser = null;
+        let isAdmin = false;
+        
+        // Admin email addresses
+        const ADMIN_EMAILS = [
+            'orhanimre@gmail.com',
+            'marizulynaranjo@gmail.com'
+        ];
+
+        // Authentication handlers
+        document.getElementById('loginButton').addEventListener('click', async () => {
+            try {
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                console.error('Error during login:', error);
+                alert('Error al iniciar sesión. Por favor intenta de nuevo.');
+            }
+        });
+
+        document.getElementById('logoutButton').addEventListener('click', async () => {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                try {
+                    await signOut(auth);
+                } catch (error) {
+                    console.error('Error during logout:', error);
+                    alert('Error al cerrar sesión.');
+                }
+            }
+        });
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                isAdmin = ADMIN_EMAILS.includes(user.email);
+                
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('appContainer').classList.add('active');
+                document.getElementById('userName').textContent = user.displayName + (isAdmin ? ' (Admin)' : ' (Viewer)');
+                document.getElementById('userAvatar').src = user.photoURL;
+                
+                // Show/hide admin-only elements
+                updateUIBasedOnPermissions();
+                
+                loadPayments();
+            } else {
+                currentUser = null;
+                isAdmin = false;
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('appContainer').classList.remove('active');
+                payments = [];
+            }
+        });
+
+        function updateUIBasedOnPermissions() {
+            const formCard = document.querySelector('.form-card');
+            const exportButton = document.querySelector('[onclick="exportToExcel()"]');
+            
+            if (isAdmin) {
+                // Show form for admins
+                formCard.style.display = 'block';
+            } else {
+                // Hide form for read-only users
+                formCard.style.display = 'none';
+            }
+        }
 
         function formatCurrency(amount) {
-            return '$' + parseFloat(amount).toLocaleString('en-US', {
+            return ' + parseFloat(amount).toLocaleString('en-US', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             });
         }
 
         function csvSafe(value) {
-    if (value === null || value === undefined) return '';
-    const str = String(value);
-    if (str.includes(',') || str.includes('"') || str.includes('\n')) {
-        return `"${str.replace(/"/g, '""')}"`;
-    }
-    return str;
-}
+            if (value === null || value === undefined) return '';
+            const str = String(value);
+            if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+                return `"${str.replace(/"/g, '""')}"`;
+            }
+            return str;
+        }
 
         function formatDate(dateStr) {
             const date = new Date(dateStr + 'T00:00:00');
@@ -872,7 +1055,6 @@
             const filtered = getFilteredPayments();
             const total = filtered.reduce((sum, p) => sum + parseFloat(p.amount), 0);
             const count = filtered.length;
-            const average = count > 0 ? total / count : 0;
 
             const labels = {
                 'all': 'Todo',
@@ -984,10 +1166,8 @@
                 return;
             }
             
-            // Create CSV content
-            let csv = '\uFEFF'; // UTF-8 BOM for proper Excel encoding
+            let csv = '\uFEFF';
             
-            // Add summary header
             const labels = {
                 'all': 'Todo',
                 'week': 'Esta Semana',
@@ -1002,26 +1182,23 @@
             csv += `Cantidad de Pagos,${csvSafe(filtered.length)}\n`;
             csv += `Fecha de Exportación:,${new Date().toLocaleDateString('es-ES')}\n\n`;
             
-            // Add headers
             csv += 'Fecha,Beneficiario,Concepto,Cantidad,Unidad,Categoría,Área/Lugar,Monto,Método de Pago\n';
             
-            // Add data rows
             filtered.forEach(payment => {
                 const row = [
-    csvSafe(payment.date),
-    csvSafe(payment.beneficiary),
-    csvSafe(payment.concept),
-    csvSafe(payment.quantity),
-    csvSafe(payment.unit),
-    csvSafe(payment.category),
-    csvSafe(payment.location),
-    csvSafe(payment.amount),
-    csvSafe(payment.method)
-];
+                    csvSafe(payment.date),
+                    csvSafe(payment.beneficiary),
+                    csvSafe(payment.concept),
+                    csvSafe(payment.quantity),
+                    csvSafe(payment.unit),
+                    csvSafe(payment.category),
+                    csvSafe(payment.location),
+                    csvSafe(payment.amount),
+                    csvSafe(payment.method)
+                ];
                 csv += row.join(',') + '\n';
             });
             
-            // Create and download file
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
@@ -1046,14 +1223,12 @@
 
         window.printPayments = function() {
             closePrintModal();
-            // Hide breakdown panel for regular payment list print
             const breakdownPanel = document.getElementById('breakdownPanel');
             const wasOpen = breakdownPanel.style.display !== 'none';
             breakdownPanel.style.display = 'none';
             
             window.print();
             
-            // Restore breakdown panel state
             if (wasOpen) {
                 breakdownPanel.style.display = 'block';
             }
@@ -1062,14 +1237,12 @@
         window.printBreakdown = function(breakdownType) {
             closePrintModal();
             
-            // Open breakdown panel and set the correct tab
             currentBreakdownTab = breakdownType;
             isBreakdownOpen = true;
             
             const panel = document.getElementById('breakdownPanel');
             panel.style.display = 'block';
             
-            // Update the active tab visually
             document.querySelectorAll('.breakdown-tab').forEach(btn => btn.classList.remove('active'));
             const tabLabels = {
                 'beneficiary': 'Por Beneficiario',
@@ -1084,17 +1257,13 @@
                 }
             });
             
-            // Update breakdown content
             updateBreakdown();
             
-            // Hide payment list temporarily
             const paymentsList = document.getElementById('paymentsList');
             paymentsList.style.display = 'none';
             
-            // Print
             setTimeout(() => {
                 window.print();
-                // Restore payment list
                 paymentsList.style.display = 'block';
             }, 100);
         }
@@ -1230,6 +1399,7 @@
 
             container.innerHTML = payments.map((payment, index) => `
                 <div class="payment-card-wrapper">
+                    ${isAdmin ? `
                     <div class="swipe-actions">
                         <div class="swipe-action edit" onclick="editPayment('${payment.id}')">
                             ✏️<br>Editar
@@ -1238,6 +1408,7 @@
                             🗑️<br>Eliminar
                         </div>
                     </div>
+                    ` : ''}
                     <div class="payment-card">
                         <div class="payment-number">${index + 1}</div>
                         <div class="payment-header">
@@ -1270,6 +1441,7 @@
                             <span class="label">Método:</span>
                             <span class="value">${payment.method}</span>
                         </div>
+                        ${isAdmin ? `
                         <div class="desktop-actions">
                             <button class="desktop-action-btn edit" onclick="editPayment('${payment.id}')">
                                 ✏️ Editar
@@ -1278,6 +1450,7 @@
                                 🗑️ Eliminar
                             </button>
                         </div>
+                        ` : ''}
                     </div>
                 </div>
             `).join('');
@@ -1288,6 +1461,8 @@
         }
 
         async function loadPayments() {
+            if (!currentUser) return;
+            
             try {
                 const q = query(collection(db, 'payments'), orderBy('date', 'desc'));
                 const querySnapshot = await getDocs(q);
@@ -1303,6 +1478,11 @@
         }
 
         window.editPayment = function(id) {
+            if (!isAdmin) {
+                alert('No tienes permisos para editar pagos. Solo los administradores pueden hacer cambios.');
+                return;
+            }
+            
             editingId = id;
             const payment = payments.find(p => p.id === id);
             
@@ -1335,7 +1515,16 @@
         document.getElementById('paymentForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            // Find the visible submit button (either add or update)
+            if (!currentUser) {
+                alert('Debes iniciar sesión para realizar esta acción');
+                return;
+            }
+            
+            if (!isAdmin) {
+                alert('No tienes permisos para agregar o editar pagos. Solo los administradores pueden hacer cambios.');
+                return;
+            }
+            
             const submitBtn = editingId ? 
                 document.querySelector('#updateButtons button[type="submit"]') : 
                 document.getElementById('addButton');
@@ -1377,6 +1566,16 @@
         });
 
         window.deletePayment = async function(id) {
+            if (!currentUser) {
+                alert('Debes iniciar sesión para realizar esta acción');
+                return;
+            }
+            
+            if (!isAdmin) {
+                alert('No tienes permisos para eliminar pagos. Solo los administradores pueden hacer cambios.');
+                return;
+            }
+            
             if (confirm('¿Estás seguro de que quieres eliminar este pago?')) {
                 try {
                     await deleteDoc(doc(db, 'payments', id));
@@ -1389,7 +1588,6 @@
         }
 
         document.getElementById('date').valueAsDate = new Date();
-        loadPayments();
     </script>
 </body>
 </html>
