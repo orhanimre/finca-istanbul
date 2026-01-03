@@ -83,7 +83,7 @@
         }
         .summary-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 8px;
             margin-top: 8px;
         }
@@ -416,6 +416,79 @@
             margin-top: 2px;
         }
         
+        .print-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .print-modal.active {
+            display: flex;
+        }
+        
+        .print-modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        
+        .print-modal h3 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 18px;
+        }
+        
+        .print-option {
+            padding: 12px;
+            margin: 8px 0;
+            background: #f5f5f5;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+        
+        .print-option:hover {
+            background: #e0e0e0;
+            transform: translateX(5px);
+        }
+        
+        .print-option-icon {
+            font-size: 20px;
+        }
+        
+        .print-option-text {
+            flex: 1;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .print-modal-close {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #333;
+        }
+        
         @media print {
             body {
                 background: white;
@@ -425,9 +498,9 @@
                 max-width: 100%;
                 padding: 0;
             }
-            .form-card, .controls, #breakdownPanel, 
+            .form-card, .controls, 
             .swipe-actions, .desktop-actions,
-            .breakdown-tab, #loadingIndicator,
+            #loadingIndicator,
             .summary-tabs, #customRangePanel,
             .breakdown-button-container {
                 display: none !important;
@@ -459,6 +532,21 @@
             }
             .print-button {
                 display: none !important;
+            }
+            .breakdown-amount {
+                color: black !important;
+            }
+            #breakdownPanel {
+                display: block !important;
+                box-shadow: none;
+                border: 1px solid #ddd;
+                page-break-inside: avoid;
+            }
+            .breakdown-tab {
+                display: none !important;
+            }
+            .breakdown-item {
+                page-break-inside: avoid;
             }
         }
     </style>
@@ -509,10 +597,6 @@
                     <div class="summary-item">
                         <div class="label">Pagos</div>
                         <div class="value" id="paymentCount">0</div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="label">Promedio</div>
-                        <div class="value" id="averageAmount">$0</div>
                     </div>
                 </div>
             </div>
@@ -643,6 +727,37 @@
         <div class="payments-list" id="paymentsList"></div>
     </div>
 
+    <div class="print-modal" id="printModal">
+        <div class="print-modal-content">
+            <h3>¿Qué deseas imprimir?</h3>
+            <div class="print-option" onclick="printPayments()">
+                <span class="print-option-icon">📋</span>
+                <span class="print-option-text">Lista de Pagos</span>
+            </div>
+            <div class="print-option" onclick="printBreakdown('beneficiary')">
+                <span class="print-option-icon">👤</span>
+                <span class="print-option-text">Desglose por Beneficiario</span>
+            </div>
+            <div class="print-option" onclick="printBreakdown('category')">
+                <span class="print-option-icon">📦</span>
+                <span class="print-option-text">Desglose por Categoría</span>
+            </div>
+            <div class="print-option" onclick="printBreakdown('location')">
+                <span class="print-option-icon">🏗️</span>
+                <span class="print-option-text">Desglose por Área</span>
+            </div>
+            <div class="print-option" onclick="printBreakdown('concept')">
+                <span class="print-option-icon">📝</span>
+                <span class="print-option-text">Desglose por Concepto</span>
+            </div>
+            <div class="print-option" onclick="printBreakdown('method')">
+                <span class="print-option-icon">💳</span>
+                <span class="print-option-text">Desglose por Método de Pago</span>
+            </div>
+            <button class="print-modal-close" onclick="closePrintModal()">Cancelar</button>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
@@ -736,7 +851,6 @@
             document.getElementById('periodLabel').textContent = `Total Pagado - ${labels[currentPeriod]}`;
             document.getElementById('totalAmount').textContent = formatCurrency(total);
             document.getElementById('paymentCount').textContent = count;
-            document.getElementById('averageAmount').textContent = formatCurrency(average);
             
             if (isBreakdownOpen) {
                 updateBreakdown();
@@ -828,8 +942,67 @@
 
         window.sortPayments = sortPayments;
 
+        window.showPrintOptions = function() {
+            document.getElementById('printModal').classList.add('active');
+        }
+        
+        window.closePrintModal = function() {
+            document.getElementById('printModal').classList.remove('active');
+        }
+
         window.printPayments = function() {
+            closePrintModal();
+            // Hide breakdown panel for regular payment list print
+            const breakdownPanel = document.getElementById('breakdownPanel');
+            const wasOpen = breakdownPanel.style.display !== 'none';
+            breakdownPanel.style.display = 'none';
+            
             window.print();
+            
+            // Restore breakdown panel state
+            if (wasOpen) {
+                breakdownPanel.style.display = 'block';
+            }
+        }
+        
+        window.printBreakdown = function(breakdownType) {
+            closePrintModal();
+            
+            // Open breakdown panel and set the correct tab
+            currentBreakdownTab = breakdownType;
+            isBreakdownOpen = true;
+            
+            const panel = document.getElementById('breakdownPanel');
+            panel.style.display = 'block';
+            
+            // Update the active tab visually
+            document.querySelectorAll('.breakdown-tab').forEach(btn => btn.classList.remove('active'));
+            const tabLabels = {
+                'beneficiary': 'Por Beneficiario',
+                'category': 'Por Categoría',
+                'location': 'Por Área',
+                'concept': 'Por Concepto',
+                'method': 'Por Método'
+            };
+            document.querySelectorAll('.breakdown-tab').forEach(btn => {
+                if (btn.textContent.includes(tabLabels[breakdownType].split(' ')[1])) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Update breakdown content
+            updateBreakdown();
+            
+            // Hide payment list temporarily
+            const paymentsList = document.getElementById('paymentsList');
+            paymentsList.style.display = 'none';
+            
+            // Print
+            setTimeout(() => {
+                window.print();
+                // Restore payment list
+                paymentsList.style.display = 'block';
+            }, 100);
         }
 
         window.toggleBreakdown = function() {
