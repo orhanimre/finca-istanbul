@@ -428,7 +428,8 @@
             .form-card, .controls, #breakdownPanel, 
             .swipe-actions, .desktop-actions,
             .breakdown-tab, #loadingIndicator,
-            .summary-tabs, #customRangePanel {
+            .summary-tabs, #customRangePanel,
+            .breakdown-button-container {
                 display: none !important;
             }
             .header {
@@ -467,7 +468,7 @@
         <div class="header">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                 <h1 style="margin: 0;">💰 Pagos de Construcción</h1>
-                <button onclick="printPayments()" class="print-button" style="padding: 8px 16px; background: #2196F3; color: white; border: none; border-radius: 8px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(33, 150, 243, 0.3);">
+                <button onclick="printPayments()" class="print-button" style="padding: 8px; background: transparent; color: #2196F3; border: none; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
                     🖨️
                 </button>
             </div>
@@ -615,14 +616,10 @@
             </div>
         </div>
 
-        <div style="background: white; padding: 12px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-            <button onclick="toggleBreakdown()" style="width: 100%; padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px;">
+        <div style="background: white; padding: 12px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" class="breakdown-button-container">
+            <button onclick="toggleBreakdown()" style="width: 100%; padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
                 <span>📊</span>
                 <span id="breakdownButtonText">Ver Desglose Detallado</span>
-            </button>
-            <button onclick="printPayments()" class="print-button" style="width: 100%; padding: 10px; background: #2196F3; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                <span>🖨️</span>
-                <span>Imprimir Lista de Pagos</span>
             </button>
         </div>
 
