@@ -557,11 +557,14 @@
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                 <h1 style="margin: 0;">💰 Pagos de Construcción</h1>
                 <div style="display: flex; gap: 8px;">
+                    <button onclick="exportToExcel()" class="print-button" style="padding: 8px; background: transparent; color: #10793F; border: none; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Exportar a Excel">
+                        📊
+                    </button>
                     <button onclick="printPayments()" class="print-button" style="padding: 8px; background: transparent; color: #2196F3; border: none; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Imprimir lista de pagos">
                         🖨️
                     </button>
                     <button onclick="showPrintOptions()" class="print-button" style="padding: 8px; background: transparent; color: #4CAF50; border: none; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Opciones de impresión">
-                        📊
+                        📋
                     </button>
                 </div>
             </div>
@@ -941,6 +944,66 @@
         }
 
         window.sortPayments = sortPayments;
+
+        window.exportToExcel = function() {
+            const filtered = getFilteredPayments();
+            
+            if (filtered.length === 0) {
+                alert('No hay pagos para exportar');
+                return;
+            }
+            
+            // Create CSV content
+            let csv = '\uFEFF'; // UTF-8 BOM for proper Excel encoding
+            
+            // Add summary header
+            const labels = {
+                'all': 'Todo',
+                'week': 'Esta Semana',
+                'month': 'Este Mes',
+                'year': 'Este Año',
+                'custom': 'Rango Personalizado'
+            };
+            const total = filtered.reduce((sum, p) => sum + parseFloat(p.amount), 0);
+            
+            csv += `Pagos de Construcción - ${labels[currentPeriod]}\n`;
+            csv += `Total Pagado:,${formatCurrency(total)}\n`;
+            csv += `Cantidad de Pagos:,${filtered.length}\n`;
+            csv += `Fecha de Exportación:,${new Date().toLocaleDateString('es-ES')}\n\n`;
+            
+            // Add headers
+            csv += 'Fecha,Beneficiario,Concepto,Cantidad,Unidad,Categoría,Área/Lugar,Monto,Método de Pago\n';
+            
+            // Add data rows
+            filtered.forEach(payment => {
+                const row = [
+                    payment.date,
+                    `"${payment.beneficiary}"`,
+                    `"${payment.concept}"`,
+                    payment.quantity || '',
+                    payment.unit || '',
+                    `"${payment.category}"`,
+                    `"${payment.location}"`,
+                    payment.amount,
+                    `"${payment.method}"`
+                ];
+                csv += row.join(',') + '\n';
+            });
+            
+            // Create and download file
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            const fileName = `Pagos_Construccion_${labels[currentPeriod].replace(/ /g, '_')}_${new Date().toISOString().split('T')[0]}.csv`;
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', fileName);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
 
         window.showPrintOptions = function() {
             document.getElementById('printModal').classList.add('active');
