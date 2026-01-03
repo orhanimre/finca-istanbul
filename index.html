@@ -576,6 +576,7 @@
             <div style="display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto;">
                 <button class="breakdown-tab active" onclick="changeBreakdownTab('beneficiary')">Por Beneficiario</button>
                 <button class="breakdown-tab" onclick="changeBreakdownTab('category')">Por Categoría</button>
+                <button class="breakdown-tab" onclick="changeBreakdownTab('location')">Por Área</button>
                 <button class="breakdown-tab" onclick="changeBreakdownTab('concept')">Por Concepto</button>
                 <button class="breakdown-tab" onclick="changeBreakdownTab('method')">Por Método</button>
             </div>
@@ -808,7 +809,7 @@
             const breakdown = {};
             
             filtered.forEach(payment => {
-                const key = payment[currentBreakdownTab];
+                const key = payment[currentBreakdownTab] || 'Sin especificar';
                 if (!breakdown[key]) {
                     breakdown[key] = {
                         total: 0,
@@ -931,6 +932,10 @@
                             <span class="value">${payment.category}</span>
                         </div>
                         <div class="payment-detail">
+                            <span class="label">Área/Lugar:</span>
+                            <span class="value">${payment.location}</span>
+                        </div>
+                        <div class="payment-detail">
                             <span class="label">Fecha:</span>
                             <span class="value">${formatDate(payment.date)}</span>
                         </div>
@@ -980,6 +985,7 @@
             document.getElementById('quantity').value = payment.quantity || '';
             document.getElementById('unit').value = payment.unit || '';
             document.getElementById('category').value = payment.category;
+            document.getElementById('location').value = payment.location;
             document.getElementById('amount').value = payment.amount;
             document.getElementById('method').value = payment.method;
             
@@ -1014,6 +1020,7 @@
                 quantity: document.getElementById('quantity').value || null,
                 unit: document.getElementById('unit').value || null,
                 category: document.getElementById('category').value,
+                location: document.getElementById('location').value,
                 amount: document.getElementById('amount').value,
                 method: document.getElementById('method').value
             };
