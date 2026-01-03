@@ -25,6 +25,13 @@
             padding: 10px;
             padding-bottom: 30px;
         }
+        @media (min-width: 768px) {
+            .container {
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+        }
         .header {
             background: white;
             padding: 15px;
@@ -202,7 +209,7 @@
             padding-bottom: 20px;
         }
         
-        /* Swipeable Card Styles */
+        /* Swipeable Card Styles for Mobile */
         .payment-card-wrapper {
             position: relative;
             margin-bottom: 10px;
@@ -252,11 +259,57 @@
             z-index: 2;
             transform: translateX(0);
             transition: transform 0.3s ease;
-            touch-action: pan-y;
         }
         
-        .payment-card.swiped {
-            transform: translateX(-160px);
+        /* Mobile: Enable swipe */
+        @media (max-width: 767px) {
+            .payment-card {
+                touch-action: pan-y;
+            }
+            .payment-card.swiped {
+                transform: translateX(-160px);
+            }
+            .desktop-actions {
+                display: none;
+            }
+        }
+        
+        /* Desktop: Show buttons, disable swipe */
+        @media (min-width: 768px) {
+            .swipe-actions {
+                display: none;
+            }
+            .desktop-actions {
+                display: flex;
+                gap: 8px;
+                margin-top: 12px;
+                padding-top: 12px;
+                border-top: 1px solid #f0f0f0;
+            }
+            .desktop-action-btn {
+                padding: 8px 16px;
+                border: none;
+                border-radius: 6px;
+                font-size: 13px;
+                cursor: pointer;
+                font-weight: 500;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                transition: all 0.2s;
+            }
+            .desktop-action-btn.edit {
+                background: #2196F3;
+                color: white;
+            }
+            .desktop-action-btn.delete {
+                background: #ff4444;
+                color: white;
+            }
+            .desktop-action-btn:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            }
         }
         
         .payment-number {
@@ -320,13 +373,6 @@
             padding: 20px;
             color: white;
             font-size: 16px;
-        }
-        .swipe-hint {
-            text-align: center;
-            color: rgba(255,255,255,0.7);
-            font-size: 12px;
-            margin-top: 10px;
-            padding: 8px;
         }
     </style>
 </head>
@@ -420,7 +466,6 @@
         </div>
 
         <div id="loadingIndicator" class="loading">Cargando pagos...</div>
-        <div class="swipe-hint" id="swipeHint">👈 Desliza a la izquierda para editar o eliminar</div>
         <div class="payments-list" id="paymentsList"></div>
     </div>
 
@@ -541,6 +586,9 @@
         window.sortPayments = sortPayments;
 
         function initSwipeGestures() {
+            // Only enable swipe on mobile devices
+            if (window.innerWidth >= 768) return;
+            
             const cards = document.querySelectorAll('.payment-card');
             
             cards.forEach(card => {
@@ -581,7 +629,6 @@
                     }
                 });
 
-                // Close swipe when tapping the card
                 card.addEventListener('click', (e) => {
                     if (card.classList.contains('swiped')) {
                         e.preventDefault();
@@ -597,7 +644,6 @@
             document.getElementById('loadingIndicator').style.display = 'none';
             
             if (payments.length === 0) {
-                document.getElementById('swipeHint').style.display = 'none';
                 container.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-state-icon">📋</div>
@@ -607,8 +653,6 @@
                 updateSummary();
                 return;
             }
-
-            document.getElementById('swipeHint').style.display = 'block';
 
             container.innerHTML = payments.map((payment, index) => `
                 <div class="payment-card-wrapper">
@@ -642,13 +686,20 @@
                             <span class="label">Método:</span>
                             <span class="value">${payment.method}</span>
                         </div>
+                        <div class="desktop-actions">
+                            <button class="desktop-action-btn edit" onclick="editPayment('${payment.id}')">
+                                ✏️ Editar
+                            </button>
+                            <button class="desktop-action-btn delete" onclick="deletePayment('${payment.id}')">
+                                🗑️ Eliminar
+                            </button>
+                        </div>
                     </div>
                 </div>
             `).join('');
 
             updateSummary();
             
-            // Initialize swipe gestures after rendering
             setTimeout(initSwipeGestures, 100);
         }
 
