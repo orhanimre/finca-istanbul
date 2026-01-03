@@ -374,6 +374,50 @@
             color: white;
             font-size: 16px;
         }
+        .breakdown-tab {
+            padding: 8px 14px;
+            border: none;
+            background: #f0f0f0;
+            border-radius: 16px;
+            font-size: 12px;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+            font-weight: 500;
+        }
+        .breakdown-tab.active {
+            background: #667eea;
+            color: white;
+        }
+        .breakdown-item {
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .breakdown-item:last-child {
+            border-bottom: none;
+        }
+        .breakdown-name {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+            flex: 1;
+        }
+        .breakdown-stats {
+            text-align: right;
+        }
+        .breakdown-amount {
+            font-size: 16px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .breakdown-count {
+            font-size: 11px;
+            color: #666;
+            margin-top: 2px;
+        }
     </style>
 </head>
 <body>
@@ -482,6 +526,23 @@
             </div>
         </div>
 
+        <div style="background: white; padding: 12px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            <button onclick="toggleBreakdown()" style="width: 100%; padding: 10px; background: #667eea; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <span>📊</span>
+                <span id="breakdownButtonText">Ver Desglose Detallado</span>
+            </button>
+        </div>
+
+        <div id="breakdownPanel" style="display: none; background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            <div style="display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto;">
+                <button class="breakdown-tab active" onclick="changeBreakdownTab('beneficiary')">Por Beneficiario</button>
+                <button class="breakdown-tab" onclick="changeBreakdownTab('category')">Por Categoría</button>
+                <button class="breakdown-tab" onclick="changeBreakdownTab('concept')">Por Concepto</button>
+                <button class="breakdown-tab" onclick="changeBreakdownTab('method')">Por Método</button>
+            </div>
+            <div id="breakdownContent"></div>
+        </div>
+
         <div id="loadingIndicator" class="loading">Cargando pagos...</div>
         <div class="payments-list" id="paymentsList"></div>
     </div>
@@ -508,6 +569,8 @@
         let currentPeriod = 'all';
         let customStartDate = null;
         let customEndDate = null;
+        let currentBreakdownTab = 'beneficiary';
+        let isBreakdownOpen = false;
 
         function formatCurrency(amount) {
             return '$' + parseFloat(amount).toLocaleString('en-US', {
@@ -578,6 +641,10 @@
             document.getElementById('totalAmount').textContent = formatCurrency(total);
             document.getElementById('paymentCount').textContent = count;
             document.getElementById('averageAmount').textContent = formatCurrency(average);
+            
+            if (isBreakdownOpen) {
+                updateBreakdown();
+            }
         }
 
         window.changeSummaryPeriod = function(period) {
@@ -665,6 +732,74 @@
         }
 
         window.sortPayments = sortPayments;
+
+        window.toggleBreakdown = function() {
+            const panel = document.getElementById('breakdownPanel');
+            const button = document.getElementById('breakdownButtonText');
+            
+            isBreakdownOpen = !isBreakdownOpen;
+            
+            if (isBreakdownOpen) {
+                panel.style.display = 'block';
+                button.textContent = 'Ocultar Desglose';
+                updateBreakdown();
+            } else {
+                panel.style.display = 'none';
+                button.textContent = 'Ver Desglose Detallado';
+            }
+        }
+
+        window.changeBreakdownTab = function(tab) {
+            currentBreakdownTab = tab;
+            document.querySelectorAll('.breakdown-tab').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            updateBreakdown();
+        }
+
+        function updateBreakdown() {
+            if (!isBreakdownOpen) return;
+            
+            const filtered = getFilteredPayments();
+            const container = document.getElementById('breakdownContent');
+            
+            if (filtered.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 20px; color: #999;">No hay datos para mostrar</div>';
+                return;
+            }
+            
+            const breakdown = {};
+            
+            filtered.forEach(payment => {
+                const key = payment[currentBreakdownTab];
+                if (!breakdown[key]) {
+                    breakdown[key] = {
+                        total: 0,
+                        count: 0
+                    };
+                }
+                breakdown[key].total += parseFloat(payment.amount);
+                breakdown[key].count += 1;
+            });
+            
+            const sortedItems = Object.entries(breakdown).sort((a, b) => b[1].total - a[1].total);
+            
+            const labels = {
+                'beneficiary': 'Beneficiario',
+                'category': 'Categoría',
+                'concept': 'Concepto',
+                'method': 'Método de Pago'
+            };
+            
+            container.innerHTML = sortedItems.map(([name, data]) => `
+                <div class="breakdown-item">
+                    <div class="breakdown-name">${name}</div>
+                    <div class="breakdown-stats">
+                        <div class="breakdown-amount">${formatCurrency(data.total)}</div>
+                        <div class="breakdown-count">${data.count} pago${data.count > 1 ? 's' : ''}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
 
         function initSwipeGestures() {
             // Only enable swipe on mobile devices
