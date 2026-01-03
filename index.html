@@ -83,7 +83,7 @@
         }
         .summary-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 8px;
             margin-top: 8px;
         }
@@ -557,14 +557,14 @@
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                 <h1 style="margin: 0;">💰 Pagos de Construcción</h1>
                 <div style="display: flex; gap: 8px;">
-                    <button onclick="exportToExcel()" class="print-button" style="padding: 8px; background: transparent; color: #10793F; border: none; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Exportar a CSV">
-                        💾
+                    <button onclick="exportToExcel()" class="print-button" style="padding: 8px; background: transparent; color: #10793F; border: none; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Exportar a Excel">
+                        ⬇️
                     </button>
                     <button onclick="printPayments()" class="print-button" style="padding: 8px; background: transparent; color: #2196F3; border: none; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Imprimir lista de pagos">
                         🖨️
                     </button>
                     <button onclick="showPrintOptions()" class="print-button" style="padding: 8px; background: transparent; color: #4CAF50; border: none; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Opciones de impresión">
-                        📊
+                        ⚙️
                     </button>
                 </div>
             </div>
@@ -593,18 +593,22 @@
                 </button>
             </div>
 
-            <div class="total-box">
-                <div style="display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap;">
-                    <div style="text-align: center;">
-                        <div class="total-label" id="periodLabel">Total Pagado - Todo</div>
-                        <div class="total-amount" id="totalAmount">$0.00</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div class="total-label">Pagos</div>
-                        <div class="total-amount" id="paymentCount">0</div>
-                    </div>
-                </div>
-            </div>
+            <div class="total-box" style="display:flex; gap:12px; align-items:center;">
+    
+    <!-- Total Pagado -->
+    <div style="flex:2; text-align:left;">
+        <div class="total-label" id="periodLabel">Total Pagado - Todo</div>
+        <div class="total-amount" id="totalAmount">$0.00</div>
+    </div>
+
+    <!-- Pagos -->
+    <div style="flex:1; text-align:center; background: rgba(255,255,255,0.2); border-radius:8px; padding:8px;">
+        <div class="label" style="font-size:12px; opacity:0.9;">Pagos</div>
+        <div class="value" id="paymentCount" style="font-size:20px; font-weight:bold;">0</div>
+    </div>
+
+</div>
+
         </div>
 
         <div class="form-card">
@@ -789,11 +793,20 @@
         let isBreakdownOpen = false;
 
         function formatCurrency(amount) {
-            return '  + parseFloat(amount).toLocaleString('en-US', {
+            return '$' + parseFloat(amount).toLocaleString('en-US', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             });
         }
+
+        function csvSafe(value) {
+    if (value === null || value === undefined) return '';
+    const str = String(value);
+    if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+        return `"${str.replace(/"/g, '""')}"`;
+    }
+    return str;
+}
 
         function formatDate(dateStr) {
             const date = new Date(dateStr + 'T00:00:00');
@@ -843,6 +856,7 @@
             const filtered = getFilteredPayments();
             const total = filtered.reduce((sum, p) => sum + parseFloat(p.amount), 0);
             const count = filtered.length;
+            const average = count > 0 ? total / count : 0;
 
             const labels = {
                 'all': 'Todo',
@@ -954,8 +968,10 @@
                 return;
             }
             
-            let csv = '\uFEFF';
+            // Create CSV content
+            let csv = '\uFEFF'; // UTF-8 BOM for proper Excel encoding
             
+            // Add summary header
             const labels = {
                 'all': 'Todo',
                 'week': 'Esta Semana',
@@ -966,27 +982,30 @@
             const total = filtered.reduce((sum, p) => sum + parseFloat(p.amount), 0);
             
             csv += `Pagos de Construcción - ${labels[currentPeriod]}\n`;
-            csv += `"Total Pagado: ${formatCurrency(total)}"\n`;
-            csv += `Cantidad de Pagos:,${filtered.length}\n`;
+            csv += `Total Pagado,${csvSafe(formatCurrency(total))}\n`;
+            csv += `Cantidad de Pagos,${csvSafe(filtered.length)}\n`;
             csv += `Fecha de Exportación:,${new Date().toLocaleDateString('es-ES')}\n\n`;
             
+            // Add headers
             csv += 'Fecha,Beneficiario,Concepto,Cantidad,Unidad,Categoría,Área/Lugar,Monto,Método de Pago\n';
             
+            // Add data rows
             filtered.forEach(payment => {
                 const row = [
-                    payment.date,
-                    `"${payment.beneficiary}"`,
-                    `"${payment.concept}"`,
-                    payment.quantity || '',
-                    payment.unit || '',
-                    `"${payment.category}"`,
-                    `"${payment.location}"`,
-                    payment.amount,
-                    `"${payment.method}"`
-                ];
+    csvSafe(payment.date),
+    csvSafe(payment.beneficiary),
+    csvSafe(payment.concept),
+    csvSafe(payment.quantity),
+    csvSafe(payment.unit),
+    csvSafe(payment.category),
+    csvSafe(payment.location),
+    csvSafe(payment.amount),
+    csvSafe(payment.method)
+];
                 csv += row.join(',') + '\n';
             });
             
+            // Create and download file
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
@@ -1011,12 +1030,14 @@
 
         window.printPayments = function() {
             closePrintModal();
+            // Hide breakdown panel for regular payment list print
             const breakdownPanel = document.getElementById('breakdownPanel');
             const wasOpen = breakdownPanel.style.display !== 'none';
             breakdownPanel.style.display = 'none';
             
             window.print();
             
+            // Restore breakdown panel state
             if (wasOpen) {
                 breakdownPanel.style.display = 'block';
             }
@@ -1025,12 +1046,14 @@
         window.printBreakdown = function(breakdownType) {
             closePrintModal();
             
+            // Open breakdown panel and set the correct tab
             currentBreakdownTab = breakdownType;
             isBreakdownOpen = true;
             
             const panel = document.getElementById('breakdownPanel');
             panel.style.display = 'block';
             
+            // Update the active tab visually
             document.querySelectorAll('.breakdown-tab').forEach(btn => btn.classList.remove('active'));
             const tabLabels = {
                 'beneficiary': 'Por Beneficiario',
@@ -1045,13 +1068,17 @@
                 }
             });
             
+            // Update breakdown content
             updateBreakdown();
             
+            // Hide payment list temporarily
             const paymentsList = document.getElementById('paymentsList');
             paymentsList.style.display = 'none';
             
+            // Print
             setTimeout(() => {
                 window.print();
+                // Restore payment list
                 paymentsList.style.display = 'block';
             }, 100);
         }
@@ -1292,6 +1319,7 @@
         document.getElementById('paymentForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
+            // Find the visible submit button (either add or update)
             const submitBtn = editingId ? 
                 document.querySelector('#updateButtons button[type="submit"]') : 
                 document.getElementById('addButton');
