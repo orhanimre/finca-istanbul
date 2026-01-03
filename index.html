@@ -465,7 +465,12 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>💰 Pagos de Construcción</h1>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h1 style="margin: 0;">💰 Pagos de Construcción</h1>
+                <button onclick="printPayments()" class="print-button" style="padding: 8px 16px; background: #2196F3; color: white; border: none; border-radius: 8px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(33, 150, 243, 0.3);">
+                    🖨️
+                </button>
+            </div>
             
             <div class="summary-tabs">
                 <button class="tab-btn active" onclick="changeSummaryPeriod('all')">Todo</button>
