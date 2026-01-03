@@ -209,7 +209,6 @@
             padding-bottom: 20px;
         }
         
-        /* Swipeable Card Styles for Mobile */
         .payment-card-wrapper {
             position: relative;
             margin-bottom: 10px;
@@ -261,7 +260,6 @@
             transition: transform 0.3s ease;
         }
         
-        /* Mobile: Enable swipe */
         @media (max-width: 767px) {
             .payment-card {
                 touch-action: pan-y;
@@ -274,7 +272,6 @@
             }
         }
         
-        /* Desktop: Show buttons, disable swipe */
         @media (min-width: 768px) {
             .swipe-actions {
                 display: none;
@@ -478,7 +475,26 @@
                 </div>
                 <div class="form-group">
                     <label>Concepto</label>
-                    <input type="text" id="concept" placeholder="ej., Trabajo de cimentación" required>
+                    <input type="text" id="concept" placeholder="ej., Cemento gris" required>
+                </div>
+                <div class="form-group">
+                    <label>Cantidad y Unidad (opcional)</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <input type="number" id="quantity" placeholder="0" step="0.01" min="0">
+                        <select id="unit">
+                            <option value="">Sin unidad</option>
+                            <option>kg</option>
+                            <option>lt</option>
+                            <option>m</option>
+                            <option>m²</option>
+                            <option>m³</option>
+                            <option>unidades</option>
+                            <option>bolsas</option>
+                            <option>cajas</option>
+                            <option>días</option>
+                            <option>horas</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Categoría</label>
@@ -676,7 +692,6 @@
                 document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
                 event.target.classList.add('active');
                 
-                // Set default dates (last 30 days)
                 const today = new Date();
                 const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
                 
@@ -783,13 +798,6 @@
             
             const sortedItems = Object.entries(breakdown).sort((a, b) => b[1].total - a[1].total);
             
-            const labels = {
-                'beneficiary': 'Beneficiario',
-                'category': 'Categoría',
-                'concept': 'Concepto',
-                'method': 'Método de Pago'
-            };
-            
             container.innerHTML = sortedItems.map(([name, data]) => `
                 <div class="breakdown-item">
                     <div class="breakdown-name">${name}</div>
@@ -802,7 +810,6 @@
         }
 
         function initSwipeGestures() {
-            // Only enable swipe on mobile devices
             if (window.innerWidth >= 768) return;
             
             const cards = document.querySelectorAll('.payment-card');
@@ -890,6 +897,12 @@
                             <span class="label">Concepto:</span>
                             <span class="value">${payment.concept}</span>
                         </div>
+                        ${payment.quantity ? `
+                        <div class="payment-detail">
+                            <span class="label">Cantidad:</span>
+                            <span class="value">${payment.quantity} ${payment.unit || ''}</span>
+                        </div>
+                        ` : ''}
                         <div class="payment-detail">
                             <span class="label">Categoría:</span>
                             <span class="value">${payment.category}</span>
@@ -941,6 +954,8 @@
             document.getElementById('date').value = payment.date;
             document.getElementById('beneficiary').value = payment.beneficiary;
             document.getElementById('concept').value = payment.concept;
+            document.getElementById('quantity').value = payment.quantity || '';
+            document.getElementById('unit').value = payment.unit || '';
             document.getElementById('category').value = payment.category;
             document.getElementById('amount').value = payment.amount;
             document.getElementById('method').value = payment.method;
@@ -972,6 +987,8 @@
                 date: document.getElementById('date').value,
                 beneficiary: document.getElementById('beneficiary').value,
                 concept: document.getElementById('concept').value,
+                quantity: document.getElementById('quantity').value || null,
+                unit: document.getElementById('unit').value || null,
                 category: document.getElementById('category').value,
                 amount: document.getElementById('amount').value,
                 method: document.getElementById('method').value
