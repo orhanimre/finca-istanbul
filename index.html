@@ -42,6 +42,7 @@
             gap: 6px;
             margin-bottom: 10px;
             overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
         .tab-btn {
             padding: 6px 12px;
@@ -51,6 +52,7 @@
             font-size: 12px;
             cursor: pointer;
             white-space: nowrap;
+            flex-shrink: 0;
         }
         .tab-btn.active {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -124,6 +126,17 @@
             border-radius: 8px;
             font-size: 15px;
             transition: border 0.3s;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        .form-group input[type="date"] {
+            padding: 10px;
+            background: white;
+            color: #333;
+        }
+        .form-group input[type="date"]::-webkit-calendar-picker-indicator {
+            cursor: pointer;
+            padding: 5px;
         }
         .form-group input:focus,
         .form-group select:focus {
@@ -198,17 +211,17 @@
         }
         .payment-number {
             position: absolute;
-            top: 8px;
-            right: 12px;
+            top: 12px;
+            left: 12px;
             background: #667eea;
             color: white;
-            width: 26px;
-            height: 26px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: bold;
         }
         .payment-header {
@@ -218,7 +231,7 @@
             margin-bottom: 10px;
             padding-bottom: 8px;
             border-bottom: 2px solid #f0f0f0;
-            padding-right: 35px;
+            padding-left: 40px;
         }
         .payment-beneficiary {
             font-size: 14px;
@@ -244,26 +257,34 @@
             font-weight: 500;
         }
         .action-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6px;
-            margin-top: 10px;
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
         }
-        .edit-btn, .delete-btn {
-            padding: 8px;
+        .action-icon-btn {
+            padding: 8px 12px;
             border: none;
             border-radius: 6px;
-            font-size: 12px;
+            font-size: 11px;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: transparent;
+            color: #666;
+            transition: all 0.2s;
         }
-        .edit-btn {
-            background: #2196F3;
-            color: white;
+        .action-icon-btn:hover {
+            background: #f5f5f5;
         }
-        .delete-btn {
-            background: #ff4444;
-            color: white;
+        .action-icon-btn.edit {
+            color: #2196F3;
+        }
+        .action-icon-btn.delete {
+            color: #ff4444;
         }
         .empty-state {
             text-align: center;
@@ -404,7 +425,7 @@
         }
 
         function formatDate(dateStr) {
-            const date = new Date(dateStr);
+            const date = new Date(dateStr + 'T00:00:00');
             return date.toLocaleDateString('es-ES', { 
                 month: 'short', 
                 day: 'numeric', 
@@ -418,7 +439,7 @@
             if (currentPeriod === 'all') return payments;
             
             return payments.filter(p => {
-                const pDate = new Date(p.date);
+                const pDate = new Date(p.date + 'T00:00:00');
                 
                 if (currentPeriod === 'week') {
                     const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -530,8 +551,8 @@
                         <span class="value">${payment.method}</span>
                     </div>
                     <div class="action-buttons">
-                        <button class="edit-btn" onclick="editPayment('${payment.id}')">Editar</button>
-                        <button class="delete-btn" onclick="deletePayment('${payment.id}')">Eliminar</button>
+                        <button class="action-icon-btn edit" onclick="editPayment('${payment.id}')">✏️ Editar</button>
+                        <button class="action-icon-btn delete" onclick="deletePayment('${payment.id}')">🗑️ Eliminar</button>
                     </div>
                 </div>
             `).join('');
