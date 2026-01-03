@@ -20,42 +20,38 @@
             -webkit-overflow-scrolling: touch;
         }
         
-        /* Login Screen Styles */
-        .login-container {
+        /* Auth Styles */
+        .auth-container {
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
             padding: 20px;
         }
-        
-        .login-card {
+        .auth-card {
             background: white;
             padding: 40px;
             border-radius: 16px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
             text-align: center;
             max-width: 400px;
             width: 100%;
         }
-        
-        .login-title {
-            font-size: 28px;
+        .auth-card h1 {
             color: #333;
             margin-bottom: 10px;
+            font-size: 28px;
         }
-        
-        .login-subtitle {
-            font-size: 14px;
+        .auth-card p {
             color: #666;
             margin-bottom: 30px;
+            font-size: 16px;
         }
-        
-        .login-btn {
+        .google-btn {
             width: 100%;
-            padding: 14px;
+            padding: 14px 20px;
             background: white;
-            border: 2px solid #e0e0e0;
+            border: 2px solid #ddd;
             border-radius: 8px;
             font-size: 16px;
             font-weight: 600;
@@ -66,58 +62,49 @@
             gap: 12px;
             transition: all 0.3s;
         }
-        
-        .login-btn:hover {
+        .google-btn:hover {
             border-color: #667eea;
             box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
         }
-        
         .google-icon {
             width: 24px;
             height: 24px;
         }
         
-        .app-container {
-            display: none;
+        /* User Info Bar */
+        .user-info-bar {
+            background: white;
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        
-        .app-container.active {
-            display: block;
-        }
-        
         .user-info {
-            background: rgba(255,255,255,0.2);
-            padding: 8px 12px;
-            border-radius: 8px;
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 10px;
         }
-        
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: 2px solid white;
-        }
-        
-        .user-name {
-            flex: 1;
-            font-size: 13px;
-            color: white;
+        .user-email {
+            font-size: 14px;
+            color: #333;
             font-weight: 500;
         }
-        
-        .logout-btn {
-            background: rgba(255,255,255,0.3);
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            color: white;
+        .user-role {
             font-size: 12px;
+            color: #666;
+        }
+        .signout-btn {
+            padding: 6px 12px;
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 500;
         }
         
         .container {
@@ -604,7 +591,7 @@
             #loadingIndicator,
             .summary-tabs, #customRangePanel,
             .breakdown-button-container,
-            .user-info {
+            .user-info-bar {
                 display: none !important;
             }
             .header {
@@ -654,34 +641,40 @@
     </style>
 </head>
 <body>
-    <!-- Login Screen -->
-    <div id="loginScreen" class="login-container">
-        <div class="login-card">
-            <div style="font-size: 48px; margin-bottom: 20px;">💰</div>
-            <h1 class="login-title">Pagos de Construcción</h1>
-            <p class="login-subtitle">Inicia sesión para gestionar tus pagos de construcción</p>
-            <button id="loginButton" class="login-btn">
-                <svg class="google-icon" viewBox="0 0 24 24">
-                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                </svg>
-                Continuar con Google
-            </button>
+    <!-- Auth Section -->
+    <div id="authSection" style="display: none;">
+        <div class="auth-container">
+            <div class="auth-card">
+                <h1>💰 Pagos de Construcción</h1>
+                <p>Inicia sesión con tu cuenta de Google para acceder</p>
+                <button onclick="signIn()" class="google-btn">
+                    <svg class="google-icon" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    Iniciar sesión con Google
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- Main App -->
-    <div id="appContainer" class="app-container">
+    <!-- Main Content -->
+    <div id="mainContent" style="display: none;">
         <div class="container">
-            <div class="header">
+            <!-- User Info Bar -->
+            <div class="user-info-bar">
                 <div class="user-info">
-                    <img id="userAvatar" class="user-avatar" src="" alt="">
-                    <span id="userName" class="user-name"></span>
-                    <button id="logoutButton" class="logout-btn">Salir</button>
+                    <div>
+                        <div class="user-email" id="userEmail"></div>
+                        <div class="user-role" id="userRole"></div>
+                    </div>
                 </div>
-                
+                <button onclick="signOutUser()" class="signout-btn">Cerrar sesión</button>
+            </div>
+
+            <div class="header">
                 <div style="margin-bottom: 10px;">
                     <div style="display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 6px;">
                         <button onclick="exportToExcel()" class="print-button"
@@ -689,22 +682,25 @@
                             title="Exportar a Excel">
                             ⬇️
                         </button>
+
                         <button onclick="printPayments()" class="print-button"
                             style="padding: 8px; background: transparent; color: #2196F3; border: none; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
                             title="Imprimir lista de pagos">
                             🖨️
                         </button>
+
                         <button onclick="showPrintOptions()" class="print-button"
                             style="padding: 8px; background: transparent; color: #4CAF50; border: none; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
                             title="Opciones de impresión">
                             ⚙️
                         </button>
                     </div>
+
                     <h1 style="margin: 0; font-size: 20px; line-height: 1.3;">
                         💰 Pagos de Construcción
                     </h1>
                 </div>
-                
+
                 <div class="summary-tabs">
                     <button class="tab-btn active" onclick="changeSummaryPeriod('all')">Todo</button>
                     <button class="tab-btn" onclick="changeSummaryPeriod('week')">Esta Semana</button>
@@ -734,6 +730,7 @@
                         <div class="total-label" id="periodLabel">Total Pagado - Todo</div>
                         <div class="total-amount" id="totalAmount">$0.00</div>
                     </div>
+
                     <div style="flex:1; text-align:center; background: rgba(255,255,255,0.2); border-radius:8px; padding:8px;">
                         <div class="label" style="font-size:12px; opacity:0.9;">Pagos</div>
                         <div class="value" id="paymentCount" style="font-size:20px; font-weight:bold;">0</div>
@@ -741,7 +738,7 @@
                 </div>
             </div>
 
-            <div class="form-card">
+            <div class="form-card" id="paymentFormCard">
                 <div class="form-title" id="formTitle">Agregar Nuevo Pago</div>
                 <form id="paymentForm">
                     <div class="form-group">
@@ -836,781 +833,757 @@
                     <select id="sortBy" onchange="sortPayments()">
                         <option value="date-desc">Fecha (Más reciente)</option>
                         <option value="date-asc">Fecha (Más antigua)</option>
-                        <option value="amount-desc">Monto (Mayor a menor)</option>
-                        <option value="amount-asc">Monto (Menor a mayor)</option>
-                        <option value="beneficiary">Beneficiario (A-Z)</option>
-                        <option value="category">Categoría</option>
-                    </select>
-                </div>
-            </div>
-
-            <div style="background: white; padding: 12px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" class="breakdown-button-container">
-                <button onclick="toggleBreakdown()" style="width: 100%; padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                    <span>📊</span>
-                    <span id="breakdownButtonText">Ver Desglose Detallado</span>
-                </button>
-            </div>
-
-            <div id="breakdownPanel" style="display: none; background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                <div style="display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto;">
-                    <button class="breakdown-tab active" onclick="changeBreakdownTab('beneficiary')">Por Beneficiario</button>
-                    <button class="breakdown-tab" onclick="changeBreakdownTab('category')">Por Categoría</button>
-                    <button class="breakdown-tab" onclick="changeBreakdownTab('location')">Por Área</button>
-                    <button class="breakdown-tab" onclick="changeBreakdownTab('concept')">Por Concepto</button>
-                    <button class="breakdown-tab" onclick="changeBreakdownTab('method')">Por Método</button>
-                </div>
-                <div id="breakdownContent"></div>
-            </div>
-
-            <div id="loadingIndicator" class="loading">Cargando pagos...</div>
-            <div class="payments-list" id="paymentsList"></div>
+<option value="amount-desc">Monto (Mayor a menor)</option>
+<option value="amount-asc">Monto (Menor a mayor)</option>
+<option value="beneficiary">Beneficiario (A-Z)</option>
+<option value="category">Categoría</option>
+</select>
+</div>
+</div>
+        <div style="background: white; padding: 12px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" class="breakdown-button-container">
+            <button onclick="toggleBreakdown()" style="width: 100%; padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <span>📊</span>
+                <span id="breakdownButtonText">Ver Desglose Detallado</span>
+            </button>
         </div>
-    </div>
 
-    <div class="print-modal" id="printModal">
-        <div class="print-modal-content">
-            <h3>¿Qué deseas imprimir?</h3>
-            <div class="print-option" onclick="printPayments()">
-                <span class="print-option-icon">📋</span>
-                <span class="print-option-text">Lista de Pagos</span>
+        <div id="breakdownPanel" style="display: none; background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            <div style="display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto;">
+                <button class="breakdown-tab active" onclick="changeBreakdownTab('beneficiary')">Por Beneficiario</button>
+                <button class="breakdown-tab" onclick="changeBreakdownTab('category')">Por Categoría</button>
+                <button class="breakdown-tab" onclick="changeBreakdownTab('location')">Por Área</button>
+                <button class="breakdown-tab" onclick="changeBreakdownTab('concept')">Por Concepto</button>
+                <button class="breakdown-tab" onclick="changeBreakdownTab('method')">Por Método</button>
             </div>
-            <div class="print-option" onclick="printBreakdown('beneficiary')">
-                <span class="print-option-icon">👤</span>
-                <span class="print-option-text">Desglose por Beneficiario</span>
-            </div>
-            <div class="print-option" onclick="printBreakdown('category')">
-                <span class="print-option-icon">📦</span>
-                <span class="print-option-text">Desglose por Categoría</span>
-            </div>
-            <div class="print-option" onclick="printBreakdown('location')">
-                <span class="print-option-icon">🏗️</span>
-                <span class="print-option-text">Desglose por Área</span>
-            </div>
-            <div class="print-option" onclick="printBreakdown('concept')">
-                <span class="print-option-icon">📝</span>
-                <span class="print-option-text">Desglose por Concepto</span>
-            </div>
-            <div class="print-option" onclick="printBreakdown('method')">
-                <span class="print-option-icon">💳</span>
-                <span class="print-option-text">Desglose por Método de Pago</span>
-            </div>
-            <button class="print-modal-close" onclick="closePrintModal()">Cancelar</button>
+            <div id="breakdownContent"></div>
         </div>
+
+        <div id="loadingIndicator" class="loading">Cargando pagos...</div>
+        <div class="payments-list" id="paymentsList"></div>
     </div>
+</div>
 
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-        import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+<div class="print-modal" id="printModal">
+    <div class="print-modal-content">
+        <h3>¿Qué deseas imprimir?</h3>
+        <div class="print-option" onclick="printPayments()">
+            <span class="print-option-icon">📋</span>
+            <span class="print-option-text">Lista de Pagos</span>
+        </div>
+        <div class="print-option" onclick="printBreakdown('beneficiary')">
+            <span class="print-option-icon">👤</span>
+            <span class="print-option-text">Desglose por Beneficiario</span>
+        </div>
+        <div class="print-option" onclick="printBreakdown('category')">
+            <span class="print-option-icon">📦</span>
+            <span class="print-option-text">Desglose por Categoría</span>
+        </div>
+        <div class="print-option" onclick="printBreakdown('location')">
+            <span class="print-option-icon">🏗️</span>
+            <span class="print-option-text">Desglose por Área</span>
+        </div>
+        <div class="print-option" onclick="printBreakdown('concept')">
+            <span class="print-option-icon">📝</span>
+            <span class="print-option-text">Desglose por Concepto</span>
+        </div>
+        <div class="print-option" onclick="printBreakdown('method')">
+            <span class="print-option-icon">💳</span>
+            <span class="print-option-text">Desglose por Método de Pago</span>
+        </div>
+        <button class="print-modal-close" onclick="closePrintModal()">Cancelar</button>
+    </div>
+</div>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyDocypAXYXHbqxRIrBv9VSXfeBCb29p83Y",
-            authDomain: "finca-istanbul.firebaseapp.com",
-            projectId: "finca-istanbul",
-            storageBucket: "finca-istanbul.firebasestorage.app",
-            messagingSenderId: "2342946040",
-            appId: "1:2342946040:web:6b63ce44b12279c091270d",
-            measurementId: "G-22VREQ36X8"
-        };
+<script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const provider = new GoogleAuthProvider();
+    const firebaseConfig = {
+        apiKey: "AIzaSyDocypAXYXHbqxRIrBv9VSXfeBCb29p83Y",
+        authDomain: "finca-istanbul.firebaseapp.com",
+        projectId: "finca-istanbul",
+        storageBucket: "finca-istanbul.firebasestorage.app",
+        messagingSenderId: "2342946040",
+        appId: "1:2342946040:web:6b63ce44b12279c091270d",
+        measurementId: "G-22VREQ36X8"
+    };
 
-        let payments = [];
-        let editingId = null;
-        let currentPeriod = 'all';
-        let customStartDate = null;
-        let customEndDate = null;
-        let currentBreakdownTab = 'beneficiary';
-        let isBreakdownOpen = false;
-        let currentUser = null;
-        let isAdmin = false;
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    let payments = [];
+    let editingId = null;
+    let currentPeriod = 'all';
+    let customStartDate = null;
+    let customEndDate = null;
+    let currentBreakdownTab = 'beneficiary';
+    let isBreakdownOpen = false;
+    let currentUser = null;
+    let isAdmin = false;
+
+    const ADMIN_EMAILS = [
+        'orhanimre@gmail.com',
+        'marizulynaranjo@gmail.com'
+    ];
+
+    // Auth state observer
+    onAuthStateChanged(auth, (user) => {
+        currentUser = user;
+        isAdmin = user && ADMIN_EMAILS.includes(user.email);
+        updateUIForAuth();
+        if (user) {
+            loadPayments();
+        }
+    });
+
+    function updateUIForAuth() {
+        const authSection = document.getElementById('authSection');
+        const mainContent = document.getElementById('mainContent');
+        const formCard = document.getElementById('paymentFormCard');
         
-        // Admin email addresses
-        const ADMIN_EMAILS = [
-            'orhanimre@gmail.com',
-            'marizulynaranjo@gmail.com'
-        ];
-
-        // Authentication handlers
-        document.getElementById('loginButton').addEventListener('click', async () => {
-            const btn = document.getElementById('loginButton');
-            const originalText = btn.innerHTML;
+        if (!currentUser) {
+            authSection.style.display = 'block';
+            mainContent.style.display = 'none';
+        } else {
+            authSection.style.display = 'none';
+            mainContent.style.display = 'block';
             
-            try {
-                btn.disabled = true;
-                btn.innerHTML = '<span>Iniciando sesión...</span>';
-                
-                await signInWithPopup(auth, provider);
-            } catch (error) {
-                console.error('Error during login:', error);
-                
-                let errorMessage = 'Error al iniciar sesión. ';
-                
-                if (error.code === 'auth/popup-blocked') {
-                    errorMessage += 'El navegador bloqueó la ventana emergente. Por favor, permite las ventanas emergentes para este sitio.';
-                } else if (error.code === 'auth/popup-closed-by-user') {
-                    errorMessage += 'Cerraste la ventana de inicio de sesión.';
-                } else if (error.code === 'auth/operation-not-allowed') {
-                    errorMessage += 'El inicio de sesión con Google no está habilitado. Contacta al administrador.';
-                } else if (error.code === 'auth/unauthorized-domain') {
-                    errorMessage += 'Este dominio no está autorizado. Contacta al administrador.';
-                } else {
-                    errorMessage += 'Por favor intenta de nuevo. Error: ' + error.code;
-                }
-                
-                alert(errorMessage);
-                btn.disabled = false;
-                btn.innerHTML = originalText;
+            // Show/hide form based on admin status
+            if (formCard) {
+                formCard.style.display = isAdmin ? 'block' : 'none';
             }
+            
+            // Update user info display
+            document.getElementById('userEmail').textContent = currentUser.email;
+            document.getElementById('userRole').textContent = isAdmin ? '(Administrador)' : '(Solo lectura)';
+        }
+    }
+
+    window.signIn = async function() {
+        try {
+            await signInWithPopup(auth, provider);
+        } catch (error) {
+            console.error('Error signing in:', error);
+            alert('Error al iniciar sesión. Por favor intenta de nuevo.');
+        }
+    }
+
+    window.signOutUser = async function() {
+        try {
+            await signOut(auth);
+        } catch (error) {
+            console.error('Error signing out:', error);
+            alert('Error al cerrar sesión.');
+        }
+    }
+
+    function formatCurrency(amount) {
+        return '$' + parseFloat(amount).toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
         });
+    }
 
-        document.getElementById('logoutButton').addEventListener('click', async () => {
-            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
-                try {
-                    await signOut(auth);
-                } catch (error) {
-                    console.error('Error during logout:', error);
-                    alert('Error al cerrar sesión.');
-                }
-            }
+    function csvSafe(value) {
+        if (value === null || value === undefined) return '';
+        const str = String(value);
+        if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+            return `"${str.replace(/"/g, '""')}"`;
+        }
+        return str;
+    }
+
+    function formatDate(dateStr) {
+        const date = new Date(dateStr + 'T00:00:00');
+        return date.toLocaleDateString('es-ES', { 
+            month: 'short', 
+            day: 'numeric', 
+            year: 'numeric' 
         });
+    }
 
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                currentUser = user;
-                isAdmin = ADMIN_EMAILS.includes(user.email);
-                
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('appContainer').classList.add('active');
-                document.getElementById('userName').textContent = user.displayName + (isAdmin ? ' (Admin)' : ' (Viewer)');
-                document.getElementById('userAvatar').src = user.photoURL;
-                
-                // Show/hide admin-only elements
-                updateUIBasedOnPermissions();
-                
-                loadPayments();
-            } else {
-                currentUser = null;
-                isAdmin = false;
-                document.getElementById('loginScreen').style.display = 'flex';
-                document.getElementById('appContainer').classList.remove('active');
-                payments = [];
-            }
-        });
-
-        function updateUIBasedOnPermissions() {
-            const formCard = document.querySelector('.form-card');
-            const exportButton = document.querySelector('[onclick="exportToExcel()"]');
-            
-            if (isAdmin) {
-                // Show form for admins
-                formCard.style.display = 'block';
-            } else {
-                // Hide form for read-only users
-                formCard.style.display = 'none';
-            }
-        }
-
-        function formatCurrency(amount) {
-            return ' + parseFloat(amount).toLocaleString('en-US', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-        }
-
-        function csvSafe(value) {
-            if (value === null || value === undefined) return '';
-            const str = String(value);
-            if (str.includes(',') || str.includes('"') || str.includes('\n')) {
-                return `"${str.replace(/"/g, '""')}"`;
-            }
-            return str;
-        }
-
-        function formatDate(dateStr) {
-            const date = new Date(dateStr + 'T00:00:00');
-            return date.toLocaleDateString('es-ES', { 
-                month: 'short', 
-                day: 'numeric', 
-                year: 'numeric' 
-            });
-        }
-
-        function getFilteredPayments() {
-            const now = new Date();
-            
-            if (currentPeriod === 'all') return payments;
-            
-            if (currentPeriod === 'custom' && customStartDate && customEndDate) {
-                return payments.filter(p => {
-                    const pDate = new Date(p.date + 'T00:00:00');
-                    const start = new Date(customStartDate + 'T00:00:00');
-                    const end = new Date(customEndDate + 'T23:59:59');
-                    return pDate >= start && pDate <= end;
-                });
-            }
-            
+    function getFilteredPayments() {
+        const now = new Date();
+        
+        if (currentPeriod === 'all') return payments;
+        
+        if (currentPeriod === 'custom' && customStartDate && customEndDate) {
             return payments.filter(p => {
                 const pDate = new Date(p.date + 'T00:00:00');
-                
-                if (currentPeriod === 'week') {
-                    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-                    return pDate >= weekAgo;
-                }
-                
-                if (currentPeriod === 'month') {
-                    return pDate.getMonth() === now.getMonth() && 
-                           pDate.getFullYear() === now.getFullYear();
-                }
-                
-                if (currentPeriod === 'year') {
-                    return pDate.getFullYear() === now.getFullYear();
-                }
-                
-                return true;
+                const start = new Date(customStartDate + 'T00:00:00');
+                const end = new Date(customEndDate + 'T23:59:59');
+                return pDate >= start && pDate <= end;
             });
         }
-
-        function updateSummary() {
-            const filtered = getFilteredPayments();
-            const total = filtered.reduce((sum, p) => sum + parseFloat(p.amount), 0);
-            const count = filtered.length;
-
-            const labels = {
-                'all': 'Todo',
-                'week': 'Esta Semana',
-                'month': 'Este Mes',
-                'year': 'Este Año',
-                'custom': 'Rango Personalizado'
-            };
-
-            document.getElementById('periodLabel').textContent = `Total Pagado - ${labels[currentPeriod]}`;
-            document.getElementById('totalAmount').textContent = formatCurrency(total);
-            document.getElementById('paymentCount').textContent = count;
+        
+        return payments.filter(p => {
+            const pDate = new Date(p.date + 'T00:00:00');
             
-            if (isBreakdownOpen) {
-                updateBreakdown();
+            if (currentPeriod === 'week') {
+                const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                return pDate >= weekAgo;
             }
-        }
+            
+            if (currentPeriod === 'month') {
+                return pDate.getMonth() === now.getMonth() && 
+                       pDate.getFullYear() === now.getFullYear();
+            }
+            
+            if (currentPeriod === 'year') {
+                return pDate.getFullYear() === now.getFullYear();
+            }
+            
+            return true;
+        });
+    }
 
-        window.changeSummaryPeriod = function(period) {
-            currentPeriod = period;
+    function updateSummary() {
+        const filtered = getFilteredPayments();
+        const total = filtered.reduce((sum, p) => sum + parseFloat(p.amount), 0);
+        const count = filtered.length;
+
+        const labels = {
+            'all': 'Todo',
+            'week': 'Esta Semana',
+            'month': 'Este Mes',
+            'year': 'Este Año',
+            'custom': 'Rango Personalizado'
+        };
+
+        document.getElementById('periodLabel').textContent = `Total Pagado - ${labels[currentPeriod]}`;
+        document.getElementById('totalAmount').textContent = formatCurrency(total);
+        document.getElementById('paymentCount').textContent = count;
+        
+        if (isBreakdownOpen) {
+            updateBreakdown();
+        }
+    }
+
+    window.changeSummaryPeriod = function(period) {
+        currentPeriod = period;
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        
+        if (period !== 'custom') {
+            document.getElementById('customRangePanel').style.display = 'none';
+        }
+        
+        updateSummary();
+    }
+    
+    window.toggleCustomRange = function() {
+        const panel = document.getElementById('customRangePanel');
+        const isVisible = panel.style.display !== 'none';
+        
+        if (isVisible) {
+            panel.style.display = 'none';
+            if (currentPeriod === 'custom') {
+                currentPeriod = 'all';
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelector('.tab-btn').classList.add('active');
+                updateSummary();
+            }
+        } else {
+            panel.style.display = 'block';
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
             
-            if (period !== 'custom') {
-                document.getElementById('customRangePanel').style.display = 'none';
-            }
+            const today = new Date();
+            const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
             
-            updateSummary();
+            document.getElementById('endDate').valueAsDate = today;
+            document.getElementById('startDate').valueAsDate = thirtyDaysAgo;
+        }
+    }
+    
+    window.applyCustomRange = function() {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        
+        if (!startDate || !endDate) {
+            alert('Por favor selecciona ambas fechas');
+            return;
         }
         
-        window.toggleCustomRange = function() {
-            const panel = document.getElementById('customRangePanel');
-            const isVisible = panel.style.display !== 'none';
-            
-            if (isVisible) {
-                panel.style.display = 'none';
-                if (currentPeriod === 'custom') {
-                    currentPeriod = 'all';
-                    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-                    document.querySelector('.tab-btn').classList.add('active');
-                    updateSummary();
-                }
-            } else {
-                panel.style.display = 'block';
-                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-                event.target.classList.add('active');
-                
-                const today = new Date();
-                const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
-                
-                document.getElementById('endDate').valueAsDate = today;
-                document.getElementById('startDate').valueAsDate = thirtyDaysAgo;
-            }
+        if (new Date(startDate) > new Date(endDate)) {
+            alert('La fecha de inicio debe ser anterior a la fecha final');
+            return;
         }
         
-        window.applyCustomRange = function() {
-            const startDate = document.getElementById('startDate').value;
-            const endDate = document.getElementById('endDate').value;
-            
-            if (!startDate || !endDate) {
-                alert('Por favor selecciona ambas fechas');
-                return;
+        customStartDate = startDate;
+        customEndDate = endDate;
+        currentPeriod = 'custom';
+        
+        updateSummary();
+    }
+
+    function sortPayments() {
+        const sortBy = document.getElementById('sortBy').value;
+        
+        payments.sort((a, b) => {
+            switch(sortBy) {
+                case 'date-desc':
+                    return new Date(b.date) - new Date(a.date);
+                case 'date-asc':
+                    return new Date(a.date) - new Date(b.date);
+                case 'amount-desc':
+                    return parseFloat(b.amount) - parseFloat(a.amount);
+                case 'amount-asc':
+                    return parseFloat(a.amount) - parseFloat(b.amount);
+                case 'beneficiary':
+                    return a.beneficiary.localeCompare(b.beneficiary);
+                case 'category':
+                    return a.category.localeCompare(b.category);
+                default:
+                    return 0;
             }
-            
-            if (new Date(startDate) > new Date(endDate)) {
-                alert('La fecha de inicio debe ser anterior a la fecha final');
-                return;
-            }
-            
-            customStartDate = startDate;
-            customEndDate = endDate;
-            currentPeriod = 'custom';
-            
-            updateSummary();
-        }
+        });
+        
+        renderPayments();
+    }
 
-        function sortPayments() {
-            const sortBy = document.getElementById('sortBy').value;
-            
-            payments.sort((a, b) => {
-                switch(sortBy) {
-                    case 'date-desc':
-                        return new Date(b.date) - new Date(a.date);
-                    case 'date-asc':
-                        return new Date(a.date) - new Date(b.date);
-                    case 'amount-desc':
-                        return parseFloat(b.amount) - parseFloat(a.amount);
-                    case 'amount-asc':
-                        return parseFloat(a.amount) - parseFloat(b.amount);
-                    case 'beneficiary':
-                        return a.beneficiary.localeCompare(b.beneficiary);
-                    case 'category':
-                        return a.category.localeCompare(b.category);
-                    default:
-                        return 0;
-                }
-            });
-            
-            renderPayments();
-        }
+    window.sortPayments = sortPayments;
 
-        window.sortPayments = sortPayments;
-
-        window.exportToExcel = function() {
-            const filtered = getFilteredPayments();
-            
-            if (filtered.length === 0) {
-                alert('No hay pagos para exportar');
-                return;
-            }
-            
-            let csv = '\uFEFF';
-            
-            const labels = {
-                'all': 'Todo',
-                'week': 'Esta Semana',
-                'month': 'Este Mes',
-                'year': 'Este Año',
-                'custom': 'Rango Personalizado'
-            };
-            const total = filtered.reduce((sum, p) => sum + parseFloat(p.amount), 0);
-            
-            csv += `Pagos de Construcción - ${labels[currentPeriod]}\n`;
-            csv += `Total Pagado,${csvSafe(formatCurrency(total))}\n`;
-            csv += `Cantidad de Pagos,${csvSafe(filtered.length)}\n`;
-            csv += `Fecha de Exportación:,${new Date().toLocaleDateString('es-ES')}\n\n`;
-            
-            csv += 'Fecha,Beneficiario,Concepto,Cantidad,Unidad,Categoría,Área/Lugar,Monto,Método de Pago\n';
-            
-            filtered.forEach(payment => {
-                const row = [
-                    csvSafe(payment.date),
-                    csvSafe(payment.beneficiary),
-                    csvSafe(payment.concept),
-                    csvSafe(payment.quantity),
-                    csvSafe(payment.unit),
-                    csvSafe(payment.category),
-                    csvSafe(payment.location),
-                    csvSafe(payment.amount),
-                    csvSafe(payment.method)
-                ];
-                csv += row.join(',') + '\n';
-            });
-            
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            
-            const fileName = `Pagos_Construccion_${labels[currentPeriod].replace(/ /g, '_')}_${new Date().toISOString().split('T')[0]}.csv`;
-            
-            link.setAttribute('href', url);
-            link.setAttribute('download', fileName);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        window.showPrintOptions = function() {
-            document.getElementById('printModal').classList.add('active');
+    window.exportToExcel = function() {
+        const filtered = getFilteredPayments();
+        
+        if (filtered.length === 0) {
+            alert('No hay pagos para exportar');
+            return;
         }
         
-        window.closePrintModal = function() {
-            document.getElementById('printModal').classList.remove('active');
-        }
+        let csv = '\uFEFF';
+        
+        const labels = {
+            'all': 'Todo',
+            'week': 'Esta Semana',
+            'month': 'Este Mes',
+            'year': 'Este Año',
+            'custom': 'Rango Personalizado'
+        };
+        const total = filtered.reduce((sum, p) => sum + parseFloat(p.amount), 0);
+        
+        csv += `Pagos de Construcción - ${labels[currentPeriod]}\n`;
+        csv += `Total Pagado,${csvSafe(formatCurrency(total))}\n`;
+        csv += `Cantidad de Pagos,${csvSafe(filtered.length)}\n`;
+        csv += `Fecha de Exportación:,${new Date().toLocaleDateString('es-ES')}\n\n`;
+        
+        csv += 'Fecha,Beneficiario,Concepto,Cantidad,Unidad,Categoría,Área/Lugar,Monto,Método de Pago\n';
+        
+        filtered.forEach(payment => {
+            const row = [
+                csvSafe(payment.date),
+                csvSafe(payment.beneficiary),
+                csvSafe(payment.concept),
+                csvSafe(payment.quantity),
+                csvSafe(payment.unit),
+                csvSafe(payment.category),
+                csvSafe(payment.location),
+                csvSafe(payment.amount),
+                csvSafe(payment.method)
+            ];
+            csv += row.join(',') + '\n';
+        });
+        
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        
+        const fileName = `Pagos_Construccion_${labels[currentPeriod].replace(/ /g, '_')}_${new Date().toISOString().split('T')[0]}.csv`;
+        
+        link.setAttribute('href', url);
+        link.setAttribute('download', fileName);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
 
-        window.printPayments = function() {
-            closePrintModal();
-            const breakdownPanel = document.getElementById('breakdownPanel');
-            const wasOpen = breakdownPanel.style.display !== 'none';
-            breakdownPanel.style.display = 'none';
-            
+    window.showPrintOptions = function() {
+        document.getElementById('printModal').classList.add('active');
+    }
+    
+    window.closePrintModal = function() {
+        document.getElementById('printModal').classList.remove('active');
+    }
+
+    window.printPayments = function() {
+        closePrintModal();
+        const breakdownPanel = document.getElementById('breakdownPanel');
+        const wasOpen = breakdownPanel.style.display !== 'none';
+        breakdownPanel.style.display = 'none';
+        
+        window.print();
+        
+        if (wasOpen) {
+            breakdownPanel.style.display = 'block';
+        }
+    }
+    
+    window.printBreakdown = function(breakdownType) {
+        closePrintModal();
+        
+        currentBreakdownTab = breakdownType;
+        isBreakdownOpen = true;
+        
+        const panel = document.getElementById('breakdownPanel');
+        panel.style.display = 'block';
+        
+        document.querySelectorAll('.breakdown-tab').forEach(btn => btn.classList.remove('active'));
+        const tabLabels = {
+            'beneficiary': 'Por Beneficiario',
+            'category': 'Por Categoría',
+            'location': 'Por Área',
+            'concept': 'Por Concepto',
+            'method': 'Por Método'
+        };
+        document.querySelectorAll('.breakdown-tab').forEach(btn => {
+            if (btn.textContent.includes(tabLabels[breakdownType].split(' ')[1])) {
+                btn.classList.add('active');
+            }
+        });
+        
+        updateBreakdown();
+        
+        const paymentsList = document.getElementById('paymentsList');
+        paymentsList.style.display = 'none';
+        
+        setTimeout(() => {
             window.print();
-            
-            if (wasOpen) {
-                breakdownPanel.style.display = 'block';
-            }
+            paymentsList.style.display = 'block';
+        }, 100);
+    }
+
+    window.toggleBreakdown = function() {
+        const panel = document.getElementById('breakdownPanel');
+        const button = document.getElementById('breakdownButtonText');
+        
+        isBreakdownOpen = !isBreakdownOpen;
+        
+        if (isBreakdownOpen) {
+            panel.style.display = 'block';
+            button.textContent = 'Ocultar Desglose';
+            updateBreakdown();
+        } else {
+            panel.style.display = 'none';
+            button.textContent = 'Ver Desglose Detallado';
+        }
+    }
+
+    window.changeBreakdownTab = function(tab) {
+        currentBreakdownTab = tab;
+        document.querySelectorAll('.breakdown-tab').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        updateBreakdown();
+    }
+
+    function updateBreakdown() {
+        if (!isBreakdownOpen) return;
+        
+        const filtered = getFilteredPayments();
+        const container = document.getElementById('breakdownContent');
+        
+        if (filtered.length === 0) {
+            container.innerHTML = '<div style="text-align: center; padding: 20px; color: #999;">No hay datos para mostrar</div>';
+            return;
         }
         
-        window.printBreakdown = function(breakdownType) {
-            closePrintModal();
-            
-            currentBreakdownTab = breakdownType;
-            isBreakdownOpen = true;
-            
-            const panel = document.getElementById('breakdownPanel');
-            panel.style.display = 'block';
-            
-            document.querySelectorAll('.breakdown-tab').forEach(btn => btn.classList.remove('active'));
-            const tabLabels = {
-                'beneficiary': 'Por Beneficiario',
-                'category': 'Por Categoría',
-                'location': 'Por Área',
-                'concept': 'Por Concepto',
-                'method': 'Por Método'
-            };
-            document.querySelectorAll('.breakdown-tab').forEach(btn => {
-                if (btn.textContent.includes(tabLabels[breakdownType].split(' ')[1])) {
-                    btn.classList.add('active');
+        const breakdown = {};
+        
+        filtered.forEach(payment => {
+            const key = payment[currentBreakdownTab] || 'Sin especificar';
+            if (!breakdown[key]) {
+                breakdown[key] = {
+                    total: 0,
+                    count: 0
+                };
+            }
+            breakdown[key].total += parseFloat(payment.amount);
+            breakdown[key].count += 1;
+        });
+        
+        const sortedItems = Object.entries(breakdown).sort((a, b) => b[1].total - a[1].total);
+        
+        container.innerHTML = sortedItems.map(([name, data]) => `
+            <div class="breakdown-item">
+                <div class="breakdown-name">${name}</div>
+                <div class="breakdown-stats">
+                    <div class="breakdown-amount">${formatCurrency(data.total)}</div>
+                    <div class="breakdown-count">${data.count} pago${data.count > 1 ? 's' : ''}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function initSwipeGestures() {
+        if (window.innerWidth >= 768 || !isAdmin) return;
+        
+        const cards = document.querySelectorAll('.payment-card');
+        
+        cards.forEach(card => {
+            let startX = 0;
+            let currentX = 0;
+            let isDragging = false;
+
+            card.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+                isDragging = true;
+                card.style.transition = 'none';
+            });
+
+            card.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                
+                currentX = e.touches[0].clientX;
+                const diff = startX - currentX;
+                
+                if (diff > 0 && diff < 160) {
+                    card.style.transform = `translateX(-${diff}px)`;
                 }
             });
-            
-            updateBreakdown();
-            
-            const paymentsList = document.getElementById('paymentsList');
-            paymentsList.style.display = 'none';
-            
-            setTimeout(() => {
-                window.print();
-                paymentsList.style.display = 'block';
-            }, 100);
-        }
 
-        window.toggleBreakdown = function() {
-            const panel = document.getElementById('breakdownPanel');
-            const button = document.getElementById('breakdownButtonText');
-            
-            isBreakdownOpen = !isBreakdownOpen;
-            
-            if (isBreakdownOpen) {
-                panel.style.display = 'block';
-                button.textContent = 'Ocultar Desglose';
-                updateBreakdown();
-            } else {
-                panel.style.display = 'none';
-                button.textContent = 'Ver Desglose Detallado';
-            }
-        }
-
-        window.changeBreakdownTab = function(tab) {
-            currentBreakdownTab = tab;
-            document.querySelectorAll('.breakdown-tab').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            updateBreakdown();
-        }
-
-        function updateBreakdown() {
-            if (!isBreakdownOpen) return;
-            
-            const filtered = getFilteredPayments();
-            const container = document.getElementById('breakdownContent');
-            
-            if (filtered.length === 0) {
-                container.innerHTML = '<div style="text-align: center; padding: 20px; color: #999;">No hay datos para mostrar</div>';
-                return;
-            }
-            
-            const breakdown = {};
-            
-            filtered.forEach(payment => {
-                const key = payment[currentBreakdownTab] || 'Sin especificar';
-                if (!breakdown[key]) {
-                    breakdown[key] = {
-                        total: 0,
-                        count: 0
-                    };
+            card.addEventListener('touchend', () => {
+                if (!isDragging) return;
+                isDragging = false;
+                
+                card.style.transition = 'transform 0.3s ease';
+                const diff = startX - currentX;
+                
+                if (diff > 80) {
+                    card.classList.add('swiped');
+                    card.style.transform = 'translateX(-160px)';
+                } else {
+                    card.classList.remove('swiped');
+                    card.style.transform = 'translateX(0)';
                 }
-                breakdown[key].total += parseFloat(payment.amount);
-                breakdown[key].count += 1;
             });
-            
-            const sortedItems = Object.entries(breakdown).sort((a, b) => b[1].total - a[1].total);
-            
-            container.innerHTML = sortedItems.map(([name, data]) => `
-                <div class="breakdown-item">
-                    <div class="breakdown-name">${name}</div>
-                    <div class="breakdown-stats">
-                        <div class="breakdown-amount">${formatCurrency(data.total)}</div>
-                        <div class="breakdown-count">${data.count} pago${data.count > 1 ? 's' : ''}</div>
+
+            card.addEventListener('click', (e) => {
+                if (card.classList.contains('swiped')) {
+                    e.preventDefault();
+                    card.classList.remove('swiped');
+                    card.style.transform = 'translateX(0)';
+                }
+            });
+        });
+    }
+
+    function renderPayments() {
+        const container = document.getElementById('paymentsList');
+        document.getElementById('loadingIndicator').style.display = 'none';
+        
+        if (payments.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">📋</div>
+                    <p>No hay pagos todavía. ${isAdmin ? '¡Agrega tu primer pago arriba!' : ''}</p>
+                </div>
+            `;
+            updateSummary();
+            return;
+        }
+
+        container.innerHTML = payments.map((payment, index) => `
+            <div class="payment-card-wrapper">
+                ${isAdmin ? `
+                <div class="swipe-actions">
+                    <div class="swipe-action edit" onclick="editPayment('${payment.id}')">
+                        ✏️<br>Editar
+                    </div>
+                    <div class="swipe-action delete" onclick="deletePayment('${payment.id}')">
+                        🗑️<br>Eliminar
                     </div>
                 </div>
-            `).join('');
-        }
-
-        function initSwipeGestures() {
-            if (window.innerWidth >= 768) return;
-            
-            const cards = document.querySelectorAll('.payment-card');
-            
-            cards.forEach(card => {
-                let startX = 0;
-                let currentX = 0;
-                let isDragging = false;
-
-                card.addEventListener('touchstart', (e) => {
-                    startX = e.touches[0].clientX;
-                    isDragging = true;
-                    card.style.transition = 'none';
-                });
-
-                card.addEventListener('touchmove', (e) => {
-                    if (!isDragging) return;
-                    
-                    currentX = e.touches[0].clientX;
-                    const diff = startX - currentX;
-                    
-                    if (diff > 0 && diff < 160) {
-                        card.style.transform = `translateX(-${diff}px)`;
-                    }
-                });
-
-                card.addEventListener('touchend', () => {
-                    if (!isDragging) return;
-                    isDragging = false;
-                    
-                    card.style.transition = 'transform 0.3s ease';
-                    const diff = startX - currentX;
-                    
-                    if (diff > 80) {
-                        card.classList.add('swiped');
-                        card.style.transform = 'translateX(-160px)';
-                    } else {
-                        card.classList.remove('swiped');
-                        card.style.transform = 'translateX(0)';
-                    }
-                });
-
-                card.addEventListener('click', (e) => {
-                    if (card.classList.contains('swiped')) {
-                        e.preventDefault();
-                        card.classList.remove('swiped');
-                        card.style.transform = 'translateX(0)';
-                    }
-                });
-            });
-        }
-
-        function renderPayments() {
-            const container = document.getElementById('paymentsList');
-            document.getElementById('loadingIndicator').style.display = 'none';
-            
-            if (payments.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📋</div>
-                        <p>No hay pagos todavía. ¡Agrega tu primer pago arriba!</p>
+                ` : ''}
+                <div class="payment-card">
+                    <div class="payment-number">${index + 1}</div>
+                    <div class="payment-header">
+                        <div class="payment-beneficiary">${payment.beneficiary}</div>
+                        <div class="payment-amount">${formatCurrency(payment.amount)}</div>
                     </div>
-                `;
-                updateSummary();
-                return;
-            }
-
-            container.innerHTML = payments.map((payment, index) => `
-                <div class="payment-card-wrapper">
-                    ${isAdmin ? `
-                    <div class="swipe-actions">
-                        <div class="swipe-action edit" onclick="editPayment('${payment.id}')">
-                            ✏️<br>Editar
-                        </div>
-                        <div class="swipe-action delete" onclick="deletePayment('${payment.id}')">
-                            🗑️<br>Eliminar
-                        </div>
+                    <div class="payment-detail">
+                        <span class="label">Concepto:</span>
+                        <span class="value">${payment.concept}</span>
+                    </div>
+                    ${payment.quantity ? `
+                    <div class="payment-detail">
+                        <span class="label">Cantidad:</span>
+                        <span class="value">${payment.quantity} ${payment.unit || ''}</span>
                     </div>
                     ` : ''}
-                    <div class="payment-card">
-                        <div class="payment-number">${index + 1}</div>
-                        <div class="payment-header">
-                            <div class="payment-beneficiary">${payment.beneficiary}</div>
-                            <div class="payment-amount">${formatCurrency(payment.amount)}</div>
-                        </div>
-                        <div class="payment-detail">
-                            <span class="label">Concepto:</span>
-                            <span class="value">${payment.concept}</span>
-                        </div>
-                        ${payment.quantity ? `
-                        <div class="payment-detail">
-                            <span class="label">Cantidad:</span>
-                            <span class="value">${payment.quantity} ${payment.unit || ''}</span>
-                        </div>
-                        ` : ''}
-                        <div class="payment-detail">
-                            <span class="label">Categoría:</span>
-                            <span class="value">${payment.category}</span>
-                        </div>
-                        <div class="payment-detail">
-                            <span class="label">Área/Lugar:</span>
-                            <span class="value">${payment.location}</span>
-                        </div>
-                        <div class="payment-detail">
-                            <span class="label">Fecha:</span>
-                            <span class="value">${formatDate(payment.date)}</span>
-                        </div>
-                        <div class="payment-detail">
-                            <span class="label">Método:</span>
-                            <span class="value">${payment.method}</span>
-                        </div>
-                        ${isAdmin ? `
-                        <div class="desktop-actions">
-                            <button class="desktop-action-btn edit" onclick="editPayment('${payment.id}')">
-                                ✏️ Editar
-                            </button>
-                            <button class="desktop-action-btn delete" onclick="deletePayment('${payment.id}')">
-                                🗑️ Eliminar
-                            </button>
-                        </div>
-                        ` : ''}
+                    <div class="payment-detail">
+                        <span class="label">Categoría:</span>
+                        <span class="value">${payment.category}</span>
                     </div>
+                    <div class="payment-detail">
+                        <span class="label">Área/Lugar:</span>
+                        <span class="value">${payment.location}</span>
+                    </div>
+                    <div class="payment-detail">
+                        <span class="label">Fecha:</span>
+                        <span class="value">${formatDate(payment.date)}</span>
+                    </div>
+                    <div class="payment-detail">
+                        <span class="label">Método:</span>
+                        <span class="value">${payment.method}</span>
+                    </div>
+                    ${isAdmin ? `
+                    <div class="desktop-actions">
+                        <button class="desktop-action-btn edit" onclick="editPayment('${payment.id}')">
+                            ✏️ Editar
+                        </button>
+                        <button class="desktop-action-btn delete" onclick="deletePayment('${payment.id}')">
+                            🗑️ Eliminar
+                        </button>
+                    </div>
+                    ` : ''}
                 </div>
-            `).join('');
+            </div>
+        `).join('');
 
-            updateSummary();
-            
+        updateSummary();
+        
+        if (isAdmin) {
             setTimeout(initSwipeGestures, 100);
         }
+    }
 
-        async function loadPayments() {
-            if (!currentUser) return;
-            
-            try {
-                const q = query(collection(db, 'payments'), orderBy('date', 'desc'));
-                const querySnapshot = await getDocs(q);
-                payments = [];
-                querySnapshot.forEach((doc) => {
-                    payments.push({ id: doc.id, ...doc.data() });
-                });
-                sortPayments();
-            } catch (error) {
-                console.error('Error loading payments:', error);
+    async function loadPayments() {
+        if (!currentUser) {
+            document.getElementById('loadingIndicator').textContent = 'Por favor inicia sesión para ver los pagos';
+            return;
+        }
+        
+        try {
+            const q = query(collection(db, 'payments'), orderBy('date', 'desc'));
+            const querySnapshot = await getDocs(q);
+            payments = [];
+            querySnapshot.forEach((doc) => {
+                payments.push({ id: doc.id, ...doc.data() });
+            });
+            sortPayments();
+        } catch (error) {
+            console.error('Error loading payments:', error);
+            if (error.code === 'permission-denied') {
+                document.getElementById('loadingIndicator').textContent = 'No tienes permiso para ver estos datos';
+            } else {
                 document.getElementById('loadingIndicator').textContent = 'Error al cargar pagos';
             }
         }
+    }
 
-        window.editPayment = function(id) {
-            if (!isAdmin) {
-                alert('No tienes permisos para editar pagos. Solo los administradores pueden hacer cambios.');
-                return;
-            }
-            
-            editingId = id;
-            const payment = payments.find(p => p.id === id);
-            
-            document.getElementById('date').value = payment.date;
-            document.getElementById('beneficiary').value = payment.beneficiary;
-            document.getElementById('concept').value = payment.concept;
-            document.getElementById('quantity').value = payment.quantity || '';
-            document.getElementById('unit').value = payment.unit || '';
-            document.getElementById('category').value = payment.category;
-            document.getElementById('location').value = payment.location;
-            document.getElementById('amount').value = payment.amount;
-            document.getElementById('method').value = payment.method;
-            
-            document.getElementById('formTitle').textContent = 'Editar Pago';
-            document.getElementById('addButton').style.display = 'none';
-            document.getElementById('updateButtons').style.display = 'block';
-            
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.editPayment = function(id) {
+        if (!isAdmin) {
+            alert('Solo los administradores pueden editar pagos');
+            return;
         }
+        
+        editingId = id;
+        const payment = payments.find(p => p.id === id);
+        
+        document.getElementById('date').value = payment.date;
+        document.getElementById('beneficiary').value = payment.beneficiary;
+        document.getElementById('concept').value = payment.concept;
+        document.getElementById('quantity').value = payment.quantity || '';
+        document.getElementById('unit').value = payment.unit || '';
+        document.getElementById('category').value = payment.category;
+        document.getElementById('location').value = payment.location;
+        document.getElementById('amount').value = payment.amount;
+        document.getElementById('method').value = payment.method;
+        
+        document.getElementById('formTitle').textContent = 'Editar Pago';
+        document.getElementById('addButton').style.display = 'none';
+        document.getElementById('updateButtons').style.display = 'block';
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-        window.cancelEdit = function() {
-            editingId = null;
-            document.getElementById('paymentForm').reset();
+    window.cancelEdit = function() {
+        editingId = null;
+        document.getElementById('paymentForm').reset();
+        if (isAdmin) {
             document.getElementById('date').valueAsDate = new Date();
-            document.getElementById('formTitle').textContent = 'Agregar Nuevo Pago';
-            document.getElementById('addButton').style.display = 'block';
-            document.getElementById('updateButtons').style.display = 'none';
         }
+        document.getElementById('formTitle').textContent = 'Agregar Nuevo Pago';
+        document.getElementById('addButton').style.display = 'block';
+        document.getElementById('updateButtons').style.display = 'none';
+    }
 
-        document.getElementById('paymentForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            if (!currentUser) {
-                alert('Debes iniciar sesión para realizar esta acción');
-                return;
+    document.getElementById('paymentForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        if (!isAdmin) {
+            alert('Solo los administradores pueden agregar o editar pagos');
+            return;
+        }
+        
+        const submitBtn = editingId ? 
+            document.querySelector('#updateButtons button[type="submit"]') : 
+            document.getElementById('addButton');
+        
+        const originalText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Guardando...';
+        
+        const paymentData = {
+            date: document.getElementById('date').value,
+            beneficiary: document.getElementById('beneficiary').value,
+            concept: document.getElementById('concept').value,
+            quantity: document.getElementById('quantity').value || null,
+            unit: document.getElementById('unit').value || null,
+            category: document.getElementById('category').value,
+            location: document.getElementById('location').value,
+            amount: document.getElementById('amount').value,
+            method: document.getElementById('method').value
+        };
+        
+        try {
+            if (editingId) {
+                await updateDoc(doc(db, 'payments', editingId), paymentData);
+                window.cancelEdit();
+            } else {
+                await addDoc(collection(db, 'payments'), paymentData);
+                this.reset();
+                document.getElementById('date').valueAsDate = new Date();
             }
             
-            if (!isAdmin) {
-                alert('No tienes permisos para agregar o editar pagos. Solo los administradores pueden hacer cambios.');
-                return;
-            }
-            
-            const submitBtn = editingId ? 
-                document.querySelector('#updateButtons button[type="submit"]') : 
-                document.getElementById('addButton');
-            
-            const originalText = submitBtn.textContent;
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Guardando...';
-            
-            const paymentData = {
-                date: document.getElementById('date').value,
-                beneficiary: document.getElementById('beneficiary').value,
-                concept: document.getElementById('concept').value,
-                quantity: document.getElementById('quantity').value || null,
-                unit: document.getElementById('unit').value || null,
-                category: document.getElementById('category').value,
-                location: document.getElementById('location').value,
-                amount: document.getElementById('amount').value,
-                method: document.getElementById('method').value
-            };
-            
-            try {
-                if (editingId) {
-                    await updateDoc(doc(db, 'payments', editingId), paymentData);
-                    window.cancelEdit();
-                } else {
-                    await addDoc(collection(db, 'payments'), paymentData);
-                    this.reset();
-                    document.getElementById('date').valueAsDate = new Date();
-                }
-                
-                await loadPayments();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } catch (error) {
-                console.error('Error saving payment:', error);
+            await loadPayments();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } catch (error) {
+            console.error('Error saving payment:', error);
+            if (error.code === 'permission-denied') {
+                alert('No tienes permiso para realizar esta acción.');
+            } else {
                 alert('Error al guardar el pago. Por favor intenta de nuevo.');
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalText;
             }
-        });
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        }
+    });
 
-        window.deletePayment = async function(id) {
-            if (!currentUser) {
-                alert('Debes iniciar sesión para realizar esta acción');
-                return;
-            }
-            
-            if (!isAdmin) {
-                alert('No tienes permisos para eliminar pagos. Solo los administradores pueden hacer cambios.');
-                return;
-            }
-            
-            if (confirm('¿Estás seguro de que quieres eliminar este pago?')) {
-                try {
-                    await deleteDoc(doc(db, 'payments', id));
-                    await loadPayments();
-                } catch (error) {
-                    console.error('Error deleting payment:', error);
+    window.deletePayment = async function(id) {
+        if (!isAdmin) {
+            alert('Solo los administradores pueden eliminar pagos');
+            return;
+        }
+        
+        if (confirm('¿Estás seguro de que quieres eliminar este pago?')) {
+            try {
+                await deleteDoc(doc(db, 'payments', id));
+                await loadPayments();
+            } catch (error) {
+                console.error('Error deleting payment:', error);
+                if (error.code === 'permission-denied') {
+                    alert('No tienes permiso para realizar esta acción.');
+                } else {
                     alert('Error al eliminar el pago. Por favor intenta de nuevo.');
                 }
             }
         }
-
-        document.getElementById('date').valueAsDate = new Date();
-    </script>
+    }
+</script>
 </body>
 </html>
