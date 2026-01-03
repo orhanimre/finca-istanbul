@@ -201,14 +201,64 @@
             margin-top: 10px;
             padding-bottom: 20px;
         }
+        
+        /* Swipeable Card Styles */
+        .payment-card-wrapper {
+            position: relative;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .swipe-actions {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            z-index: 1;
+        }
+        
+        .swipe-action {
+            width: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .swipe-action.edit {
+            background: #2196F3;
+        }
+        
+        .swipe-action.delete {
+            background: #ff4444;
+        }
+        
+        .swipe-action:active {
+            filter: brightness(0.9);
+        }
+        
         .payment-card {
             background: white;
             padding: 12px;
             border-radius: 10px;
-            margin-bottom: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             position: relative;
+            z-index: 2;
+            transform: translateX(0);
+            transition: transform 0.3s ease;
+            touch-action: pan-y;
         }
+        
+        .payment-card.swiped {
+            transform: translateX(-160px);
+        }
+        
         .payment-number {
             position: absolute;
             top: 12px;
@@ -256,36 +306,6 @@
             color: #333;
             font-weight: 500;
         }
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid #f0f0f0;
-        }
-        .action-icon-btn {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 6px;
-            font-size: 11px;
-            cursor: pointer;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            background: transparent;
-            color: #666;
-            transition: all 0.2s;
-        }
-        .action-icon-btn:hover {
-            background: #f5f5f5;
-        }
-        .action-icon-btn.edit {
-            color: #2196F3;
-        }
-        .action-icon-btn.delete {
-            color: #ff4444;
-        }
         .empty-state {
             text-align: center;
             padding: 40px 20px;
@@ -300,6 +320,13 @@
             padding: 20px;
             color: white;
             font-size: 16px;
+        }
+        .swipe-hint {
+            text-align: center;
+            color: rgba(255,255,255,0.7);
+            font-size: 12px;
+            margin-top: 10px;
+            padding: 8px;
         }
     </style>
 </head>
@@ -393,6 +420,7 @@
         </div>
 
         <div id="loadingIndicator" class="loading">Cargando pagos...</div>
+        <div class="swipe-hint" id="swipeHint">👈 Desliza a la izquierda para editar o eliminar</div>
         <div class="payments-list" id="paymentsList"></div>
     </div>
 
@@ -512,11 +540,64 @@
 
         window.sortPayments = sortPayments;
 
+        function initSwipeGestures() {
+            const cards = document.querySelectorAll('.payment-card');
+            
+            cards.forEach(card => {
+                let startX = 0;
+                let currentX = 0;
+                let isDragging = false;
+
+                card.addEventListener('touchstart', (e) => {
+                    startX = e.touches[0].clientX;
+                    isDragging = true;
+                    card.style.transition = 'none';
+                });
+
+                card.addEventListener('touchmove', (e) => {
+                    if (!isDragging) return;
+                    
+                    currentX = e.touches[0].clientX;
+                    const diff = startX - currentX;
+                    
+                    if (diff > 0 && diff < 160) {
+                        card.style.transform = `translateX(-${diff}px)`;
+                    }
+                });
+
+                card.addEventListener('touchend', () => {
+                    if (!isDragging) return;
+                    isDragging = false;
+                    
+                    card.style.transition = 'transform 0.3s ease';
+                    const diff = startX - currentX;
+                    
+                    if (diff > 80) {
+                        card.classList.add('swiped');
+                        card.style.transform = 'translateX(-160px)';
+                    } else {
+                        card.classList.remove('swiped');
+                        card.style.transform = 'translateX(0)';
+                    }
+                });
+
+                // Close swipe when tapping the card
+                card.addEventListener('click', (e) => {
+                    if (card.classList.contains('swiped')) {
+                        e.preventDefault();
+                        card.classList.remove('swiped');
+                        card.style.transform = 'translateX(0)';
+                    }
+                });
+            });
+        }
+
         function renderPayments() {
             const container = document.getElementById('paymentsList');
             document.getElementById('loadingIndicator').style.display = 'none';
             
             if (payments.length === 0) {
+                document.getElementById('swipeHint').style.display = 'none';
                 container.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-state-icon">📋</div>
@@ -527,37 +608,48 @@
                 return;
             }
 
+            document.getElementById('swipeHint').style.display = 'block';
+
             container.innerHTML = payments.map((payment, index) => `
-                <div class="payment-card">
-                    <div class="payment-number">${index + 1}</div>
-                    <div class="payment-header">
-                        <div class="payment-beneficiary">${payment.beneficiary}</div>
-                        <div class="payment-amount">${formatCurrency(payment.amount)}</div>
+                <div class="payment-card-wrapper">
+                    <div class="swipe-actions">
+                        <div class="swipe-action edit" onclick="editPayment('${payment.id}')">
+                            ✏️<br>Editar
+                        </div>
+                        <div class="swipe-action delete" onclick="deletePayment('${payment.id}')">
+                            🗑️<br>Eliminar
+                        </div>
                     </div>
-                    <div class="payment-detail">
-                        <span class="label">Concepto:</span>
-                        <span class="value">${payment.concept}</span>
-                    </div>
-                    <div class="payment-detail">
-                        <span class="label">Categoría:</span>
-                        <span class="value">${payment.category}</span>
-                    </div>
-                    <div class="payment-detail">
-                        <span class="label">Fecha:</span>
-                        <span class="value">${formatDate(payment.date)}</span>
-                    </div>
-                    <div class="payment-detail">
-                        <span class="label">Método:</span>
-                        <span class="value">${payment.method}</span>
-                    </div>
-                    <div class="action-buttons">
-                        <button class="action-icon-btn edit" onclick="editPayment('${payment.id}')">✏️ Editar</button>
-                        <button class="action-icon-btn delete" onclick="deletePayment('${payment.id}')">🗑️ Eliminar</button>
+                    <div class="payment-card">
+                        <div class="payment-number">${index + 1}</div>
+                        <div class="payment-header">
+                            <div class="payment-beneficiary">${payment.beneficiary}</div>
+                            <div class="payment-amount">${formatCurrency(payment.amount)}</div>
+                        </div>
+                        <div class="payment-detail">
+                            <span class="label">Concepto:</span>
+                            <span class="value">${payment.concept}</span>
+                        </div>
+                        <div class="payment-detail">
+                            <span class="label">Categoría:</span>
+                            <span class="value">${payment.category}</span>
+                        </div>
+                        <div class="payment-detail">
+                            <span class="label">Fecha:</span>
+                            <span class="value">${formatDate(payment.date)}</span>
+                        </div>
+                        <div class="payment-detail">
+                            <span class="label">Método:</span>
+                            <span class="value">${payment.method}</span>
+                        </div>
                     </div>
                 </div>
             `).join('');
 
             updateSummary();
+            
+            // Initialize swipe gestures after rendering
+            setTimeout(initSwipeGestures, 100);
         }
 
         async function loadPayments() {
