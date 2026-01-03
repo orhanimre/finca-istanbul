@@ -936,11 +936,34 @@
 
         // Authentication handlers
         document.getElementById('loginButton').addEventListener('click', async () => {
+            const btn = document.getElementById('loginButton');
+            const originalText = btn.innerHTML;
+            
             try {
+                btn.disabled = true;
+                btn.innerHTML = '<span>Iniciando sesión...</span>';
+                
                 await signInWithPopup(auth, provider);
             } catch (error) {
                 console.error('Error during login:', error);
-                alert('Error al iniciar sesión. Por favor intenta de nuevo.');
+                
+                let errorMessage = 'Error al iniciar sesión. ';
+                
+                if (error.code === 'auth/popup-blocked') {
+                    errorMessage += 'El navegador bloqueó la ventana emergente. Por favor, permite las ventanas emergentes para este sitio.';
+                } else if (error.code === 'auth/popup-closed-by-user') {
+                    errorMessage += 'Cerraste la ventana de inicio de sesión.';
+                } else if (error.code === 'auth/operation-not-allowed') {
+                    errorMessage += 'El inicio de sesión con Google no está habilitado. Contacta al administrador.';
+                } else if (error.code === 'auth/unauthorized-domain') {
+                    errorMessage += 'Este dominio no está autorizado. Contacta al administrador.';
+                } else {
+                    errorMessage += 'Por favor intenta de nuevo. Error: ' + error.code;
+                }
+                
+                alert(errorMessage);
+                btn.disabled = false;
+                btn.innerHTML = originalText;
             }
         });
 
