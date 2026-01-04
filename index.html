@@ -744,32 +744,24 @@
             <div class="form-card" id="paymentFormCard">
                 <div class="form-title" id="formTitle">Agregar Nuevo Pago</div>
                 <form id="paymentForm">
-                    <!-- Line 1: Date, Beneficiary, Concept -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px;">
-                        <div>
-                            <label style="display: block; font-size: 11px; color: #666; margin-bottom: 4px;">Fecha</label>
-                            <input type="date" id="date" required style="width: 100%; padding: 8px; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 13px;">
-                        </div>
-                        <div>
-                            <label style="display: block; font-size: 11px; color: #666; margin-bottom: 4px;">Beneficiario</label>
-                            <input type="text" id="beneficiary" placeholder="ej., Don Jaime" required style="width: 100%; padding: 8px; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 13px;">
-                        </div>
-                        <div>
-                            <label style="display: block; font-size: 11px; color: #666; margin-bottom: 4px;">Concepto</label>
-                            <input type="text" id="concept" placeholder="ej., Cemento" required style="width: 100%; padding: 8px; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 13px;">
-                        </div>
+                    <div class="form-group">
+                        <label>Fecha</label>
+                        <input type="date" id="date" required>
                     </div>
-                    
-                    <!-- Line 2: Quantity, Unit, Category, Location -->
-                    <div style="display: grid; grid-template-columns: 0.7fr 0.7fr 1.3fr 1.3fr; gap: 8px; margin-bottom: 10px;">
-                        <div>
-                            <label style="display: block; font-size: 11px; color: #666; margin-bottom: 4px;">Cant.</label>
-                            <input type="number" id="quantity" placeholder="5" step="0.01" min="0" style="width: 100%; padding: 8px; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 13px;">
-                        </div>
-                        <div>
-                            <label style="display: block; font-size: 11px; color: #666; margin-bottom: 4px;">Unidad</label>
-                            <select id="unit" style="width: 100%; padding: 8px; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 13px;">
-                                <option value="">-</option>
+                    <div class="form-group">
+                        <label>Beneficiario</label>
+                        <input type="text" id="beneficiary" placeholder="ej., Constructora ABC" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Concepto</label>
+                        <input type="text" id="concept" placeholder="ej., Cemento gris" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Cantidad y Unidad (opcional)</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                            <input type="number" id="quantity" placeholder="0" step="0.01" min="0">
+                            <select id="unit">
+                                <option value="">Seleccionar</option>
                                 <option>kg</option>
                                 <option>lt</option>
                                 <option>m</option>
@@ -782,63 +774,59 @@
                                 <option>horas</option>
                             </select>
                         </div>
-                        <div>
-                            <label style="display: block; font-size: 11px; color: #666; margin-bottom: 4px;">Categoría</label>
-                            <select id="category" required style="width: 100%; padding: 8px; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 13px;">
-                                <option value="">Seleccionar</option>
-                                <option>Mano de obra</option>
-                                <option>Materiales</option>
-                                <option>Instalaciones</option>
-                                <option>Transporte</option>
-                                <option>Acabados</option>
-                                <option>Equipos</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label style="display: block; font-size: 11px; color: #666; margin-bottom: 4px;">Área/Lugar</label>
-                            <select id="location" required style="width: 100%; padding: 8px; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 13px;">
-                                <option value="">Seleccionar</option>
-                                <option>Cimentación</option>
-                                <option>Estructura</option>
-                                <option>Paredes/Muros</option>
-                                <option>Techo</option>
-                                <option>Pisos</option>
-                                <option>Baños</option>
-                                <option>Cocina</option>
-                                <option>Habitaciones</option>
-                                <option>Sala/Comedor</option>
-                                <option>Fachada</option>
-                                <option>Instalación eléctrica</option>
-                                <option>Instalación sanitaria</option>
-                                <option>Ventanas/Puertas</option>
-                                <option>Pintura</option>
-                                <option>Jardinería</option>
-                                <option>General</option>
-                                <option>Otros</option>
-                            </select>
-                        </div>
                     </div>
-                    
-                    <!-- Line 3: Amount, Method, Submit Button -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; align-items: end;">
-                        <div>
-                            <label style="display: block; font-size: 11px; color: #666; margin-bottom: 4px;">Monto ($)</label>
-                            <input type="number" id="amount" placeholder="0" step="0.01" required style="width: 100%; padding: 8px; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 13px;">
-                        </div>
-                        <div>
-                            <label style="display: block; font-size: 11px; color: #666; margin-bottom: 4px;">Método</label>
-                            <select id="method" required style="width: 100%; padding: 8px; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 13px;">
-                                <option value="">Seleccionar</option>
-                                <option>Transferencia</option>
-                                <option>Efectivo</option>
-                            </select>
-                        </div>
-                        <div id="updateButtons" style="display: none; grid-column: span 2;">
-                            <button type="submit" class="btn update-btn" style="padding: 8px; margin-bottom: 6px;">Actualizar</button>
-                            <button type="button" class="btn cancel-btn" onclick="cancelEdit()" style="padding: 8px;">Cancelar</button>
-                        </div>
-                        <button type="submit" class="btn add-btn" id="addButton" style="padding: 8px;">+ Agregar</button>
+                    <div class="form-group">
+                        <label>Categoría</label>
+                        <select id="category" required>
+                            <option value="">Seleccionar categoría</option>
+                            <option>Mano de obra</option>
+                            <option>Materiales</option>
+                            <option>Instalaciones</option>
+                            <option>Transporte</option>
+                            <option>Acabados</option>
+                            <option>Equipos</option>
+                        </select>
                     </div>
+                    <div class="form-group">
+                        <label>Área/Lugar de la Construcción</label>
+                        <select id="location" required>
+                            <option value="">Seleccionar área</option>
+                            <option>Cimentación</option>
+                            <option>Estructura</option>
+                            <option>Paredes/Muros</option>
+                            <option>Techo</option>
+                            <option>Pisos</option>
+                            <option>Baños</option>
+                            <option>Cocina</option>
+                            <option>Habitaciones</option>
+                            <option>Sala/Comedor</option>
+                            <option>Fachada</option>
+                            <option>Instalación eléctrica</option>
+                            <option>Instalación sanitaria</option>
+                            <option>Ventanas/Puertas</option>
+                            <option>Pintura</option>
+                            <option>Jardinería</option>
+                            <option>General</option>
+                            <option>Otros</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Monto Pagado ($)</label>
+                        <input type="number" id="amount" placeholder="0" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Método de Pago</label>
+                        <select id="method" required>
+                            <option value="">Seleccionar método</option>
+                            <option>Transferencia</option>
+                            <option>Efectivo</option>
+                        </select>
+                    </div>
+                    <div id="updateButtons" style="display: none;">
+                        <button type="submit" class="btn update-btn">Actualizar Pago</button>
+                        <button type="button" class="btn cancel-btn" onclick="cancelEdit()">Cancelar</button>
+                    </div>
+                    <button type="submit" class="btn add-btn" id="addButton">+ Agregar Pago</button>
                 </form>
             </div>
 
@@ -1409,62 +1397,75 @@
         }
 
         container.innerHTML = payments.map((payment, index) => `
-            <div class="payment-card-wrapper">
-                ${isAdmin ? `
-                <div class="swipe-actions">
-                    <div class="swipe-action edit" onclick="editPayment('${payment.id}')">
-                        ✏️<br>Editar
-                    </div>
-                    <div class="swipe-action delete" onclick="deletePayment('${payment.id}')">
-                        🗑️<br>Eliminar
-                    </div>
+    <div class="payment-card-wrapper">
+        ${isAdmin ? `
+        <div class="swipe-actions">
+            <div class="swipe-action edit" onclick="editPayment('${payment.id}')">
+                ✏️<br>Editar
+            </div>
+            <div class="swipe-action delete" onclick="deletePayment('${payment.id}')">
+                🗑️<br>Eliminar
+            </div>
+        </div>
+        ` : ''}
+        <div class="payment-card">
+            <div class="payment-number">${index + 1}</div>
+            <div class="payment-header">
+                <div class="payment-beneficiary">${payment.beneficiary}</div>
+                <div class="payment-amount">${formatCurrency(payment.amount)}</div>
+            </div>
+            
+            <!-- Line 1: Concept and Quantity -->
+            <div style="display: grid; grid-template-columns: ${payment.quantity ? '1.5fr 1fr' : '1fr'}; gap: 8px; padding: 3px 0; font-size: 11px;">
+                <div>
+                    <span style="color: #666;">Concepto:</span>
+                    <span style="color: #333; font-weight: 500; margin-left: 4px;">${payment.concept}</span>
+                </div>
+                ${payment.quantity ? `
+                <div style="text-align: right;">
+                    <span style="color: #666;">Cant:</span>
+                    <span style="color: #333; font-weight: 500; margin-left: 4px;">${payment.quantity} ${payment.unit || ''}</span>
                 </div>
                 ` : ''}
-                <div class="payment-card">
-                    <div class="payment-number">${index + 1}</div>
-                    <div class="payment-header">
-                        <div class="payment-beneficiary">${payment.beneficiary}</div>
-                        <div class="payment-amount">${formatCurrency(payment.amount)}</div>
-                    </div>
-                    <div class="payment-detail">
-                        <span class="label">Concepto:</span>
-                        <span class="value">${payment.concept}</span>
-                    </div>
-                    ${payment.quantity ? `
-                    <div class="payment-detail">
-                        <span class="label">Cantidad:</span>
-                        <span class="value">${payment.quantity} ${payment.unit || ''}</span>
-                    </div>
-                    ` : ''}
-                    <div class="payment-detail">
-                        <span class="label">Categoría:</span>
-                        <span class="value">${payment.category}</span>
-                    </div>
-                    <div class="payment-detail">
-                        <span class="label">Área/Lugar:</span>
-                        <span class="value">${payment.location}</span>
-                    </div>
-                    <div class="payment-detail">
-                        <span class="label">Fecha:</span>
-                        <span class="value">${formatDate(payment.date)}</span>
-                    </div>
-                    <div class="payment-detail">
-                        <span class="label">Método:</span>
-                        <span class="value">${payment.method}</span>
-                    </div>
-                    ${isAdmin ? `
-                    <div class="desktop-actions">
-                        <button class="desktop-action-btn edit" onclick="editPayment('${payment.id}')">
-                            ✏️ Editar
-                        </button>
-                        <button class="desktop-action-btn delete" onclick="deletePayment('${payment.id}')">
-                            🗑️ Eliminar
-                        </button>
-                    </div>
-                    ` : ''}
+            </div>
+            
+            <!-- Line 2: Category and Location -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 3px 0; font-size: 11px;">
+                <div>
+                    <span style="color: #666;">Cat:</span>
+                    <span style="color: #333; font-weight: 500; margin-left: 4px;">${payment.category}</span>
+                </div>
+                <div style="text-align: right;">
+                    <span style="color: #666;">Área:</span>
+                    <span style="color: #333; font-weight: 500; margin-left: 4px;">${payment.location}</span>
                 </div>
             </div>
-        `).join('');
+            
+            <!-- Line 3: Date and Method -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 3px 0; font-size: 11px;">
+                <div>
+                    <span style="color: #666;">Fecha:</span>
+                    <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(payment.date)}</span>
+                </div>
+                <div style="text-align: right;">
+                    <span style="color: #666;">Método:</span>
+                    <span style="color: #333; font-weight: 500; margin-left: 4px;">${payment.method}</span>
+                </div>
+            </div>
+            
+            ${isAdmin ? `
+            <div class="desktop-actions">
+                <button class="desktop-action-btn edit" onclick="editPayment('${payment.id}')">
+                    ✏️ Editar
+                </button>
+                <button class="desktop-action-btn delete" onclick="deletePayment('${payment.id}')">
+                    🗑️ Eliminar
+                </button>
+            </div>
+            ` : ''}
+        </div>
+    </div>
+`).join('');
 
         updateSummary();
         
