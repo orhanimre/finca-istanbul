@@ -757,71 +757,76 @@
                         <input type="text" id="concept" placeholder="ej., Cemento gris" required>
                     </div>
                     <div class="form-group">
-                        <label>Cantidad y Unidad (opcional)</label>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                            <input type="number" id="quantity" placeholder="0" step="0.01" min="0">
-                            <select id="unit">
-                                <option value="">Seleccionar</option>
-                                <option>kg</option>
-                                <option>lt</option>
-                                <option>m</option>
-                                <option>m²</option>
-                                <option>m³</option>
-                                <option>unidades</option>
-                                <option>bolsas</option>
-                                <option>cajas</option>
-                                <option>días</option>
-                                <option>horas</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Categoría</label>
-                        <select id="category" required>
-                            <option value="">Seleccionar categoría</option>
-                            <option>Mano de obra</option>
-                            <option>Materiales</option>
-                            <option>Instalaciones</option>
-                            <option>Transporte</option>
-                            <option>Acabados</option>
-                            <option>Equipos</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Área/Lugar de la Construcción</label>
-                        <select id="location" required>
-                            <option value="">Seleccionar área</option>
-                            <option>Cimentación</option>
-                            <option>Estructura</option>
-                            <option>Paredes/Muros</option>
-                            <option>Techo</option>
-                            <option>Pisos</option>
-                            <option>Baños</option>
-                            <option>Cocina</option>
-                            <option>Habitaciones</option>
-                            <option>Sala/Comedor</option>
-                            <option>Fachada</option>
-                            <option>Instalación eléctrica</option>
-                            <option>Instalación sanitaria</option>
-                            <option>Ventanas/Puertas</option>
-                            <option>Pintura</option>
-                            <option>Jardinería</option>
-                            <option>General</option>
-                            <option>Otros</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Monto Pagado ($)</label>
-                        <input type="number" id="amount" placeholder="0" step="0.01" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Método de Pago</label>
-                        <select id="method" required>
-                            <option value="">Seleccionar método</option>
-                            <option>Transferencia</option>
-                            <option>Efectivo</option>
-                        </select>
-                    </div>
+                        <div class="form-group">
+    <label>Cantidad y Unidad (opcional)</label>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+        <input type="number" id="quantity" placeholder="0" step="0.01" min="0">
+        <select id="unit">
+            <option value="">Seleccionar</option>
+            <option>kg</option>
+            <option>lt</option>
+            <option>m</option>
+            <option>m²</option>
+            <option>m³</option>
+            <option>unidades</option>
+            <option>bolsas</option>
+            <option>cajas</option>
+            <option>días</option>
+            <option>horas</option>
+        </select>
+    </div>
+</div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+    <div class="form-group" style="margin-bottom: 0;">
+        <label>Categoría</label>
+        <select id="category" required>
+            <option value="">Seleccionar categoría</option>
+            <option>Mano de obra</option>
+            <option>Materiales</option>
+            <option>Instalaciones</option>
+            <option>Transporte</option>
+            <option>Acabados</option>
+            <option>Equipos</option>
+        </select>
+    </div>
+    <div class="form-group" style="margin-bottom: 0;">
+        <label>Área/Lugar de la Construcción</label>
+        <select id="location" required>
+            <option value="">Seleccionar área</option>
+            <option>Cimentación</option>
+            <option>Estructura</option>
+            <option>Paredes/Muros</option>
+            <option>Techo</option>
+            <option>Pisos</option>
+            <option>Baños</option>
+            <option>Cocina</option>
+            <option>Habitaciones</option>
+            <option>Sala/Comedor</option>
+            <option>Fachada</option>
+            <option>Instalación eléctrica</option>
+            <option>Instalación sanitaria</option>
+            <option>Ventanas/Puertas</option>
+            <option>Pintura</option>
+            <option>Jardinería</option>
+            <option>General</option>
+            <option>Otros</option>
+        </select>
+    </div>
+</div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+    <div class="form-group" style="margin-bottom: 0;">
+        <label>Monto Pagado ($)</label>
+        <input type="number" id="amount" placeholder="0" step="0.01" required>
+    </div>
+    <div class="form-group" style="margin-bottom: 0;">
+        <label>Método de Pago</label>
+        <select id="method" required>
+            <option value="">Seleccionar método</option>
+            <option>Transferencia</option>
+            <option>Efectivo</option>
+        </select>
+    </div>
+</div>
                     <div id="updateButtons" style="display: none;">
                         <button type="submit" class="btn update-btn">Actualizar Pago</button>
                         <button type="button" class="btn cancel-btn" onclick="cancelEdit()">Cancelar</button>
@@ -1416,42 +1421,45 @@
             </div>
             
             <!-- Line 1: Concept and Quantity -->
-            <div style="display: grid; grid-template-columns: ${payment.quantity ? '1.5fr 1fr' : '1fr'}; gap: 8px; padding: 3px 0; font-size: 11px;">
-                <div>
-                    <span style="color: #666;">Concepto:</span>
-                    <span style="color: #333; font-weight: 500; margin-left: 4px;">${payment.concept}</span>
-                </div>
-                ${payment.quantity ? `
-                <div style="text-align: right;">
-                    <span style="color: #666;">Cant:</span>
-                    <span style="color: #333; font-weight: 500; margin-left: 4px;">${payment.quantity} ${payment.unit || ''}</span>
-                </div>
-                ` : ''}
-            </div>
-            
-            <!-- Line 2: Category and Location -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 3px 0; font-size: 11px;">
-                <div>
-                    <span style="color: #666;">Cat:</span>
-                    <span style="color: #333; font-weight: 500; margin-left: 4px;">${payment.category}</span>
-                </div>
-                <div style="text-align: right;">
-                    <span style="color: #666;">Área:</span>
-                    <span style="color: #333; font-weight: 500; margin-left: 4px;">${payment.location}</span>
-                </div>
-            </div>
-            
-            <!-- Line 3: Date and Method -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 3px 0; font-size: 11px;">
-                <div>
-                    <span style="color: #666;">Fecha:</span>
-                    <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(payment.date)}</span>
-                </div>
-                <div style="text-align: right;">
-                    <span style="color: #666;">Método:</span>
-                    <span style="color: #333; font-weight: 500; margin-left: 4px;">${payment.method}</span>
-                </div>
-            </div>
+<div style="display: grid; grid-template-columns: ${payment.quantity ? '1.5fr 1px 1fr' : '1fr'}; gap: 8px; padding: 3px 0; font-size: 11px; align-items: center;">
+    <div>
+        <span style="color: #666;">Concepto:</span>
+        <span style="color: #333; font-weight: 500; margin-left: 4px;">${payment.concept}</span>
+    </div>
+    ${payment.quantity ? `
+    <div style="width: 1px; height: 100%; background: #e0e0e0;"></div>
+    <div style="padding-left: 8px;">
+        <span style="color: #666;">Cant:</span>
+        <span style="color: #333; font-weight: 500; margin-left: 4px;">${payment.quantity} ${payment.unit || ''}</span>
+    </div>
+    ` : ''}
+</div>
+
+<!-- Line 2: Category and Location -->
+<div style="display: grid; grid-template-columns: 1.5fr 1px 1fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: center;">
+    <div>
+        <span style="color: #666;">Cat:</span>
+        <span style="color: #333; font-weight: 500; margin-left: 4px;">${payment.category}</span>
+    </div>
+    <div style="width: 1px; height: 100%; background: #e0e0e0;"></div>
+    <div style="padding-left: 8px;">
+        <span style="color: #666;">Área:</span>
+        <span style="color: #333; font-weight: 500; margin-left: 4px;">${payment.location}</span>
+    </div>
+</div>
+
+<!-- Line 3: Date and Method -->
+<div style="display: grid; grid-template-columns: 1.5fr 1px 1fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: center;">
+    <div>
+        <span style="color: #666;">Fecha:</span>
+        <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(payment.date)}</span>
+    </div>
+    <div style="width: 1px; height: 100%; background: #e0e0e0;"></div>
+    <div style="padding-left: 8px;">
+        <span style="color: #666;">Método:</span>
+        <span style="color: #333; font-weight: 500; margin-left: 4px;">${payment.method}</span>
+    </div>
+</div>
             
             ${isAdmin ? `
             <div class="desktop-actions">
