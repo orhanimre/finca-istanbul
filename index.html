@@ -936,6 +936,13 @@
         updateUIForAuth();
         if (user) {
             loadPayments();
+            // Set today's date as default when user logs in
+            if (isAdmin) {
+                const dateInput = document.getElementById('date');
+                if (dateInput) {
+                    dateInput.valueAsDate = new Date();
+                }
+            }
         }
     });
 
