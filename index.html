@@ -751,11 +751,24 @@
                         </div>
                         <div class="form-group">
                             <label>Remitente</label>
-                            <input type="text" id="beneficiaryIncome" placeholder="ej., Cliente ABC" required>
+                            <select id="beneficiaryIncome" required>
+                                <option value="">Seleccionar remitente</option>
+                                <option>Marizuly Naranjo Parra</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Receptor</label>
+                            <select id="receiverIncome" required>
+                                <option value="">Seleccionar receptor</option>
+                                <option>Orhan IMRE</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label>Concepto</label>
-                            <input type="text" id="conceptIncome" placeholder="ej., Pago de obra" required>
+                            <select id="conceptIncome" required>
+                                <option value="">Seleccionar concepto</option>
+                                <option>Transferencia para pagos de construcción</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label>Notas (Opcional)</label>
@@ -772,7 +785,6 @@
                                     <option value="">Seleccionar</option>
                                     <option>Transferencia</option>
                                     <option>Efectivo</option>
-                                    <option>Cheque</option>
                                 </select>
                             </div>
                         </div>
@@ -1042,9 +1054,9 @@
                     csv += `${item.date},${item.beneficiary},${item.concept},${item.quantity||''},${item.unit||''},${item.category},${item.location},${item.amount},${item.method}\n`;
                 });
             } else {
-                csv += 'Fecha,Remitente,Concepto,Notas,Monto,Método\n';
+                csv += 'Fecha,Remitente,Receptor,Concepto,Notas,Monto,Método\n';
                 filtered.forEach(item => {
-                    csv += `${item.date},${item.beneficiary},${item.concept},${item.notes||''},${item.amount},${item.method}\n`;
+                    csv += `${item.date},${item.beneficiary},${item.receiver},${item.concept},${item.notes||''},${item.amount},${item.method}\n`;
                 });
             }
             
@@ -1293,6 +1305,7 @@
                 document.getElementById('categoryPayments').value = item.category;
                 document.getElementById('locationPayments').value = item.location;
             } else {
+                document.getElementById('receiverIncome').value = item.receiver;
                 document.getElementById('notesIncome').value = item.notes || '';
             }
             
@@ -1379,6 +1392,7 @@
             const incomeData = {
                 date: document.getElementById('dateIncome').value,
                 beneficiary: document.getElementById('beneficiaryIncome').value,
+                receiver: document.getElementById('receiverIncome').value,
                 concept: document.getElementById('conceptIncome').value,
                 notes: document.getElementById('notesIncome').value || null,
                 amount: document.getElementById('amountIncome').value,
