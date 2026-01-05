@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pagos de Construcción</title>
+    <title>Pagos e Ingresos de Construcción</title>
     <style>
         * {
             margin: 0;
@@ -20,7 +20,6 @@
             -webkit-overflow-scrolling: touch;
         }
         
-        /* Auth Styles */
         .auth-container {
             display: flex;
             align-items: center;
@@ -71,7 +70,6 @@
             height: 24px;
         }
         
-        /* User Info Bar */
         .user-info-bar {
             background: white;
             padding: 12px 15px;
@@ -105,6 +103,28 @@
             font-size: 13px;
             cursor: pointer;
             font-weight: 500;
+        }
+        
+        .main-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .main-tab {
+            flex: 1;
+            padding: 12px;
+            background: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        .main-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
         }
         
         .container {
@@ -153,12 +173,18 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
+        .tab-btn.active.income-tab {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
         .total-box {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 15px;
             border-radius: 10px;
             text-align: center;
+        }
+        .total-box.income {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
         }
         .total-label {
             font-size: 12px;
@@ -168,27 +194,6 @@
         .total-amount {
             font-size: 28px;
             font-weight: bold;
-        }
-        .summary-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 8px;
-            margin-top: 8px;
-        }
-        .summary-item {
-            background: rgba(255,255,255,0.2);
-            padding: 8px;
-            border-radius: 8px;
-            text-align: center;
-        }
-        .summary-item .label {
-            font-size: 11px;
-            opacity: 0.9;
-        }
-        .summary-item .value {
-            font-size: 16px;
-            font-weight: bold;
-            margin-top: 3px;
         }
         .form-card {
             background: white;
@@ -214,7 +219,8 @@
             font-weight: 500;
         }
         .form-group input,
-        .form-group select {
+        .form-group select,
+        .form-group textarea {
             width: 100%;
             padding: 10px;
             border: 2px solid #e0e0e0;
@@ -223,25 +229,22 @@
             transition: border 0.3s;
             -webkit-appearance: none;
             appearance: none;
+            font-family: inherit;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
         }
         .form-group select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 12px;
-    padding-right: 35px;
-}
-        .form-group input[type="date"] {
-            padding: 10px;
-            background: white;
-            color: #333;
-        }
-        .form-group input[type="date"]::-webkit-calendar-picker-indicator {
-            cursor: pointer;
-            padding: 5px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 12px;
+            padding-right: 35px;
         }
         .form-group input:focus,
-        .form-group select:focus {
+        .form-group select:focus,
+        .form-group textarea:focus {
             outline: none;
             border-color: #667eea;
         }
@@ -258,6 +261,9 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+        }
+        .add-btn.income {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
         }
         .update-btn {
             background: #4CAF50;
@@ -345,15 +351,15 @@
         }
         
         .payment-card {
-    background: white;
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    position: relative;
-    z-index: 2;
-    transform: translateX(0);
-    transition: transform 0.3s ease;
-}
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 2;
+            transform: translateX(0);
+            transition: transform 0.3s ease;
+        }
         
         @media (max-width: 767px) {
             .payment-card {
@@ -372,24 +378,24 @@
                 display: none;
             }
             .desktop-actions {
-    display: flex;
-    gap: 6px;
-    margin-top: 8px;
-    padding-top: 8px;
-    border-top: 1px solid #f0f0f0;
-}
+                display: flex;
+                gap: 6px;
+                margin-top: 8px;
+                padding-top: 8px;
+                border-top: 1px solid #f0f0f0;
+            }
             .desktop-action-btn {
-    padding: 6px 12px;
-    border: none;
-    border-radius: 6px;
-    font-size: 12px;
-    cursor: pointer;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    transition: all 0.2s;
-}
+                padding: 6px 12px;
+                border: none;
+                border-radius: 6px;
+                font-size: 12px;
+                cursor: pointer;
+                font-weight: 500;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                transition: all 0.2s;
+            }
             .desktop-action-btn.edit {
                 background: #2196F3;
                 color: white;
@@ -405,48 +411,54 @@
         }
         
         .payment-number {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    background: #667eea;
-    color: white;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    font-weight: bold;
-}
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: #667eea;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .payment-number.income {
+            background: #10b981;
+        }
 
-.payment-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 6px;
-    padding-bottom: 6px;
-    border-bottom: 2px solid #f0f0f0;
-    padding-left: 32px;
-}
+        .payment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-left: 32px;
+        }
         .payment-beneficiary {
-    font-size: 13px;
-    font-weight: 600;
-    color: #333;
-}
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+        }
 
-.payment-amount {
-    font-size: 15px;
-    font-weight: bold;
-    color: #667eea;
-}
+        .payment-amount {
+            font-size: 15px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .payment-amount.income {
+            color: #10b981;
+        }
 
-.payment-detail {
-    display: flex;
-    justify-content: space-between;
-    padding: 3px 0;
-    font-size: 12px;
-}
+        .payment-detail {
+            display: flex;
+            justify-content: space-between;
+            padding: 3px 0;
+            font-size: 12px;
+        }
         .payment-detail .label {
             color: #666;
         }
@@ -469,123 +481,6 @@
             color: white;
             font-size: 16px;
         }
-        .breakdown-tab {
-            padding: 8px 14px;
-            border: none;
-            background: #f0f0f0;
-            border-radius: 16px;
-            font-size: 12px;
-            cursor: pointer;
-            white-space: nowrap;
-            flex-shrink: 0;
-            font-weight: 500;
-        }
-        .breakdown-tab.active {
-            background: #667eea;
-            color: white;
-        }
-        .breakdown-item {
-            padding: 12px;
-            border-bottom: 1px solid #f0f0f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .breakdown-item:last-child {
-            border-bottom: none;
-        }
-        .breakdown-name {
-            font-size: 14px;
-            color: #333;
-            font-weight: 500;
-            flex: 1;
-        }
-        .breakdown-stats {
-            text-align: right;
-        }
-        .breakdown-amount {
-            font-size: 16px;
-            font-weight: bold;
-            color: #667eea;
-        }
-        .breakdown-count {
-            font-size: 11px;
-            color: #666;
-            margin-top: 2px;
-        }
-        
-        .print-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .print-modal.active {
-            display: flex;
-        }
-        
-        .print-modal-content {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            max-width: 400px;
-            width: 90%;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
-        
-        .print-modal h3 {
-            margin: 0 0 15px 0;
-            color: #333;
-            font-size: 18px;
-        }
-        
-        .print-option {
-            padding: 12px;
-            margin: 8px 0;
-            background: #f5f5f5;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.2s;
-        }
-        
-        .print-option:hover {
-            background: #e0e0e0;
-            transform: translateX(5px);
-        }
-        
-        .print-option-icon {
-            font-size: 20px;
-        }
-        
-        .print-option-text {
-            flex: 1;
-            font-size: 14px;
-            font-weight: 500;
-            color: #333;
-        }
-        
-        .print-modal-close {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-            background: #f0f0f0;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            color: #333;
-        }
         
         @media print {
             body {
@@ -598,10 +493,11 @@
             }
             .form-card, .controls, 
             .swipe-actions, .desktop-actions,
-            #loadingIndicator,
-            .summary-tabs, #customRangePanel,
-            .breakdown-button-container,
-            .user-info-bar {
+            .loading,
+            .summary-tabs,
+            .user-info-bar,
+            .main-tabs,
+            .print-button {
                 display: none !important;
             }
             .header {
@@ -622,40 +518,17 @@
                 color: black !important;
                 border: 2px solid #667eea;
             }
-            .summary-item {
-                background: #f5f5f5 !important;
-                color: black !important;
-            }
             .payment-amount {
                 color: black !important;
-            }
-            .print-button {
-                display: none !important;
-            }
-            .breakdown-amount {
-                color: black !important;
-            }
-            #breakdownPanel {
-                display: block !important;
-                box-shadow: none;
-                border: 1px solid #ddd;
-                page-break-inside: avoid;
-            }
-            .breakdown-tab {
-                display: none !important;
-            }
-            .breakdown-item {
-                page-break-inside: avoid;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Auth Section -->
     <div id="authSection" style="display: none;">
         <div class="auth-container">
             <div class="auth-card">
-                <h1>💰 Pagos de Construcción</h1>
+                <h1>💰 Pagos e Ingresos</h1>
                 <p>Inicia sesión con tu cuenta de Google para acceder</p>
                 <button onclick="signIn()" class="google-btn">
                     <svg class="google-icon" viewBox="0 0 24 24">
@@ -670,10 +543,8 @@
         </div>
     </div>
 
-    <!-- Main Content -->
     <div id="mainContent" style="display: none;">
         <div class="container">
-            <!-- User Info Bar -->
             <div class="user-info-bar">
                 <div class="user-info">
                     <div>
@@ -684,959 +555,878 @@
                 <button onclick="signOutUser()" class="signout-btn">Cerrar sesión</button>
             </div>
 
-            <div class="header">
-                <div style="margin-bottom: 10px;">
-                    <div style="display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 6px;">
-                        <button onclick="exportToExcel()" class="print-button"
-                            style="padding: 8px; background: transparent; color: #10793F; border: none; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
-                            title="Exportar a Excel">
-                            ⬇️
-                        </button>
-
-                        <button onclick="printPayments()" class="print-button"
-                            style="padding: 8px; background: transparent; color: #2196F3; border: none; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
-                            title="Imprimir lista de pagos">
-                            🖨️
-                        </button>
-
-                        <button onclick="showPrintOptions()" class="print-button"
-                            style="padding: 8px; background: transparent; color: #4CAF50; border: none; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
-                            title="Opciones de impresión">
-                            ⚙️
-                        </button>
-                    </div>
-
-                    <h1 style="margin: 0; font-size: 20px; line-height: 1.3;">
-                        💰 Pagos de Construcción
-                    </h1>
-                </div>
-
-                <div class="summary-tabs">
-                    <button class="tab-btn active" onclick="changeSummaryPeriod('all')">Todo</button>
-                    <button class="tab-btn" onclick="changeSummaryPeriod('week')">Esta Semana</button>
-                    <button class="tab-btn" onclick="changeSummaryPeriod('month')">Este Mes</button>
-                    <button class="tab-btn" onclick="changeSummaryPeriod('year')">Este Año</button>
-                    <button class="tab-btn" onclick="toggleCustomRange()">📅 Personalizado</button>
-                </div>
-                
-                <div id="customRangePanel" style="display: none; margin-top: 10px; padding: 12px; background: #f5f5f5; border-radius: 8px;">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
-                        <div>
-                            <label style="font-size: 11px; color: #666; display: block; margin-bottom: 4px;">Desde</label>
-                            <input type="date" id="startDate" style="width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px;">
-                        </div>
-                        <div>
-                            <label style="font-size: 11px; color: #666; display: block; margin-bottom: 4px;">Hasta</label>
-                            <input type="date" id="endDate" style="width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px;">
-                        </div>
-                    </div>
-                    <button onclick="applyCustomRange()" style="width: 100%; padding: 8px; background: #667eea; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;">
-                        Aplicar Rango
-                    </button>
-                </div>
-
-                <div class="total-box" style="display:flex; gap:12px; align-items:center;">
-                    <div style="flex:2; text-align:left;">
-                        <div class="total-label" id="periodLabel">Total Pagado - Todo</div>
-                        <div class="total-amount" id="totalAmount">$0.00</div>
-                    </div>
-
-                    <div style="flex:1; text-align:center; background: rgba(255,255,255,0.2); border-radius:8px; padding:8px;">
-                        <div class="label" style="font-size:12px; opacity:0.9;">Pagos</div>
-                        <div class="value" id="paymentCount" style="font-size:20px; font-weight:bold;">0</div>
-                    </div>
-                </div>
+            <div class="main-tabs">
+                <button class="main-tab active" onclick="switchMainTab('payments')">💰 Pagos</button>
+                <button class="main-tab" onclick="switchMainTab('income')">💵 Ingresos</button>
             </div>
 
-            <div class="form-card" id="paymentFormCard">
-                <div class="form-title" id="formTitle">Agregar Nuevo Pago</div>
-                <form id="paymentForm">
-                    <div class="form-group">
-                        <label>Fecha</label>
-                        <input type="date" id="date" required>
+            <!-- PAYMENTS SECTION -->
+            <div id="paymentsSection">
+                <div class="header">
+                    <div style="margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 6px;">
+                            <button onclick="exportToExcel('payments')" class="print-button"
+                                style="padding: 8px; background: transparent; color: #10793F; border: none; font-size: 24px; cursor: pointer;"
+                                title="Exportar a Excel">⬇️</button>
+                            <button onclick="printList('payments')" class="print-button"
+                                style="padding: 8px; background: transparent; color: #2196F3; border: none; font-size: 24px; cursor: pointer;"
+                                title="Imprimir lista">🖨️</button>
+                        </div>
+                        <h1 style="margin: 0;">💰 Pagos de Construcción</h1>
                     </div>
-                    <div class="form-group">
-                        <label>Beneficiario</label>
-                        <input type="text" id="beneficiary" placeholder="ej., Constructora ABC" required>
+
+                    <div class="summary-tabs">
+                        <button class="tab-btn active" onclick="changeSummaryPeriod('all', 'payments')">Todo</button>
+                        <button class="tab-btn" onclick="changeSummaryPeriod('week', 'payments')">Esta Semana</button>
+                        <button class="tab-btn" onclick="changeSummaryPeriod('month', 'payments')">Este Mes</button>
+                        <button class="tab-btn" onclick="changeSummaryPeriod('year', 'payments')">Este Año</button>
                     </div>
-                    <div class="form-group">
-                        <label>Concepto</label>
-                        <input type="text" id="concept" placeholder="ej., Cemento gris" required>
+
+                    <div class="total-box" style="display:flex; gap:12px; align-items:center;">
+                        <div style="flex:2; text-align:left;">
+                            <div class="total-label" id="periodLabelPayments">Total Pagado - Todo</div>
+                            <div class="total-amount" id="totalAmountPayments">$0.00</div>
+                        </div>
+                        <div style="flex:1; text-align:center; background: rgba(255,255,255,0.2); border-radius:8px; padding:8px;">
+                            <div class="label" style="font-size:12px; opacity:0.9;">Pagos</div>
+                            <div class="value" id="paymentCountPayments" style="font-size:20px; font-weight:bold;">0</div>
+                        </div>
                     </div>
-                    <div class="form-group">
+                </div>
+
+                <div class="form-card" id="paymentFormCard">
+                    <div class="form-title" id="formTitlePayments">Agregar Nuevo Pago</div>
+                    <form id="paymentForm">
                         <div class="form-group">
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
-    <div class="form-group" style="margin-bottom: 0;">
-        <label>Cantidad</label>
-        <input type="number" id="quantity" placeholder="0" step="0.01" min="0">
-    </div>
-    <div class="form-group" style="margin-bottom: 0;">
-        <label>Unidad</label>
-        <select id="unit">
-            <option value="">Seleccionar unidad</option>
-            <option>kg</option>
-            <option>lt</option>
-            <option>m</option>
-            <option>m²</option>
-            <option>m³</option>
-            <option>unidades</option>
-            <option>bolsas</option>
-            <option>cajas</option>
-            <option>días</option>
-            <option>horas</option>
-        </select>
-    </div>
-</div>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
-    <div class="form-group" style="margin-bottom: 0;">
-        <label>Categoría</label>
-        <select id="category" required>
-            <option value="">Seleccionar categoría</option>
-            <option>Mano de obra</option>
-            <option>Materiales</option>
-            <option>Instalaciones</option>
-            <option>Transporte</option>
-            <option>Acabados</option>
-            <option>Equipos</option>
-        </select>
-    </div>
-    <div class="form-group" style="margin-bottom: 0;">
-        <label>Área/Lugar de la Construcción</label>
-        <select id="location" required>
-            <option value="">Seleccionar área</option>
-            <option>Cimentación</option>
-            <option>Estructura</option>
-            <option>Paredes/Muros</option>
-            <option>Techo</option>
-            <option>Pisos</option>
-            <option>Baños</option>
-            <option>Cocina</option>
-            <option>Habitaciones</option>
-            <option>Sala/Comedor</option>
-            <option>Fachada</option>
-            <option>Instalación eléctrica</option>
-            <option>Instalación sanitaria</option>
-            <option>Ventanas/Puertas</option>
-            <option>Pintura</option>
-            <option>Jardinería</option>
-            <option>General</option>
-            <option>Otros</option>
-        </select>
-    </div>
-</div>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
-    <div class="form-group" style="margin-bottom: 0;">
-        <label>Monto Pagado ($)</label>
-        <input type="number" id="amount" placeholder="0" step="0.01" required>
-    </div>
-    <div class="form-group" style="margin-bottom: 0;">
-        <label>Método de Pago</label>
-        <select id="method" required>
-            <option value="">Seleccionar método</option>
-            <option>Transferencia</option>
-            <option>Efectivo</option>
-        </select>
-    </div>
-</div>
-                    <div id="updateButtons" style="display: none;">
-                        <button type="submit" class="btn update-btn">Actualizar Pago</button>
-                        <button type="button" class="btn cancel-btn" onclick="cancelEdit()">Cancelar</button>
+                            <label>Fecha</label>
+                            <input type="date" id="datePayments" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Beneficiario</label>
+                            <input type="text" id="beneficiaryPayments" placeholder="ej., Constructora ABC" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Concepto</label>
+                            <input type="text" id="conceptPayments" placeholder="ej., Cemento gris" required>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label>Cantidad</label>
+                                <input type="number" id="quantityPayments" placeholder="0" step="0.01" min="0">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label>Unidad</label>
+                                <select id="unitPayments">
+                                    <option value="">Seleccionar</option>
+                                    <option>kg</option>
+                                    <option>lt</option>
+                                    <option>m</option>
+                                    <option>m²</option>
+                                    <option>m³</option>
+                                    <option>unidades</option>
+                                    <option>bolsas</option>
+                                    <option>cajas</option>
+                                    <option>días</option>
+                                    <option>horas</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label>Categoría</label>
+                                <select id="categoryPayments" required>
+                                    <option value="">Seleccionar</option>
+                                    <option>Mano de obra</option>
+                                    <option>Materiales</option>
+                                    <option>Instalaciones</option>
+                                    <option>Transporte</option>
+                                    <option>Acabados</option>
+                                    <option>Equipos</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label>Área/Lugar</label>
+                                <select id="locationPayments" required>
+                                    <option value="">Seleccionar</option>
+                                    <option>Cimentación</option>
+                                    <option>Estructura</option>
+                                    <option>Paredes/Muros</option>
+                                    <option>Techo</option>
+                                    <option>Pisos</option>
+                                    <option>Baños</option>
+                                    <option>Cocina</option>
+                                    <option>Habitaciones</option>
+                                    <option>Sala/Comedor</option>
+                                    <option>Fachada</option>
+                                    <option>Instalación eléctrica</option>
+                                    <option>Instalación sanitaria</option>
+                                    <option>Ventanas/Puertas</option>
+                                    <option>Pintura</option>
+                                    <option>Jardinería</option>
+                                    <option>General</option>
+                                    <option>Otros</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label>Monto ($)</label>
+                                <input type="number" id="amountPayments" placeholder="0" step="0.01" required>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label>Método de Pago</label>
+                                <select id="methodPayments" required>
+                                    <option value="">Seleccionar</option>
+                                    <option>Transferencia</option>
+                                    <option>Efectivo</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="updateButtonsPayments" style="display: none;">
+                            <button type="submit" class="btn update-btn">Actualizar Pago</button>
+                            <button type="button" class="btn cancel-btn" onclick="cancelEdit('payments')">Cancelar</button>
+                        </div>
+                        <button type="submit" class="btn add-btn" id="addButtonPayments">+ Agregar Pago</button>
+                    </form>
+                </div>
+
+                <div class="controls">
+                    <div class="sort-group">
+                        <label>Ordenar por:</label>
+                        <select id="sortByPayments" onchange="sortData('payments')">
+                            <option value="date-desc">Fecha (Más reciente)</option>
+                            <option value="date-asc">Fecha (Más antigua)</option>
+                            <option value="amount-desc">Monto (Mayor a menor)</option>
+                            <option value="amount-asc">Monto (Menor a mayor)</option>
+                            <option value="beneficiary">Beneficiario (A-Z)</option>
+                            <option value="category">Categoría</option>
+                        </select>
                     </div>
-                    <button type="submit" class="btn add-btn" id="addButton">+ Agregar Pago</button>
-                </form>
+                </div>
+
+                <div id="loadingIndicatorPayments" class="loading">Cargando pagos...</div>
+                <div class="payments-list" id="paymentsListPayments"></div>
             </div>
 
-            <div class="controls">
-                <div class="sort-group">
-                    <label>Ordenar por:</label>
-                    <select id="sortBy" onchange="sortPayments()">
-                        <option value="date-desc">Fecha (Más reciente)</option>
-                        <option value="date-asc">Fecha (Más antigua)</option>
-<option value="amount-desc">Monto (Mayor a menor)</option>
-<option value="amount-asc">Monto (Menor a mayor)</option>
-<option value="beneficiary">Beneficiario (A-Z)</option>
-<option value="category">Categoría</option>
-</select>
-</div>
-</div>
-        <div style="background: white; padding: 12px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" class="breakdown-button-container">
-            <button onclick="toggleBreakdown()" style="width: 100%; padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                <span>📊</span>
-                <span id="breakdownButtonText">Ver Desglose Detallado</span>
-            </button>
-        </div>
+            <!-- INCOME SECTION -->
+            <div id="incomeSection" style="display: none;">
+                <div class="header">
+                    <div style="margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 6px;">
+                            <button onclick="exportToExcel('income')" class="print-button"
+                                style="padding: 8px; background: transparent; color: #10793F; border: none; font-size: 24px; cursor: pointer;"
+                                title="Exportar a Excel">⬇️</button>
+                            <button onclick="printList('income')" class="print-button"
+                                style="padding: 8px; background: transparent; color: #2196F3; border: none; font-size: 24px; cursor: pointer;"
+                                title="Imprimir lista">🖨️</button>
+                        </div>
+                        <h1 style="margin: 0;">💵 Ingresos Recibidos</h1>
+                    </div>
 
-        <div id="breakdownPanel" style="display: none; background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-            <div style="display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto;">
-                <button class="breakdown-tab active" onclick="changeBreakdownTab('beneficiary')">Por Beneficiario</button>
-                <button class="breakdown-tab" onclick="changeBreakdownTab('category')">Por Categoría</button>
-                <button class="breakdown-tab" onclick="changeBreakdownTab('location')">Por Área</button>
-                <button class="breakdown-tab" onclick="changeBreakdownTab('concept')">Por Concepto</button>
-                <button class="breakdown-tab" onclick="changeBreakdownTab('method')">Por Método</button>
+                    <div class="summary-tabs">
+                        <button class="tab-btn income-tab active" onclick="changeSummaryPeriod('all', 'income')">Todo</button>
+                        <button class="tab-btn income-tab" onclick="changeSummaryPeriod('week', 'income')">Esta Semana</button>
+                        <button class="tab-btn income-tab" onclick="changeSummaryPeriod('month', 'income')">Este Mes</button>
+                        <button class="tab-btn income-tab" onclick="changeSummaryPeriod('year', 'income')">Este Año</button>
+                    </div>
+
+                    <div class="total-box income" style="display:flex; gap:12px; align-items:center;">
+                        <div style="flex:2; text-align:left;">
+                            <div class="total-label" id="periodLabelIncome">Total Recibido - Todo</div>
+                            <div class="total-amount" id="totalAmountIncome">$0.00</div>
+                        </div>
+                        <div style="flex:1; text-align:center; background: rgba(255,255,255,0.2); border-radius:8px; padding:8px;">
+                            <div class="label" style="font-size:12px; opacity:0.9;">Ingresos</div>
+                            <div class="value" id="paymentCountIncome" style="font-size:20px; font-weight:bold;">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-card" id="incomeFormCard">
+                    <div class="form-title" id="formTitleIncome">Agregar Nuevo Ingreso</div>
+                    <form id="incomeForm">
+                        <div class="form-group">
+                            <label>Fecha</label>
+                            <input type="date" id="dateIncome" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Remitente</label>
+                            <input type="text" id="beneficiaryIncome" placeholder="ej., Cliente ABC" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Concepto</label>
+                            <input type="text" id="conceptIncome" placeholder="ej., Pago de obra" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Notas (Opcional)</label>
+                            <textarea id="notesIncome" placeholder="Detalles adicionales del ingreso"></textarea>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label>Monto ($)</label>
+                                <input type="number" id="amountIncome" placeholder="0" step="0.01" required>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label>Método</label>
+                                <select id="methodIncome" required>
+                                    <option value="">Seleccionar</option>
+                                    <option>Transferencia</option>
+                                    <option>Efectivo</option>
+                                    <option>Cheque</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="updateButtonsIncome" style="display: none;">
+                            <button type="submit" class="btn update-btn">Actualizar Ingreso</button>
+                            <button type="button" class="btn cancel-btn" onclick="cancelEdit('income')">Cancelar</button>
+                        </div>
+                        <button type="submit" class="btn add-btn income" id="addButtonIncome">+ Agregar Ingreso</button>
+                    </form>
+                </div>
+
+                <div class="controls">
+                    <div class="sort-group">
+                        <label>Ordenar por:</label>
+                        <select id="sortByIncome" onchange="sortData('income')">
+                            <option value="date-desc">Fecha (Más reciente)</option>
+                            <option value="date-asc">Fecha (Más antigua)</option>
+                            <option value="amount-desc">Monto (Mayor a menor)</option>
+                            <option value="amount-asc">Monto (Menor a mayor)</option>
+                            <option value="beneficiary">Remitente (A-Z)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="loadingIndicatorIncome" class="loading">Cargando ingresos...</div>
+                <div class="payments-list" id="paymentsListIncome"></div>
             </div>
-            <div id="breakdownContent"></div>
         </div>
-
-        <div id="loadingIndicator" class="loading">Cargando pagos...</div>
-        <div class="payments-list" id="paymentsList"></div>
     </div>
-</div>
 
-<div class="print-modal" id="printModal">
-    <div class="print-modal-content">
-        <h3>¿Qué deseas imprimir?</h3>
-        <div class="print-option" onclick="printPayments()">
-            <span class="print-option-icon">📋</span>
-            <span class="print-option-text">Lista de Pagos</span>
-        </div>
-        <div class="print-option" onclick="printBreakdown('beneficiary')">
-            <span class="print-option-icon">👤</span>
-            <span class="print-option-text">Desglose por Beneficiario</span>
-        </div>
-        <div class="print-option" onclick="printBreakdown('category')">
-            <span class="print-option-icon">📦</span>
-            <span class="print-option-text">Desglose por Categoría</span>
-        </div>
-        <div class="print-option" onclick="printBreakdown('location')">
-            <span class="print-option-icon">🏗️</span>
-            <span class="print-option-text">Desglose por Área</span>
-        </div>
-        <div class="print-option" onclick="printBreakdown('concept')">
-            <span class="print-option-icon">📝</span>
-            <span class="print-option-text">Desglose por Concepto</span>
-        </div>
-        <div class="print-option" onclick="printBreakdown('method')">
-            <span class="print-option-icon">💳</span>
-            <span class="print-option-text">Desglose por Método de Pago</span>
-        </div>
-        <button class="print-modal-close" onclick="closePrintModal()">Cancelar</button>
-    </div>
-</div>
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
-<script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-    import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyDocypAXYXHbqxRIrBv9VSXfeBCb29p83Y",
-        authDomain: "finca-istanbul.firebaseapp.com",
-        projectId: "finca-istanbul",
-        storageBucket: "finca-istanbul.firebasestorage.app",
-        messagingSenderId: "2342946040",
-        appId: "1:2342946040:web:6b63ce44b12279c091270d",
-        measurementId: "G-22VREQ36X8"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
-
-    let payments = [];
-    let editingId = null;
-    let currentPeriod = 'all';
-    let customStartDate = null;
-    let customEndDate = null;
-    let currentBreakdownTab = 'beneficiary';
-    let isBreakdownOpen = false;
-    let currentUser = null;
-    let isAdmin = false;
-
-    const ADMIN_EMAILS = [
-        'orhanimre@gmail.com',
-        'marizulynaranjo@gmail.com'
-    ];
-
-    // Auth state observer
-    onAuthStateChanged(auth, (user) => {
-        currentUser = user;
-        isAdmin = user && ADMIN_EMAILS.includes(user.email);
-        updateUIForAuth();
-        if (user) {
-            loadPayments();
-            // Set today's date as default when user logs in
-            if (isAdmin) {
-    const dateInput = document.getElementById('date');
-    if (dateInput) {
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        const day = String(today.getDate()).padStart(2, '0');
-        dateInput.value = `${year}-${month}-${day}`;
-    }
-}
-        }
-    });
-
-    function updateUIForAuth() {
-        const authSection = document.getElementById('authSection');
-        const mainContent = document.getElementById('mainContent');
-        const formCard = document.getElementById('paymentFormCard');
-        
-        if (!currentUser) {
-            authSection.style.display = 'block';
-            mainContent.style.display = 'none';
-        } else {
-            authSection.style.display = 'none';
-            mainContent.style.display = 'block';
-            
-            // Show/hide form based on admin status
-            if (formCard) {
-                formCard.style.display = isAdmin ? 'block' : 'none';
-            }
-            
-            // Update user info display
-            document.getElementById('userEmail').textContent = currentUser.email;
-            document.getElementById('userRole').textContent = isAdmin ? '(Administrador)' : '(Solo lectura)';
-        }
-    }
-
-    window.signIn = async function() {
-        try {
-            await signInWithPopup(auth, provider);
-        } catch (error) {
-            console.error('Error signing in:', error);
-            alert('Error al iniciar sesión. Por favor intenta de nuevo.');
-        }
-    }
-
-    window.signOutUser = async function() {
-        try {
-            await signOut(auth);
-        } catch (error) {
-            console.error('Error signing out:', error);
-            alert('Error al cerrar sesión.');
-        }
-    }
-
-    function formatCurrency(amount) {
-        return '$' + parseFloat(amount).toLocaleString('en-US', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        });
-    }
-
-    function csvSafe(value) {
-        if (value === null || value === undefined) return '';
-        const str = String(value);
-        if (str.includes(',') || str.includes('"') || str.includes('\n')) {
-            return `"${str.replace(/"/g, '""')}"`;
-        }
-        return str;
-    }
-
-    function formatDate(dateStr) {
-        const date = new Date(dateStr + 'T00:00:00');
-        return date.toLocaleDateString('es-ES', { 
-            month: 'short', 
-            day: 'numeric', 
-            year: 'numeric' 
-        });
-    }
-
-    function getFilteredPayments() {
-        const now = new Date();
-        
-        if (currentPeriod === 'all') return payments;
-        
-        if (currentPeriod === 'custom' && customStartDate && customEndDate) {
-            return payments.filter(p => {
-                const pDate = new Date(p.date + 'T00:00:00');
-                const start = new Date(customStartDate + 'T00:00:00');
-                const end = new Date(customEndDate + 'T23:59:59');
-                return pDate >= start && pDate <= end;
-            });
-        }
-        
-        return payments.filter(p => {
-            const pDate = new Date(p.date + 'T00:00:00');
-            
-            if (currentPeriod === 'week') {
-                const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-                return pDate >= weekAgo;
-            }
-            
-            if (currentPeriod === 'month') {
-                return pDate.getMonth() === now.getMonth() && 
-                       pDate.getFullYear() === now.getFullYear();
-            }
-            
-            if (currentPeriod === 'year') {
-                return pDate.getFullYear() === now.getFullYear();
-            }
-            
-            return true;
-        });
-    }
-
-    function updateSummary() {
-        const filtered = getFilteredPayments();
-        const total = filtered.reduce((sum, p) => sum + parseFloat(p.amount), 0);
-        const count = filtered.length;
-
-        const labels = {
-            'all': 'Todo',
-            'week': 'Esta Semana',
-            'month': 'Este Mes',
-            'year': 'Este Año',
-            'custom': 'Rango Personalizado'
+        const firebaseConfig = {
+            apiKey: "AIzaSyDocypAXYXHbqxRIrBv9VSXfeBCb29p83Y",
+            authDomain: "finca-istanbul.firebaseapp.com",
+            projectId: "finca-istanbul",
+            storageBucket: "finca-istanbul.firebasestorage.app",
+            messagingSenderId: "2342946040",
+            appId: "1:2342946040:web:6b63ce44b12279c091270d",
+            measurementId: "G-22VREQ36X8"
         };
 
-        document.getElementById('periodLabel').textContent = `Total Pagado - ${labels[currentPeriod]}`;
-        document.getElementById('totalAmount').textContent = formatCurrency(total);
-        document.getElementById('paymentCount').textContent = count;
-        
-        if (isBreakdownOpen) {
-            updateBreakdown();
-        }
-    }
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
 
-    window.changeSummaryPeriod = function(period) {
-        currentPeriod = period;
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        event.target.classList.add('active');
-        
-        if (period !== 'custom') {
-            document.getElementById('customRangePanel').style.display = 'none';
-        }
-        
-        updateSummary();
-    }
-    
-    window.toggleCustomRange = function() {
-        const panel = document.getElementById('customRangePanel');
-        const isVisible = panel.style.display !== 'none';
-        
-        if (isVisible) {
-            panel.style.display = 'none';
-            if (currentPeriod === 'custom') {
-                currentPeriod = 'all';
-                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-                document.querySelector('.tab-btn').classList.add('active');
-                updateSummary();
+        let payments = [];
+        let income = [];
+        let editingId = null;
+        let currentPeriodPayments = 'all';
+        let currentPeriodIncome = 'all';
+        let currentUser = null;
+        let isAdmin = false;
+        let currentTab = 'payments';
+
+        const ADMIN_EMAILS = [
+            'orhanimre@gmail.com',
+            'marizulynaranjo@gmail.com'
+        ];
+
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            isAdmin = user && ADMIN_EMAILS.includes(user.email);
+            updateUIForAuth();
+            if (user) {
+                loadPayments();
+                loadIncome();
+                if (isAdmin) {
+                    setTodayDate('payments');
+                    setTodayDate('income');
+                }
             }
-        } else {
-            panel.style.display = 'block';
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        });
+
+        function setTodayDate(type) {
+            const dateInput = document.getElementById(`date${type.charAt(0).toUpperCase() + type.slice(1)}`);
+            if (dateInput) {
+                const today = new Date();
+                dateInput.valueAsDate = today;
+            }
+        }
+
+        function updateUIForAuth() {
+            const authSection = document.getElementById('authSection');
+            const mainContent = document.getElementById('mainContent');
+            const paymentFormCard = document.getElementById('paymentFormCard');
+            const incomeFormCard = document.getElementById('incomeFormCard');
+            
+            if (!currentUser) {
+                authSection.style.display = 'block';
+                mainContent.style.display = 'none';
+            } else {
+                authSection.style.display = 'none';
+                mainContent.style.display = 'block';
+                
+                if (paymentFormCard) {
+                    paymentFormCard.style.display = isAdmin ? 'block' : 'none';
+                }
+                if (incomeFormCard) {
+                    incomeFormCard.style.display = isAdmin ? 'block' : 'none';
+                }
+                
+                document.getElementById('userEmail').textContent = currentUser.email;
+                document.getElementById('userRole').textContent = isAdmin ? '(Administrador)' : '(Solo lectura)';
+            }
+        }
+
+        window.signIn = async function() {
+            try {
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                console.error('Error signing in:', error);
+                alert('Error al iniciar sesión. Por favor intenta de nuevo.');
+            }
+        }
+
+        window.signOutUser = async function() {
+            try {
+                await signOut(auth);
+            } catch (error) {
+                console.error('Error signing out:', error);
+                alert('Error al cerrar sesión.');
+            }
+        }
+
+        window.switchMainTab = function(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.main-tab').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
             
-            const today = new Date();
-            const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
-            
-            document.getElementById('endDate').valueAsDate = today;
-            document.getElementById('startDate').valueAsDate = thirtyDaysAgo;
-        }
-    }
-    
-    window.applyCustomRange = function() {
-        const startDate = document.getElementById('startDate').value;
-        const endDate = document.getElementById('endDate').value;
-        
-        if (!startDate || !endDate) {
-            alert('Por favor selecciona ambas fechas');
-            return;
-        }
-        
-        if (new Date(startDate) > new Date(endDate)) {
-            alert('La fecha de inicio debe ser anterior a la fecha final');
-            return;
-        }
-        
-        customStartDate = startDate;
-        customEndDate = endDate;
-        currentPeriod = 'custom';
-        
-        updateSummary();
-    }
-
-    function sortPayments() {
-        const sortBy = document.getElementById('sortBy').value;
-        
-        payments.sort((a, b) => {
-            switch(sortBy) {
-                case 'date-desc':
-                    return new Date(b.date) - new Date(a.date);
-                case 'date-asc':
-                    return new Date(a.date) - new Date(b.date);
-                case 'amount-desc':
-                    return parseFloat(b.amount) - parseFloat(a.amount);
-                case 'amount-asc':
-                    return parseFloat(a.amount) - parseFloat(b.amount);
-                case 'beneficiary':
-                    return a.beneficiary.localeCompare(b.beneficiary);
-                case 'category':
-                    return a.category.localeCompare(b.category);
-                default:
-                    return 0;
-            }
-        });
-        
-        renderPayments();
-    }
-
-    window.sortPayments = sortPayments;
-
-    window.exportToExcel = function() {
-        const filtered = getFilteredPayments();
-        
-        if (filtered.length === 0) {
-            alert('No hay pagos para exportar');
-            return;
-        }
-        
-        let csv = '\uFEFF';
-        
-        const labels = {
-            'all': 'Todo',
-            'week': 'Esta Semana',
-            'month': 'Este Mes',
-            'year': 'Este Año',
-            'custom': 'Rango Personalizado'
-        };
-        const total = filtered.reduce((sum, p) => sum + parseFloat(p.amount), 0);
-        
-        csv += `Pagos de Construcción - ${labels[currentPeriod]}\n`;
-        csv += `Total Pagado,${csvSafe(formatCurrency(total))}\n`;
-        csv += `Cantidad de Pagos,${csvSafe(filtered.length)}\n`;
-        csv += `Fecha de Exportación:,${new Date().toLocaleDateString('es-ES')}\n\n`;
-        
-        csv += 'Fecha,Beneficiario,Concepto,Cantidad,Unidad,Categoría,Área/Lugar,Monto,Método de Pago\n';
-        
-        filtered.forEach(payment => {
-            const row = [
-                csvSafe(payment.date),
-                csvSafe(payment.beneficiary),
-                csvSafe(payment.concept),
-                csvSafe(payment.quantity),
-                csvSafe(payment.unit),
-                csvSafe(payment.category),
-                csvSafe(payment.location),
-                csvSafe(payment.amount),
-                csvSafe(payment.method)
-            ];
-            csv += row.join(',') + '\n';
-        });
-        
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        const url = URL.createObjectURL(blob);
-        
-        const fileName = `Pagos_Construccion_${labels[currentPeriod].replace(/ /g, '_')}_${new Date().toISOString().split('T')[0]}.csv`;
-        
-        link.setAttribute('href', url);
-        link.setAttribute('download', fileName);
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-
-    window.showPrintOptions = function() {
-        document.getElementById('printModal').classList.add('active');
-    }
-    
-    window.closePrintModal = function() {
-        document.getElementById('printModal').classList.remove('active');
-    }
-
-    window.printPayments = function() {
-        closePrintModal();
-        const breakdownPanel = document.getElementById('breakdownPanel');
-        const wasOpen = breakdownPanel.style.display !== 'none';
-        breakdownPanel.style.display = 'none';
-        
-        window.print();
-        
-        if (wasOpen) {
-            breakdownPanel.style.display = 'block';
-        }
-    }
-    
-    window.printBreakdown = function(breakdownType) {
-        closePrintModal();
-        
-        currentBreakdownTab = breakdownType;
-        isBreakdownOpen = true;
-        
-        const panel = document.getElementById('breakdownPanel');
-        panel.style.display = 'block';
-        
-        document.querySelectorAll('.breakdown-tab').forEach(btn => btn.classList.remove('active'));
-        const tabLabels = {
-            'beneficiary': 'Por Beneficiario',
-            'category': 'Por Categoría',
-            'location': 'Por Área',
-            'concept': 'Por Concepto',
-            'method': 'Por Método'
-        };
-        document.querySelectorAll('.breakdown-tab').forEach(btn => {
-            if (btn.textContent.includes(tabLabels[breakdownType].split(' ')[1])) {
-                btn.classList.add('active');
-            }
-        });
-        
-        updateBreakdown();
-        
-        const paymentsList = document.getElementById('paymentsList');
-        paymentsList.style.display = 'none';
-        
-        setTimeout(() => {
-            window.print();
-            paymentsList.style.display = 'block';
-        }, 100);
-    }
-
-    window.toggleBreakdown = function() {
-        const panel = document.getElementById('breakdownPanel');
-        const button = document.getElementById('breakdownButtonText');
-        
-        isBreakdownOpen = !isBreakdownOpen;
-        
-        if (isBreakdownOpen) {
-            panel.style.display = 'block';
-            button.textContent = 'Ocultar Desglose';
-            updateBreakdown();
-        } else {
-            panel.style.display = 'none';
-            button.textContent = 'Ver Desglose Detallado';
-        }
-    }
-
-    window.changeBreakdownTab = function(tab) {
-        currentBreakdownTab = tab;
-        document.querySelectorAll('.breakdown-tab').forEach(btn => btn.classList.remove('active'));
-        event.target.classList.add('active');
-        updateBreakdown();
-    }
-
-    function updateBreakdown() {
-        if (!isBreakdownOpen) return;
-        
-        const filtered = getFilteredPayments();
-        const container = document.getElementById('breakdownContent');
-        
-        if (filtered.length === 0) {
-            container.innerHTML = '<div style="text-align: center; padding: 20px; color: #999;">No hay datos para mostrar</div>';
-            return;
-        }
-        
-        const breakdown = {};
-        
-        filtered.forEach(payment => {
-            const key = payment[currentBreakdownTab] || 'Sin especificar';
-            if (!breakdown[key]) {
-                breakdown[key] = {
-                    total: 0,
-                    count: 0
-                };
-            }
-            breakdown[key].total += parseFloat(payment.amount);
-            breakdown[key].count += 1;
-        });
-        
-        const sortedItems = Object.entries(breakdown).sort((a, b) => b[1].total - a[1].total);
-        
-        container.innerHTML = sortedItems.map(([name, data]) => `
-            <div class="breakdown-item">
-                <div class="breakdown-name">${name}</div>
-                <div class="breakdown-stats">
-                    <div class="breakdown-amount">${formatCurrency(data.total)}</div>
-                    <div class="breakdown-count">${data.count} pago${data.count > 1 ? 's' : ''}</div>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    function initSwipeGestures() {
-        if (window.innerWidth >= 768 || !isAdmin) return;
-        
-        const cards = document.querySelectorAll('.payment-card');
-        
-        cards.forEach(card => {
-            let startX = 0;
-            let currentX = 0;
-            let isDragging = false;
-
-            card.addEventListener('touchstart', (e) => {
-                startX = e.touches[0].clientX;
-                isDragging = true;
-                card.style.transition = 'none';
-            });
-
-            card.addEventListener('touchmove', (e) => {
-                if (!isDragging) return;
-                
-                currentX = e.touches[0].clientX;
-                const diff = startX - currentX;
-                
-                if (diff > 0 && diff < 160) {
-                    card.style.transform = `translateX(-${diff}px)`;
-                }
-            });
-
-            card.addEventListener('touchend', () => {
-                if (!isDragging) return;
-                isDragging = false;
-                
-                card.style.transition = 'transform 0.3s ease';
-                const diff = startX - currentX;
-                
-                if (diff > 80) {
-                    card.classList.add('swiped');
-                    card.style.transform = 'translateX(-160px)';
-                } else {
-                    card.classList.remove('swiped');
-                    card.style.transform = 'translateX(0)';
-                }
-            });
-
-            card.addEventListener('click', (e) => {
-                if (card.classList.contains('swiped')) {
-                    e.preventDefault();
-                    card.classList.remove('swiped');
-                    card.style.transform = 'translateX(0)';
-                }
-            });
-        });
-    }
-
-    function renderPayments() {
-        const container = document.getElementById('paymentsList');
-        document.getElementById('loadingIndicator').style.display = 'none';
-        
-        if (payments.length === 0) {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-state-icon">📋</div>
-                    <p>No hay pagos todavía. ${isAdmin ? '¡Agrega tu primer pago arriba!' : ''}</p>
-                </div>
-            `;
-            updateSummary();
-            return;
+            document.getElementById('paymentsSection').style.display = tab === 'payments' ? 'block' : 'none';
+            document.getElementById('incomeSection').style.display = tab === 'income' ? 'block' : 'none';
         }
 
-        container.innerHTML = payments.map((payment, index) => `
-    <div class="payment-card-wrapper">
-        ${isAdmin ? `
-        <div class="swipe-actions">
-            <div class="swipe-action edit" onclick="editPayment('${payment.id}')">
-                ✏️<br>Editar
-            </div>
-            <div class="swipe-action delete" onclick="deletePayment('${payment.id}')">
-                🗑️<br>Eliminar
-            </div>
-        </div>
-        ` : ''}
-        <div class="payment-card">
-            <div class="payment-number">${index + 1}</div>
-            <div class="payment-header">
-                <div class="payment-beneficiary">${payment.beneficiary}</div>
-                <div class="payment-amount">${formatCurrency(payment.amount)}</div>
-            </div>
-            
-            <!-- 3 rows: Left column (Concepto, Cantidad, Categoría) | Divider | Right column (Área, Método, Fecha) -->
-<div style="display: grid; grid-template-columns: 1.5fr 1px 1fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: center;">
-    <div>
-        <span style="color: #666;">Concepto:</span>
-        <span style="color: #333; font-weight: 500; margin-left: 4px;">${payment.concept}</span>
-    </div>
-    <div style="width: 1px; height: 100%; background: #e0e0e0;"></div>
-    <div style="padding-left: 8px;">
-        <span style="color: #666;">Área:</span>
-        <span style="color: #333; font-weight: 500; margin-left: 4px;">${payment.location}</span>
-    </div>
-</div>
-
-<div style="display: grid; grid-template-columns: 1.5fr 1px 1fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: center;">
-    <div>
-        <span style="color: #666;">${payment.quantity ? 'Cantidad:' : 'Categoría:'}</span>
-        <span style="color: #333; font-weight: 500; margin-left: 4px;">${payment.quantity ? payment.quantity + ' ' + (payment.unit || '') : payment.category}</span>
-    </div>
-    <div style="width: 1px; height: 100%; background: #e0e0e0;"></div>
-    <div style="padding-left: 8px;">
-        <span style="color: #666;">Método:</span>
-        <span style="color: #333; font-weight: 500; margin-left: 4px;">${payment.method}</span>
-    </div>
-</div>
-
-<div style="display: grid; grid-template-columns: 1.5fr 1px 1fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: center;">
-    <div>
-        <span style="color: #666;">Categoría:</span>
-        <span style="color: #333; font-weight: 500; margin-left: 4px;">${payment.category}</span>
-    </div>
-    <div style="width: 1px; height: 100%; background: #e0e0e0;"></div>
-    <div style="padding-left: 8px;">
-        <span style="color: #666;">Fecha:</span>
-        <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(payment.date)}</span>
-    </div>
-</div>
-            
-            ${isAdmin ? `
-            <div class="desktop-actions">
-                <button class="desktop-action-btn edit" onclick="editPayment('${payment.id}')">
-                    ✏️ Editar
-                </button>
-                <button class="desktop-action-btn delete" onclick="deletePayment('${payment.id}')">
-                    🗑️ Eliminar
-                </button>
-            </div>
-            ` : ''}
-        </div>
-    </div>
-`).join('');
-
-        updateSummary();
-        
-        if (isAdmin) {
-            setTimeout(initSwipeGestures, 100);
-        }
-    }
-
-    async function loadPayments() {
-        if (!currentUser) {
-            document.getElementById('loadingIndicator').textContent = 'Por favor inicia sesión para ver los pagos';
-            return;
-        }
-        
-        try {
-            const q = query(collection(db, 'payments'), orderBy('date', 'desc'));
-            const querySnapshot = await getDocs(q);
-            payments = [];
-            querySnapshot.forEach((doc) => {
-                payments.push({ id: doc.id, ...doc.data() });
-            });
-            sortPayments();
-        } catch (error) {
-            console.error('Error loading payments:', error);
-            if (error.code === 'permission-denied') {
-                document.getElementById('loadingIndicator').textContent = 'No tienes permiso para ver estos datos';
-            } else {
-                document.getElementById('loadingIndicator').textContent = 'Error al cargar pagos';
-            }
-        }
-    }
-
-    window.editPayment = function(id) {
-        if (!isAdmin) {
-            alert('Solo los administradores pueden editar pagos');
-            return;
-        }
-        
-        editingId = id;
-        const payment = payments.find(p => p.id === id);
-        
-        document.getElementById('date').value = payment.date;
-        document.getElementById('beneficiary').value = payment.beneficiary;
-        document.getElementById('concept').value = payment.concept;
-        document.getElementById('quantity').value = payment.quantity || '';
-        document.getElementById('unit').value = payment.unit || '';
-        document.getElementById('category').value = payment.category;
-        document.getElementById('location').value = payment.location;
-        document.getElementById('amount').value = payment.amount;
-        document.getElementById('method').value = payment.method;
-        
-        document.getElementById('formTitle').textContent = 'Editar Pago';
-        document.getElementById('addButton').style.display = 'none';
-        document.getElementById('updateButtons').style.display = 'block';
-        
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    window.cancelEdit = function() {
-    editingId = null;
-    document.getElementById('paymentForm').reset();
-    if (isAdmin) {
-        const dateInput = document.getElementById('date');
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        const day = String(today.getDate()).padStart(2, '0');
-        dateInput.value = `${year}-${month}-${day}`;
-    }
-    document.getElementById('formTitle').textContent = 'Agregar Nuevo Pago';
-    document.getElementById('addButton').style.display = 'block';
-    document.getElementById('updateButtons').style.display = 'none';
+        function formatCurrency(amount) {
+    return '$' + parseFloat(amount).toLocaleString('es-ES', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
 }
 
-    document.getElementById('paymentForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    if (!isAdmin) {
-        alert('Solo los administradores pueden agregar o editar pagos');
-        return;
-    }
-    
-    const submitBtn = editingId ? 
-        document.querySelector('#updateButtons button[type="submit"]') : 
-        document.getElementById('addButton');
-    
-    const originalText = submitBtn.textContent;
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Guardando...';
-    
-    const paymentData = {
-        date: document.getElementById('date').value,
-        beneficiary: document.getElementById('beneficiary').value,
-        concept: document.getElementById('concept').value,
-        quantity: document.getElementById('quantity').value || null,
-        unit: document.getElementById('unit').value || null,
-        category: document.getElementById('category').value,
-        location: document.getElementById('location').value,
-        amount: document.getElementById('amount').value,
-        method: document.getElementById('method').value
-    };
-    
-    try {
-        if (editingId) {
-            await updateDoc(doc(db, 'payments', editingId), paymentData);
-            window.cancelEdit();
-        } else {
-            await addDoc(collection(db, 'payments'), paymentData);
-            this.reset();
-const dateInput = document.getElementById('date');
-const today = new Date();
-const year = today.getFullYear();
-const month = String(today.getMonth() + 1).padStart(2, '0');
-const day = String(today.getDate()).padStart(2, '0');
-dateInput.value = `${year}-${month}-${day}`;
+        function formatDate(dateStr) {
+            const date = new Date(dateStr + 'T00:00:00');
+            return date.toLocaleDateString('es-ES', { 
+                month: 'short', 
+                day: 'numeric', 
+                year: 'numeric' 
+            });
         }
-        
-        await loadPayments();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    } catch (error) {
-        console.error('Error saving payment:', error);
-        if (error.code === 'permission-denied') {
-            alert('No tienes permiso para realizar esta acción.');
-        } else {
-            alert('Error al guardar el pago. Por favor intenta de nuevo.');
-        }
-    } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = originalText;
-    }
-});
 
-    window.deletePayment = async function(id) {
-        if (!isAdmin) {
-            alert('Solo los administradores pueden eliminar pagos');
-            return;
+        function getFilteredData(type) {
+            const data = type === 'payments' ? payments : income;
+            const currentPeriod = type === 'payments' ? currentPeriodPayments : currentPeriodIncome;
+            const now = new Date();
+            
+            if (currentPeriod === 'all') return data;
+            
+            return data.filter(item => {
+                const itemDate = new Date(item.date + 'T00:00:00');
+                
+                if (currentPeriod === 'week') {
+                    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                    return itemDate >= weekAgo;
+                }
+                
+                if (currentPeriod === 'month') {
+                    return itemDate.getMonth() === now.getMonth() && 
+                           itemDate.getFullYear() === now.getFullYear();
+                }
+                
+                if (currentPeriod === 'year') {
+                    return itemDate.getFullYear() === now.getFullYear();
+                }
+                
+                return true;
+            });
         }
-        
-        if (confirm('¿Estás seguro de que quieres eliminar este pago?')) {
-            try {
-                await deleteDoc(doc(db, 'payments', id));
-                await loadPayments();
-            } catch (error) {
-                console.error('Error deleting payment:', error);
-                if (error.code === 'permission-denied') {
-                    alert('No tienes permiso para realizar esta acción.');
+
+        function updateSummary(type) {
+            const filtered = getFilteredData(type);
+            const total = filtered.reduce((sum, item) => sum + parseFloat(item.amount), 0);
+            const count = filtered.length;
+
+            const labels = {
+                'all': 'Todo',
+                'week': 'Esta Semana',
+                'month': 'Este Mes',
+                'year': 'Este Año'
+            };
+
+            const currentPeriod = type === 'payments' ? currentPeriodPayments : currentPeriodIncome;
+            const label = type === 'payments' ? 'Total Pagado' : 'Total Recibido';
+            
+            document.getElementById(`periodLabel${type.charAt(0).toUpperCase() + type.slice(1)}`).textContent = 
+                `${label} - ${labels[currentPeriod]}`;
+            document.getElementById(`totalAmount${type.charAt(0).toUpperCase() + type.slice(1)}`).textContent = 
+                formatCurrency(total);
+            document.getElementById(`paymentCount${type.charAt(0).toUpperCase() + type.slice(1)}`).textContent = count;
+        }
+
+        window.changeSummaryPeriod = function(period, type) {
+            if (type === 'payments') {
+                currentPeriodPayments = period;
+            } else {
+                currentPeriodIncome = period;
+            }
+            
+            const section = document.getElementById(`${type}Section`);
+            section.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            updateSummary(type);
+        }
+
+        window.sortData = function(type) {
+            const sortBy = document.getElementById(`sortBy${type.charAt(0).toUpperCase() + type.slice(1)}`).value;
+            const data = type === 'payments' ? payments : income;
+            
+            data.sort((a, b) => {
+                switch(sortBy) {
+                    case 'date-desc':
+                        return new Date(b.date) - new Date(a.date);
+                    case 'date-asc':
+                        return new Date(a.date) - new Date(b.date);
+                    case 'amount-desc':
+                        return parseFloat(b.amount) - parseFloat(a.amount);
+                    case 'amount-asc':
+                        return parseFloat(a.amount) - parseFloat(b.amount);
+                    case 'beneficiary':
+                        return a.beneficiary.localeCompare(b.beneficiary);
+                    case 'category':
+                        return (a.category || '').localeCompare(b.category || '');
+                    default:
+                        return 0;
+                }
+            });
+            
+            renderList(type);
+        }
+
+        window.exportToExcel = function(type) {
+            const filtered = getFilteredData(type);
+            
+            if (filtered.length === 0) {
+                alert('No hay datos para exportar');
+                return;
+            }
+            
+            let csv = '\uFEFF';
+            const currentPeriod = type === 'payments' ? currentPeriodPayments : currentPeriodIncome;
+            const labels = { 'all': 'Todo', 'week': 'Esta Semana', 'month': 'Este Mes', 'year': 'Este Año' };
+            const total = filtered.reduce((sum, item) => sum + parseFloat(item.amount), 0);
+            const title = type === 'payments' ? 'Pagos de Construcción' : 'Ingresos Recibidos';
+            
+            csv += `${title} - ${labels[currentPeriod]}\n`;
+            csv += `Total,${formatCurrency(total)}\n`;
+            csv += `Cantidad,${filtered.length}\n`;
+            csv += `Fecha de Exportación:,${new Date().toLocaleDateString('es-ES')}\n\n`;
+            
+            if (type === 'payments') {
+                csv += 'Fecha,Beneficiario,Concepto,Cantidad,Unidad,Categoría,Área/Lugar,Monto,Método\n';
+                filtered.forEach(item => {
+                    csv += `${item.date},${item.beneficiary},${item.concept},${item.quantity||''},${item.unit||''},${item.category},${item.location},${item.amount},${item.method}\n`;
+                });
+            } else {
+                csv += 'Fecha,Remitente,Concepto,Notas,Monto,Método\n';
+                filtered.forEach(item => {
+                    csv += `${item.date},${item.beneficiary},${item.concept},${item.notes||''},${item.amount},${item.method}\n`;
+                });
+            }
+            
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            const fileName = `${title.replace(/ /g, '_')}_${new Date().toISOString().split('T')[0]}.csv`;
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', fileName);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        window.printList = function(type) {
+            window.print();
+        }
+
+        function initSwipeGestures(type) {
+            if (window.innerWidth >= 768 || !isAdmin) return;
+            
+            const cards = document.querySelectorAll(`#paymentsList${type.charAt(0).toUpperCase() + type.slice(1)} .payment-card`);
+            
+            cards.forEach(card => {
+                let startX = 0;
+                let currentX = 0;
+                let isDragging = false;
+
+                card.addEventListener('touchstart', (e) => {
+                    startX = e.touches[0].clientX;
+                    isDragging = true;
+                    card.style.transition = 'none';
+                });
+
+                card.addEventListener('touchmove', (e) => {
+                    if (!isDragging) return;
+                    
+                    currentX = e.touches[0].clientX;
+                    const diff = startX - currentX;
+                    
+                    if (diff > 0 && diff < 160) {
+                        card.style.transform = `translateX(-${diff}px)`;
+                    }
+                });
+
+                card.addEventListener('touchend', () => {
+                    if (!isDragging) return;
+                    isDragging = false;
+                    
+                    card.style.transition = 'transform 0.3s ease';
+                    const diff = startX - currentX;
+                    
+                    if (diff > 80) {
+                        card.classList.add('swiped');
+                        card.style.transform = 'translateX(-160px)';
+                    } else {
+                        card.classList.remove('swiped');
+                        card.style.transform = 'translateX(0)';
+                    }
+                });
+            });
+        }
+
+        function renderList(type) {
+            const container = document.getElementById(`paymentsList${type.charAt(0).toUpperCase() + type.slice(1)}`);
+            const loadingIndicator = document.getElementById(`loadingIndicator${type.charAt(0).toUpperCase() + type.slice(1)}`);
+            const data = type === 'payments' ? payments : income;
+            
+            loadingIndicator.style.display = 'none';
+            
+            if (data.length === 0) {
+                const emptyMsg = type === 'payments' ? 'pagos' : 'ingresos';
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <p>No hay ${emptyMsg} todavía. ${isAdmin ? '¡Agrega el primero arriba!' : ''}</p>
+                    </div>
+                `;
+                updateSummary(type);
+                return;
+            }
+
+            const isIncome = type === 'income';
+            
+            container.innerHTML = data.map((item, index) => {
+                let detailsHTML = '';
+                
+                if (isIncome) {
+                    detailsHTML = `
+                        <div style="padding: 6px 0;">
+                            <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Concepto:</div>
+                            <div style="font-size: 13px; color: #333; font-weight: 500;">${item.concept}</div>
+                        </div>
+                        ${item.notes ? `
+                        <div style="padding: 6px 0;">
+                            <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Notas:</div>
+                            <div style="font-size: 12px; color: #333;">${item.notes}</div>
+                        </div>
+                        ` : ''}
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 3px 0; font-size: 11px;">
+                            <div>
+                                <span style="color: #666;">Método:</span>
+                                <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.method}</span>
+                            </div>
+                            <div>
+                                <span style="color: #666;">Fecha:</span>
+                                <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(item.date)}</span>
+                            </div>
+                        </div>
+                    `;
                 } else {
-                    alert('Error al eliminar el pago. Por favor intenta de nuevo.');
+                    detailsHTML = `
+                        <div style="display: grid; grid-template-columns: 1.5fr 1px 1fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: center;">
+                            <div>
+                                <span style="color: #666;">Concepto:</span>
+                                <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.concept}</span>
+                            </div>
+                            <div style="width: 1px; height: 100%; background: #e0e0e0;"></div>
+                            <div style="padding-left: 8px;">
+                                <span style="color: #666;">Área:</span>
+                                <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.location}</span>
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1.5fr 1px 1fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: center;">
+                            <div>
+                                <span style="color: #666;">${item.quantity ? 'Cantidad:' : 'Categoría:'}</span>
+                                <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.quantity ? item.quantity + ' ' + (item.unit || '') : item.category}</span>
+                            </div>
+                            <div style="width: 1px; height: 100%; background: #e0e0e0;"></div>
+                            <div style="padding-left: 8px;">
+                                <span style="color: #666;">Método:</span>
+                                <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.method}</span>
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1.5fr 1px 1fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: center;">
+                            <div>
+                                <span style="color: #666;">Categoría:</span>
+                                <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.category}</span>
+                            </div>
+                            <div style="width: 1px; height: 100%; background: #e0e0e0;"></div>
+                            <div style="padding-left: 8px;">
+                                <span style="color: #666;">Fecha:</span>
+                                <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(item.date)}</span>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                return `
+                    <div class="payment-card-wrapper">
+                        ${isAdmin ? `
+                        <div class="swipe-actions">
+                            <div class="swipe-action edit" onclick="editItem('${item.id}', '${type}')">
+                                ✏️<br>Editar
+                            </div>
+                            <div class="swipe-action delete" onclick="deleteItem('${item.id}', '${type}')">
+                                🗑️<br>Eliminar
+                            </div>
+                        </div>
+                        ` : ''}
+                        <div class="payment-card">
+                            <div class="payment-number ${isIncome ? 'income' : ''}">${index + 1}</div>
+                            <div class="payment-header">
+                                <div class="payment-beneficiary">${item.beneficiary}</div>
+                                <div class="payment-amount ${isIncome ? 'income' : ''}">${formatCurrency(item.amount)}</div>
+                            </div>
+                            ${detailsHTML}
+                            ${isAdmin ? `
+                            <div class="desktop-actions">
+                                <button class="desktop-action-btn edit" onclick="editItem('${item.id}', '${type}')">
+                                    ✏️ Editar
+                                </button>
+                                <button class="desktop-action-btn delete" onclick="deleteItem('${item.id}', '${type}')">
+                                    🗑️ Eliminar
+                                </button>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            updateSummary(type);
+            
+            if (isAdmin) {
+                setTimeout(() => initSwipeGestures(type), 100);
+            }
+        }
+
+        async function loadPayments() {
+            if (!currentUser) return;
+            
+            try {
+                const q = query(collection(db, 'payments'), orderBy('date', 'desc'));
+                const querySnapshot = await getDocs(q);
+                payments = [];
+                querySnapshot.forEach((doc) => {
+                    payments.push({ id: doc.id, ...doc.data() });
+                });
+                sortData('payments');
+            } catch (error) {
+                console.error('Error loading payments:', error);
+                document.getElementById('loadingIndicatorPayments').textContent = 'Error al cargar pagos';
+            }
+        }
+
+        async function loadIncome() {
+            if (!currentUser) return;
+            
+            try {
+                const q = query(collection(db, 'income'), orderBy('date', 'desc'));
+                const querySnapshot = await getDocs(q);
+                income = [];
+                querySnapshot.forEach((doc) => {
+                    income.push({ id: doc.id, ...doc.data() });
+                });
+                sortData('income');
+            } catch (error) {
+                console.error('Error loading income:', error);
+                document.getElementById('loadingIndicatorIncome').textContent = 'Error al cargar ingresos';
+            }
+        }
+
+        window.editItem = function(id, type) {
+            if (!isAdmin) {
+                alert('Solo los administradores pueden editar');
+                return;
+            }
+            
+            editingId = id;
+            const data = type === 'payments' ? payments : income;
+            const item = data.find(i => i.id === id);
+            const suffix = type.charAt(0).toUpperCase() + type.slice(1);
+            
+            document.getElementById(`date${suffix}`).value = item.date;
+            document.getElementById(`beneficiary${suffix}`).value = item.beneficiary;
+            document.getElementById(`concept${suffix}`).value = item.concept;
+            document.getElementById(`amount${suffix}`).value = item.amount;
+            document.getElementById(`method${suffix}`).value = item.method;
+            
+            if (type === 'payments') {
+                document.getElementById('quantityPayments').value = item.quantity || '';
+                document.getElementById('unitPayments').value = item.unit || '';
+                document.getElementById('categoryPayments').value = item.category;
+                document.getElementById('locationPayments').value = item.location;
+            } else {
+                document.getElementById('notesIncome').value = item.notes || '';
+            }
+            
+            document.getElementById(`formTitle${suffix}`).textContent = type === 'payments' ? 'Editar Pago' : 'Editar Ingreso';
+            document.getElementById(`addButton${suffix}`).style.display = 'none';
+            document.getElementById(`updateButtons${suffix}`).style.display = 'block';
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.cancelEdit = function(type) {
+            editingId = null;
+            const suffix = type.charAt(0).toUpperCase() + type.slice(1);
+            document.getElementById(`${type}Form`).reset();
+            if (isAdmin) setTodayDate(type);
+            document.getElementById(`formTitle${suffix}`).textContent = type === 'payments' ? 'Agregar Nuevo Pago' : 'Agregar Nuevo Ingreso';
+            document.getElementById(`addButton${suffix}`).style.display = 'block';
+            document.getElementById(`updateButtons${suffix}`).style.display = 'none';
+        }
+
+        document.getElementById('paymentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            if (!isAdmin) {
+                alert('Solo los administradores pueden agregar o editar');
+                return;
+            }
+            
+            const submitBtn = editingId ? 
+                document.querySelector('#updateButtonsPayments button[type="submit"]') : 
+                document.getElementById('addButtonPayments');
+            
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Guardando...';
+            
+            const paymentData = {
+                date: document.getElementById('datePayments').value,
+                beneficiary: document.getElementById('beneficiaryPayments').value,
+                concept: document.getElementById('conceptPayments').value,
+                quantity: document.getElementById('quantityPayments').value || null,
+                unit: document.getElementById('unitPayments').value || null,
+                category: document.getElementById('categoryPayments').value,
+                location: document.getElementById('locationPayments').value,
+                amount: document.getElementById('amountPayments').value,
+                method: document.getElementById('methodPayments').value
+            };
+            
+            try {
+                if (editingId) {
+                    await updateDoc(doc(db, 'payments', editingId), paymentData);
+                    window.cancelEdit('payments');
+                } else {
+                    await addDoc(collection(db, 'payments'), paymentData);
+                    this.reset();
+                    setTodayDate('payments');
+                }
+                
+                await loadPayments();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (error) {
+                console.error('Error saving payment:', error);
+                alert('Error al guardar. Por favor intenta de nuevo.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        });
+
+        document.getElementById('incomeForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            if (!isAdmin) {
+                alert('Solo los administradores pueden agregar o editar');
+                return;
+            }
+            
+            const submitBtn = editingId ? 
+                document.querySelector('#updateButtonsIncome button[type="submit"]') : 
+                document.getElementById('addButtonIncome');
+            
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Guardando...';
+            
+            const incomeData = {
+                date: document.getElementById('dateIncome').value,
+                beneficiary: document.getElementById('beneficiaryIncome').value,
+                concept: document.getElementById('conceptIncome').value,
+                notes: document.getElementById('notesIncome').value || null,
+                amount: document.getElementById('amountIncome').value,
+                method: document.getElementById('methodIncome').value
+            };
+            
+            try {
+                if (editingId) {
+                    await updateDoc(doc(db, 'income', editingId), incomeData);
+                    window.cancelEdit('income');
+                } else {
+                    await addDoc(collection(db, 'income'), incomeData);
+                    this.reset();
+                    setTodayDate('income');
+                }
+                
+                await loadIncome();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (error) {
+                console.error('Error saving income:', error);
+                alert('Error al guardar. Por favor intenta de nuevo.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        });
+
+        window.deleteItem = async function(id, type) {
+            if (!isAdmin) {
+                alert('Solo los administradores pueden eliminar');
+                return;
+            }
+            
+            const itemType = type === 'payments' ? 'pago' : 'ingreso';
+            if (confirm(`¿Estás seguro de que quieres eliminar este ${itemType}?`)) {
+                try {
+                    await deleteDoc(doc(db, type, id));
+                    if (type === 'payments') {
+                        await loadPayments();
+                    } else {
+                        await loadIncome();
+                    }
+                } catch (error) {
+                    console.error('Error deleting:', error);
+                    alert('Error al eliminar. Por favor intenta de nuevo.');
                 }
             }
         }
-    }
-</script>
+    </script>
 </body>
 </html>
