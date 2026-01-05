@@ -758,9 +758,13 @@
                     </div>
                     <div class="form-group">
                         <div class="form-group">
-    <label>Cantidad y Unidad (opcional)</label>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+    <div class="form-group" style="margin-bottom: 0;">
+        <label>Cantidad</label>
         <input type="number" id="quantity" placeholder="0" step="0.01" min="0">
+    </div>
+    <div class="form-group" style="margin-bottom: 0;">
+        <label>Unidad</label>
         <select id="unit">
             <option value="">Seleccionar</option>
             <option>kg</option>
@@ -1420,26 +1424,11 @@
                 <div class="payment-amount">${formatCurrency(payment.amount)}</div>
             </div>
             
-            <!-- Line 1: Concept and Quantity -->
-<div style="display: grid; grid-template-columns: ${payment.quantity ? '1.5fr 1px 1fr' : '1fr'}; gap: 8px; padding: 3px 0; font-size: 11px; align-items: center;">
+            <!-- 3 rows: Left column (Concepto, Cantidad, Categoría) | Divider | Right column (Área, Método, Fecha) -->
+<div style="display: grid; grid-template-columns: 1.5fr 1px 1fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: center;">
     <div>
         <span style="color: #666;">Concepto:</span>
         <span style="color: #333; font-weight: 500; margin-left: 4px;">${payment.concept}</span>
-    </div>
-    ${payment.quantity ? `
-    <div style="width: 1px; height: 100%; background: #e0e0e0;"></div>
-    <div style="padding-left: 8px;">
-        <span style="color: #666;">Cant:</span>
-        <span style="color: #333; font-weight: 500; margin-left: 4px;">${payment.quantity} ${payment.unit || ''}</span>
-    </div>
-    ` : ''}
-</div>
-
-<!-- Line 2: Category and Location -->
-<div style="display: grid; grid-template-columns: 1.5fr 1px 1fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: center;">
-    <div>
-        <span style="color: #666;">Cat:</span>
-        <span style="color: #333; font-weight: 500; margin-left: 4px;">${payment.category}</span>
     </div>
     <div style="width: 1px; height: 100%; background: #e0e0e0;"></div>
     <div style="padding-left: 8px;">
@@ -1448,16 +1437,27 @@
     </div>
 </div>
 
-<!-- Line 3: Date and Method -->
 <div style="display: grid; grid-template-columns: 1.5fr 1px 1fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: center;">
     <div>
-        <span style="color: #666;">Fecha:</span>
-        <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(payment.date)}</span>
+        <span style="color: #666;">${payment.quantity ? 'Cantidad:' : 'Cat:'}</span>
+        <span style="color: #333; font-weight: 500; margin-left: 4px;">${payment.quantity ? payment.quantity + ' ' + (payment.unit || '') : payment.category}</span>
     </div>
     <div style="width: 1px; height: 100%; background: #e0e0e0;"></div>
     <div style="padding-left: 8px;">
         <span style="color: #666;">Método:</span>
         <span style="color: #333; font-weight: 500; margin-left: 4px;">${payment.method}</span>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1.5fr 1px 1fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: center;">
+    <div>
+        <span style="color: #666;">Cat:</span>
+        <span style="color: #333; font-weight: 500; margin-left: 4px;">${payment.category}</span>
+    </div>
+    <div style="width: 1px; height: 100%; background: #e0e0e0;"></div>
+    <div style="padding-left: 8px;">
+        <span style="color: #666;">Fecha:</span>
+        <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(payment.date)}</span>
     </div>
 </div>
             
