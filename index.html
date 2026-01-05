@@ -957,11 +957,15 @@
             loadPayments();
             // Set today's date as default when user logs in
             if (isAdmin) {
-                const dateInput = document.getElementById('date');
-                if (dateInput) {
-                    dateInput.valueAsDate = new Date();
-                }
-            }
+    const dateInput = document.getElementById('date');
+    if (dateInput) {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        dateInput.value = `${year}-${month}-${day}`;
+    }
+}
         }
     });
 
@@ -1540,15 +1544,20 @@
     }
 
     window.cancelEdit = function() {
-        editingId = null;
-        document.getElementById('paymentForm').reset();
-        if (isAdmin) {
-            document.getElementById('date').valueAsDate = new Date();
-        }
-        document.getElementById('formTitle').textContent = 'Agregar Nuevo Pago';
-        document.getElementById('addButton').style.display = 'block';
-        document.getElementById('updateButtons').style.display = 'none';
+    editingId = null;
+    document.getElementById('paymentForm').reset();
+    if (isAdmin) {
+        const dateInput = document.getElementById('date');
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        dateInput.value = `${year}-${month}-${day}`;
     }
+    document.getElementById('formTitle').textContent = 'Agregar Nuevo Pago';
+    document.getElementById('addButton').style.display = 'block';
+    document.getElementById('updateButtons').style.display = 'none';
+}
 
     document.getElementById('paymentForm').addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -1585,7 +1594,12 @@
         } else {
             await addDoc(collection(db, 'payments'), paymentData);
             this.reset();
-            document.getElementById('date').valueAsDate = new Date();
+const dateInput = document.getElementById('date');
+const today = new Date();
+const year = today.getFullYear();
+const month = String(today.getMonth() + 1).padStart(2, '0');
+const day = String(today.getDate()).padStart(2, '0');
+dateInput.value = `${year}-${month}-${day}`;
         }
         
         await loadPayments();
