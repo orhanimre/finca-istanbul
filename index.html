@@ -1147,29 +1147,33 @@
                 let detailsHTML = '';
                 
                 if (isIncome) {
-                    detailsHTML = `
-                        <div style="padding: 6px 0;">
-                            <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Concepto:</div>
-                            <div style="font-size: 13px; color: #333; font-weight: 500;">${item.concept}</div>
-                        </div>
-                        ${item.notes ? `
-                        <div style="padding: 6px 0;">
-                            <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Notas:</div>
-                            <div style="font-size: 12px; color: #333;">${item.notes}</div>
-                        </div>
-                        ` : ''}
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 3px 0; font-size: 11px;">
-                            <div>
-                                <span style="color: #666;">Método:</span>
-                                <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.method}</span>
-                            </div>
-                            <div>
-                                <span style="color: #666;">Fecha:</span>
-                                <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(item.date)}</span>
-                            </div>
-                        </div>
-                    `;
-                } else {
+    detailsHTML = `
+        <div style="padding: 6px 0;">
+            <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Receptor:</div>
+            <div style="font-size: 13px; color: #333; font-weight: 500;">${item.receiver}</div>
+        </div>
+        <div style="padding: 6px 0;">
+            <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Concepto:</div>
+            <div style="font-size: 13px; color: #333; font-weight: 500;">${item.concept}</div>
+        </div>
+        ${item.notes ? `
+        <div style="padding: 6px 0;">
+            <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Notas:</div>
+            <div style="font-size: 12px; color: #333;">${item.notes}</div>
+        </div>
+        ` : ''}
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 3px 0; font-size: 11px;">
+            <div>
+                <span style="color: #666;">Método:</span>
+                <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.method}</span>
+            </div>
+            <div>
+                <span style="color: #666;">Fecha:</span>
+                <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(item.date)}</span>
+            </div>
+        </div>
+    `;
+} else {
                     detailsHTML = `
                         <div style="display: grid; grid-template-columns: 1.5fr 1px 1fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: center;">
                             <div>
