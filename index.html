@@ -481,6 +481,43 @@
             color: white;
             font-size: 16px;
         }
+
+        .floating-refresh {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.floating-refresh:active {
+    transform: scale(0.95);
+}
+
+.floating-refresh:disabled {
+    opacity: 0.6;
+}
+
+.floating-refresh.refreshing {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
         
         @media print {
             body {
@@ -497,9 +534,10 @@
             .summary-tabs,
             .user-info-bar,
             .main-tabs,
-            .print-button {
-                display: none !important;
-            }
+            .floating-refresh,
+.print-button {
+    display: none !important;
+}
             .header {
                 box-shadow: none;
                 border: 1px solid #ddd;
@@ -813,6 +851,11 @@
                 <div class="payments-list" id="paymentsListIncome"></div>
             </div>
         </div>
+        
+        <!-- Floating Refresh Button -->
+        <button id="floatingRefresh" class="floating-refresh" onclick="refreshData()" title="Actualizar datos">
+            🔄
+        </button>
     </div>
 
     <script type="module">
@@ -913,6 +956,31 @@
                 alert('Error al cerrar sesión.');
             }
         }
+
+        window.refreshData = async function() {
+    const btn = document.getElementById('floatingRefresh');
+    btn.disabled = true;
+    btn.classList.add('refreshing');
+    
+    try {
+        await loadPayments();
+        await loadIncome();
+        
+        // Show brief success feedback
+        btn.classList.remove('refreshing');
+        btn.innerHTML = '✓';
+        setTimeout(() => {
+            btn.innerHTML = '🔄';
+            btn.disabled = false;
+        }, 1000);
+    } catch (error) {
+        console.error('Error refreshing data:', error);
+        alert('Error al actualizar. Por favor intenta de nuevo.');
+        btn.classList.remove('refreshing');
+        btn.innerHTML = '🔄';
+        btn.disabled = false;
+    }
+}
 
         window.switchMainTab = function(tab) {
             currentTab = tab;
