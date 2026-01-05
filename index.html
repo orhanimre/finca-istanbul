@@ -556,12 +556,12 @@
             </div>
 
             <div class="main-tabs">
-                <button class="main-tab active" onclick="switchMainTab('payments')">💰 Pagos</button>
-                <button class="main-tab" onclick="switchMainTab('income')">💵 Ingresos</button>
-            </div>
+    <button class="main-tab active" onclick="switchMainTab('income')">💵 Ingresos</button>
+    <button class="main-tab" onclick="switchMainTab('payments')">💰 Pagos</button>
+</div>
 
             <!-- PAYMENTS SECTION -->
-            <div id="paymentsSection">
+            <div id="paymentsSection" style="display: none;">
                 <div class="header">
                     <div style="margin-bottom: 10px;">
                         <div style="display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 6px;">
@@ -709,7 +709,7 @@
             </div>
 
             <!-- INCOME SECTION -->
-            <div id="incomeSection" style="display: none;">
+            <div id="incomeSection">
                 <div class="header">
                     <div style="margin-bottom: 10px;">
                         <div style="display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 6px;">
@@ -842,7 +842,7 @@
         let currentPeriodIncome = 'all';
         let currentUser = null;
         let isAdmin = false;
-        let currentTab = 'payments';
+        let currentTab = 'income';
 
         const ADMIN_EMAILS = [
             'orhanimre@gmail.com',
