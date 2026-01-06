@@ -1081,11 +1081,32 @@ function updateBudgetDisplay() {
     document.getElementById('budgetIncome').textContent = formatCurrency(totalIncome);
     document.getElementById('budgetPayments').textContent = formatCurrency(totalPayments);
     
-    // Update last updated time
-    const now = new Date();
-    const timeStr = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-    const dateStr = now.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
-    document.getElementById('lastUpdated').textContent = `Última actualización: ${dateStr} ${timeStr}`;
+    // Find the most recent date from both payments and income
+    let lastUpdatedDate = null;
+    
+    if (payments.length > 0 || income.length > 0) {
+        const allDates = [];
+        
+        payments.forEach(p => {
+            if (p.date) allDates.push(new Date(p.date + 'T00:00:00'));
+        });
+        
+        income.forEach(i => {
+            if (i.date) allDates.push(new Date(i.date + 'T00:00:00'));
+        });
+        
+        if (allDates.length > 0) {
+            lastUpdatedDate = new Date(Math.max(...allDates));
+        }
+    }
+    
+    if (lastUpdatedDate) {
+        const timeStr = lastUpdatedDate.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+        const dateStr = lastUpdatedDate.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        document.getElementById('lastUpdated').textContent = `Última actualización: ${dateStr} ${timeStr}`;
+    } else {
+        document.getElementById('lastUpdated').textContent = 'Última actualización: --';
+    }
 }
 
         function formatDate(dateStr) {
