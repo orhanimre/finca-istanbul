@@ -1044,7 +1044,7 @@
     document.querySelectorAll('.main-tab').forEach(btn => btn.classList.remove('active'));
     
     // Find the correct button based on the tab parameter
-    const buttons = document.querySelectorAll('.main-tab');function formatCurrency(amount) {
+    const buttons = document.querySelectorAll('.main-tab');
     buttons.forEach(btn => {
         if ((tab === 'budget' && btn.onclick.toString().includes("'budget'")) ||
             (tab === 'income' && btn.onclick.toString().includes("'income'")) ||
