@@ -111,17 +111,21 @@
             margin-bottom: 10px;
         }
         .main-tab {
-            flex: 1;
-            padding: 12px;
-            background: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: all 0.3s;
-        }
+    flex: 1;
+    padding: 12px;
+    background: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
         .main-tab {
     background: #C0C0C0;
     color: #666;
@@ -614,9 +618,18 @@
             </div>
 
             <div class="main-tabs">
-    <button class="main-tab active" onclick="switchMainTab('budget')">💰 Presupuesto</button>
-    <button class="main-tab" onclick="switchMainTab('income')">💵 Ingresos</button>
-    <button class="main-tab" onclick="switchMainTab('payments')">💳 Pagos</button>
+    <button class="main-tab active" onclick="switchMainTab('budget')">
+        <div>💰</div>
+        <div>Presupuesto</div>
+    </button>
+    <button class="main-tab" onclick="switchMainTab('income')">
+        <div>💵</div>
+        <div>Ingresos</div>
+    </button>
+    <button class="main-tab" onclick="switchMainTab('payments')">
+        <div>💳</div>
+        <div>Pagos</div>
+    </button>
 </div>
 
 <!-- BUDGET SECTION -->
@@ -947,12 +960,15 @@
         });
 
         function setTodayDate(type) {
-            const dateInput = document.getElementById(`date${type.charAt(0).toUpperCase() + type.slice(1)}`);
-            if (dateInput) {
-                const today = new Date();
-                dateInput.valueAsDate = today;
-            }
-        }
+    const dateInput = document.getElementById(`date${type.charAt(0).toUpperCase() + type.slice(1)}`);
+    if (dateInput) {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        dateInput.value = `${year}-${month}-${day}`;
+    }
+}
 
         function updateUIForAuth() {
             const authSection = document.getElementById('authSection');
@@ -1057,12 +1073,11 @@ function updateBudgetDisplay() {
 }
 
         function formatDate(dateStr) {
-            const date = new Date(dateStr + 'T00:00:00');
-            return date.toLocaleDateString('es-ES', { 
-                month: 'short', 
-                day: 'numeric', 
-                year: 'numeric' 
-            });
+        const date = new Date(dateStr + 'T00:00:00');
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}.${month}.${year}`;
         }
 
         function getFilteredData(type) {
