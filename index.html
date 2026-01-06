@@ -1081,22 +1081,22 @@ function updateBudgetDisplay() {
     document.getElementById('budgetIncome').textContent = formatCurrency(totalIncome);
     document.getElementById('budgetPayments').textContent = formatCurrency(totalPayments);
     
-    // Find the most recent date from both payments and income
+    // Find the most recent updatedAt timestamp from both payments and income
     let lastUpdatedDate = null;
     
     if (payments.length > 0 || income.length > 0) {
-        const allDates = [];
+        const allTimestamps = [];
         
         payments.forEach(p => {
-            if (p.date) allDates.push(new Date(p.date + 'T00:00:00'));
+            if (p.updatedAt) allTimestamps.push(new Date(p.updatedAt));
         });
         
         income.forEach(i => {
-            if (i.date) allDates.push(new Date(i.date + 'T00:00:00'));
+            if (i.updatedAt) allTimestamps.push(new Date(i.updatedAt));
         });
         
-        if (allDates.length > 0) {
-            lastUpdatedDate = new Date(Math.max(...allDates));
+        if (allTimestamps.length > 0) {
+            lastUpdatedDate = new Date(Math.max(...allTimestamps));
         }
     }
     
@@ -1511,98 +1511,100 @@ function updateBudgetDisplay() {
         }
 
         document.getElementById('paymentForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            if (!isAdmin) {
-                alert('Solo los administradores pueden agregar o editar');
-                return;
-            }
-            
-            const submitBtn = editingId ? 
-                document.querySelector('#updateButtonsPayments button[type="submit"]') : 
-                document.getElementById('addButtonPayments');
-            
-            const originalText = submitBtn.textContent;
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Guardando...';
-            
-            const paymentData = {
-                date: document.getElementById('datePayments').value,
-                beneficiary: document.getElementById('beneficiaryPayments').value,
-                concept: document.getElementById('conceptPayments').value,
-                quantity: document.getElementById('quantityPayments').value || null,
-                unit: document.getElementById('unitPayments').value || null,
-                category: document.getElementById('categoryPayments').value,
-                location: document.getElementById('locationPayments').value,
-                amount: document.getElementById('amountPayments').value,
-                method: document.getElementById('methodPayments').value
-            };
-            
-            try {
-                if (editingId) {
-                    await updateDoc(doc(db, 'payments', editingId), paymentData);
-                    window.cancelEdit('payments');
-                } else {
-                    await addDoc(collection(db, 'payments'), paymentData);
-                    this.reset();
-                    setTodayDate('payments');
-                }
-                
-                await loadPayments();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } catch (error) {
-                console.error('Error saving payment:', error);
-                alert('Error al guardar. Por favor intenta de nuevo.');
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalText;
-            }
-        });
+    e.preventDefault();
+    if (!isAdmin) {
+        alert('Solo los administradores pueden agregar o editar');
+        return;
+    }
+    
+    const submitBtn = editingId ? 
+        document.querySelector('#updateButtonsPayments button[type="submit"]') : 
+        document.getElementById('addButtonPayments');
+    
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Guardando...';
+    
+    const paymentData = {
+        date: document.getElementById('datePayments').value,
+        beneficiary: document.getElementById('beneficiaryPayments').value,
+        concept: document.getElementById('conceptPayments').value,
+        quantity: document.getElementById('quantityPayments').value || null,
+        unit: document.getElementById('unitPayments').value || null,
+        category: document.getElementById('categoryPayments').value,
+        location: document.getElementById('locationPayments').value,
+        amount: document.getElementById('amountPayments').value,
+        method: document.getElementById('methodPayments').value,
+        updatedAt: new Date().toISOString()
+    };
+    
+    try {
+        if (editingId) {
+            await updateDoc(doc(db, 'payments', editingId), paymentData);
+            window.cancelEdit('payments');
+        } else {
+            await addDoc(collection(db, 'payments'), paymentData);
+            this.reset();
+            setTodayDate('payments');
+        }
+        
+        await loadPayments();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (error) {
+        console.error('Error saving payment:', error);
+        alert('Error al guardar. Por favor intenta de nuevo.');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+    }
+});
 
         document.getElementById('incomeForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            if (!isAdmin) {
-                alert('Solo los administradores pueden agregar o editar');
-                return;
-            }
-            
-            const submitBtn = editingId ? 
-                document.querySelector('#updateButtonsIncome button[type="submit"]') : 
-                document.getElementById('addButtonIncome');
-            
-            const originalText = submitBtn.textContent;
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Guardando...';
-            
-            const incomeData = {
-                date: document.getElementById('dateIncome').value,
-                beneficiary: document.getElementById('beneficiaryIncome').value,
-                receiver: document.getElementById('receiverIncome').value,
-                concept: document.getElementById('conceptIncome').value,
-                notes: document.getElementById('notesIncome').value || null,
-                amount: document.getElementById('amountIncome').value,
-                method: document.getElementById('methodIncome').value
-            };
-            
-            try {
-                if (editingId) {
-                    await updateDoc(doc(db, 'income', editingId), incomeData);
-                    window.cancelEdit('income');
-                } else {
-                    await addDoc(collection(db, 'income'), incomeData);
-                    this.reset();
-                    setTodayDate('income');
-                }
-                
-                await loadIncome();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } catch (error) {
-                console.error('Error saving income:', error);
-                alert('Error al guardar. Por favor intenta de nuevo.');
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalText;
-            }
-        });
+    e.preventDefault();
+    if (!isAdmin) {
+        alert('Solo los administradores pueden agregar o editar');
+        return;
+    }
+    
+    const submitBtn = editingId ? 
+        document.querySelector('#updateButtonsIncome button[type="submit"]') : 
+        document.getElementById('addButtonIncome');
+    
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Guardando...';
+    
+    const incomeData = {
+        date: document.getElementById('dateIncome').value,
+        beneficiary: document.getElementById('beneficiaryIncome').value,
+        receiver: document.getElementById('receiverIncome').value,
+        concept: document.getElementById('conceptIncome').value,
+        notes: document.getElementById('notesIncome').value || null,
+        amount: document.getElementById('amountIncome').value,
+        method: document.getElementById('methodIncome').value,
+        updatedAt: new Date().toISOString()
+    };
+    
+    try {
+        if (editingId) {
+            await updateDoc(doc(db, 'income', editingId), incomeData);
+            window.cancelEdit('income');
+        } else {
+            await addDoc(collection(db, 'income'), incomeData);
+            this.reset();
+            setTodayDate('income');
+        }
+        
+        await loadIncome();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (error) {
+        console.error('Error saving income:', error);
+        alert('Error al guardar. Por favor intenta de nuevo.');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+    }
+});
 
         window.deleteItem = async function(id, type) {
             if (!isAdmin) {
