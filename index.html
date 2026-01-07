@@ -637,8 +637,11 @@
     <div style="background: white; padding: 40px 20px; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); text-align: center;">
         <div style="font-size: 80px; margin-bottom: 20px;">💰</div>
         <div style="font-size: 24px; color: #666; margin-bottom: 15px; font-weight: 600;">Presupuesto Disponible</div>
-        <div id="budgetAmount" style="font-size: 38px; font-weight: bold; color: #10b981; margin-bottom: 15px; word-break: break-word;">$0</div>
-        <div id="lastUpdated" style="font-size: 12px; color: #999; margin-bottom: 30px;">Última actualización: --</div>
+        <div id="budgetAmount" style="font-size: 38px; font-weight: bold; color: #10b981; margin-bottom: 10px; word-break: break-word;">$0</div>
+        <div style="font-size: 11px; color: #999; margin-bottom: 30px;">
+        <div id="lastUpdatedIncome" style="margin-bottom: 3px;">Última actualización de Ingresos: --</div>
+        <div id="lastUpdatedPayments">Última actualización de Pagos: --</div>
+    </div>
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px; padding-top: 30px; border-top: 2px solid #f0f0f0;">
             <div style="text-align: center;">
@@ -1081,31 +1084,52 @@ function updateBudgetDisplay() {
     document.getElementById('budgetIncome').textContent = formatCurrency(totalIncome);
     document.getElementById('budgetPayments').textContent = formatCurrency(totalPayments);
     
-    // Find the most recent updatedAt timestamp from both payments and income
-    let lastUpdatedDate = null;
-    
-    if (payments.length > 0 || income.length > 0) {
-        const allTimestamps = [];
+    // Find the most recent updatedAt timestamp for income
+    let lastIncomeDate = null;
+    if (income.length > 0) {
+        const incomeTimestamps = income
+            .filter(i => i.updatedAt)
+            .map(i => new Date(i.updatedAt));
         
-        payments.forEach(p => {
-            if (p.updatedAt) allTimestamps.push(new Date(p.updatedAt));
-        });
-        
-        income.forEach(i => {
-            if (i.updatedAt) allTimestamps.push(new Date(i.updatedAt));
-        });
-        
-        if (allTimestamps.length > 0) {
-            lastUpdatedDate = new Date(Math.max(...allTimestamps));
+        if (incomeTimestamps.length > 0) {
+            lastIncomeDate = new Date(Math.max(...incomeTimestamps));
         }
     }
     
-    if (lastUpdatedDate) {
-        const timeStr = lastUpdatedDate.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-        const dateStr = lastUpdatedDate.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
-        document.getElementById('lastUpdated').textContent = `Última actualización: ${dateStr} ${timeStr}`;
+    // Find the most recent updatedAt timestamp for payments
+    let lastPaymentDate = null;
+    if (payments.length > 0) {
+        const paymentTimestamps = payments
+            .filter(p => p.updatedAt)
+            .map(p => new Date(p.updatedAt));
+        
+        if (paymentTimestamps.length > 0) {
+            lastPaymentDate = new Date(Math.max(...paymentTimestamps));
+        }
+    }
+    
+    // Format and display income update time
+    if (lastIncomeDate) {
+        const timeStr = lastIncomeDate.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+        const day = String(lastIncomeDate.getDate()).padStart(2, '0');
+        const month = String(lastIncomeDate.getMonth() + 1).padStart(2, '0');
+        const year = lastIncomeDate.getFullYear();
+        const dateStr = `${day}.${month}.${year}`;
+        document.getElementById('lastUpdatedIncome').textContent = `Última actualización de Ingresos: ${dateStr} ${timeStr}`;
     } else {
-        document.getElementById('lastUpdated').textContent = 'Última actualización: --';
+        document.getElementById('lastUpdatedIncome').textContent = 'Última actualización de Ingresos: --';
+    }
+    
+    // Format and display payments update time
+    if (lastPaymentDate) {
+        const timeStr = lastPaymentDate.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+        const day = String(lastPaymentDate.getDate()).padStart(2, '0');
+        const month = String(lastPaymentDate.getMonth() + 1).padStart(2, '0');
+        const year = lastPaymentDate.getFullYear();
+        const dateStr = `${day}.${month}.${year}`;
+        document.getElementById('lastUpdatedPayments').textContent = `Última actualización de Pagos: ${dateStr} ${timeStr}`;
+    } else {
+        document.getElementById('lastUpdatedPayments').textContent = 'Última actualización de Pagos: --';
     }
 }
 
