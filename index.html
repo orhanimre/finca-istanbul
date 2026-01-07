@@ -704,6 +704,7 @@
 
                     <div class="summary-tabs">
     <button class="tab-btn active" onclick="changeSummaryPeriod('all', 'payments')">Todo</button>
+    <button class="tab-btn" onclick="changeSummaryPeriod('today', 'payments')">Hoy</button>
     <button class="tab-btn" onclick="changeSummaryPeriod('week', 'payments')">Esta Semana</button>
     <button class="tab-btn" onclick="changeSummaryPeriod('month', 'payments')">Este Mes</button>
     <button class="tab-btn" onclick="changeSummaryPeriod('year', 'payments')">Este Año</button>
@@ -878,6 +879,7 @@
 
                     <div class="summary-tabs">
     <button class="tab-btn income-tab active" onclick="changeSummaryPeriod('all', 'income')">Todo</button>
+    <button class="tab-btn income-tab" onclick="changeSummaryPeriod('today', 'income')">Hoy</button>
     <button class="tab-btn income-tab" onclick="changeSummaryPeriod('week', 'income')">Esta Semana</button>
     <button class="tab-btn income-tab" onclick="changeSummaryPeriod('month', 'income')">Este Mes</button>
     <button class="tab-btn income-tab" onclick="changeSummaryPeriod('year', 'income')">Este Año</button>
@@ -1243,64 +1245,73 @@ function updateBudgetDisplay() {
             const now = new Date();
             
             if (currentPeriod === 'all') return data;
-            
-            return data.filter(item => {
-                // Handle date parsing - check if time is already included
-                const itemDate = new Date(item.date.includes('T') ? item.date : item.date + 'T00:00:00');
-                
-                if (currentPeriod === 'custom') {
-                    const fromDate = type === 'payments' ? customDateFromPayments : customDateFromIncome;
-                    const toDate = type === 'payments' ? customDateToPayments : customDateToIncome;
-                    
-                    if (!fromDate || !toDate) return true;
-                    
-                    const from = new Date(fromDate + 'T00:00:00');
-                    const to = new Date(toDate + 'T23:59:59');
-                    
-                    return itemDate >= from && itemDate <= to;
-                }
-                
-                if (currentPeriod === 'week') {
-                    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-                    weekAgo.setHours(0, 0, 0, 0);
-                    return itemDate >= weekAgo;
-                }
-                
-                if (currentPeriod === 'month') {
-                    return itemDate.getMonth() === now.getMonth() && 
-                           itemDate.getFullYear() === now.getFullYear();
-                }
-                
-                if (currentPeriod === 'year') {
-                    return itemDate.getFullYear() === now.getFullYear();
-                }
-                
-                return true;
-            });
+
+return data.filter(item => {
+    // Handle date parsing - check if time is already included
+    const itemDate = new Date(item.date.includes('T') ? item.date : item.date + 'T00:00:00');
+    
+    if (currentPeriod === 'custom') {
+        const fromDate = type === 'payments' ? customDateFromPayments : customDateFromIncome;
+        const toDate = type === 'payments' ? customDateToPayments : customDateToIncome;
+        
+        if (!fromDate || !toDate) return true;
+        
+        const from = new Date(fromDate + 'T00:00:00');
+        const to = new Date(toDate + 'T23:59:59');
+        
+        return itemDate >= from && itemDate <= to;
+    }
+    
+    if (currentPeriod === 'today') {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        return itemDate >= today && itemDate < tomorrow;
+    }
+    
+    if (currentPeriod === 'week') {
+        const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        weekAgo.setHours(0, 0, 0, 0);
+        return itemDate >= weekAgo;
+    }
+    
+    if (currentPeriod === 'month') {
+        return itemDate.getMonth() === now.getMonth() && 
+               itemDate.getFullYear() === now.getFullYear();
+    }
+    
+    if (currentPeriod === 'year') {
+        return itemDate.getFullYear() === now.getFullYear();
+    }
+    
+    return true;
+});
         }
 
         function updateSummary(type) {
-            const filtered = getFilteredData(type);
-            const total = filtered.reduce((sum, item) => sum + parseFloat(item.amount), 0);
-            const count = filtered.length;
+    const filtered = getFilteredData(type);
+    const total = filtered.reduce((sum, item) => sum + parseFloat(item.amount), 0);
+    const count = filtered.length;
 
-            const labels = {
-                'all': 'Todo',
-                'week': 'Esta Semana',
-                'month': 'Este Mes',
-                'year': 'Este Año',
-                'custom': 'Personalizado'
-            };
+    const labels = {
+        'all': 'Todo',
+        'today': 'Hoy',
+        'week': 'Esta Semana',
+        'month': 'Este Mes',
+        'year': 'Este Año',
+        'custom': 'Personalizado'
+    };
 
-            const currentPeriod = type === 'payments' ? currentPeriodPayments : currentPeriodIncome;
-            const label = type === 'payments' ? 'Total Pagado' : 'Total Recibido';
-            
-            document.getElementById(`periodLabel${type.charAt(0).toUpperCase() + type.slice(1)}`).textContent = 
-                `${label} - ${labels[currentPeriod]}`;
-            document.getElementById(`totalAmount${type.charAt(0).toUpperCase() + type.slice(1)}`).textContent = 
-                formatCurrency(total);
-            document.getElementById(`paymentCount${type.charAt(0).toUpperCase() + type.slice(1)}`).textContent = count;
-        }
+    const currentPeriod = type === 'payments' ? currentPeriodPayments : currentPeriodIncome;
+    const label = type === 'payments' ? 'Total Pagado' : 'Total Recibido';
+    
+    document.getElementById(`periodLabel${type.charAt(0).toUpperCase() + type.slice(1)}`).textContent = 
+        `${label} - ${labels[currentPeriod]}`;
+    document.getElementById(`totalAmount${type.charAt(0).toUpperCase() + type.slice(1)}`).textContent = 
+        formatCurrency(total);
+    document.getElementById(`paymentCount${type.charAt(0).toUpperCase() + type.slice(1)}`).textContent = count;
+}
 
         window.changeSummaryPeriod = function(period, type) {
     if (type === 'payments') {
@@ -1414,7 +1425,7 @@ window.applyCustomRange = function(type) {
             
             let csv = '\uFEFF';
             const currentPeriod = type === 'payments' ? currentPeriodPayments : currentPeriodIncome;
-            const labels = { 'all': 'Todo', 'week': 'Esta Semana', 'month': 'Este Mes', 'year': 'Este Año' };
+            const labels = { 'all': 'Todo', 'today': 'Hoy', 'week': 'Esta Semana', 'month': 'Este Mes', 'year': 'Este Año', 'custom': 'Personalizado' };
             const total = filtered.reduce((sum, item) => sum + parseFloat(item.amount), 0);
             const title = type === 'payments' ? 'Pagos de Construcción' : 'Ingresos Recibidos';
             
