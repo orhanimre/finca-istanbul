@@ -1453,49 +1453,86 @@ window.applyCustomRange = function(type) {
         }
 
         function initSwipeGestures(type) {
-            if (window.innerWidth >= 768 || !isAdmin) return;
+    if (window.innerWidth >= 768 || !isAdmin) return;
+    
+    const cards = document.querySelectorAll(`#paymentsList${type.charAt(0).toUpperCase() + type.slice(1)} .payment-card`);
+    
+    cards.forEach(card => {
+        let startX = 0;
+        let startY = 0;
+        let currentX = 0;
+        let currentY = 0;
+        let isDragging = false;
+        let isHorizontalSwipe = null;
+
+        card.addEventListener('touchstart', (e) => {
+            // Only allow swiping if card is expanded
+            const details = card.querySelector('.payment-card-details');
+            if (!details.classList.contains('expanded')) {
+                return;
+            }
             
-            const cards = document.querySelectorAll(`#paymentsList${type.charAt(0).toUpperCase() + type.slice(1)} .payment-card`);
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+            isDragging = false;
+            isHorizontalSwipe = null;
+            card.style.transition = 'none';
+        }, { passive: true });
+
+        card.addEventListener('touchmove', (e) => {
+            const details = card.querySelector('.payment-card-details');
+            if (!details.classList.contains('expanded')) {
+                return;
+            }
             
-            cards.forEach(card => {
-                let startX = 0;
-                let currentX = 0;
-                let isDragging = false;
+            currentX = e.touches[0].clientX;
+            currentY = e.touches[0].clientY;
+            
+            const diffX = Math.abs(startX - currentX);
+            const diffY = Math.abs(startY - currentY);
+            
+            // Determine swipe direction on first significant movement
+            if (isHorizontalSwipe === null && (diffX > 5 || diffY > 5)) {
+                isHorizontalSwipe = diffX > diffY;
+            }
+            
+            // Only proceed if it's a horizontal swipe
+            if (isHorizontalSwipe) {
+                isDragging = true;
+                e.preventDefault(); // Prevent scrolling during horizontal swipe
+                
+                const diff = startX - currentX;
+                
+                if (diff > 0 && diff < 160) {
+                    card.style.transform = `translateX(-${diff}px)`;
+                } else if (diff < 0) {
+                    card.style.transform = 'translateX(0)';
+                }
+            }
+        });
 
-                card.addEventListener('touchstart', (e) => {
-                    startX = e.touches[0].clientX;
-                    isDragging = true;
-                    card.style.transition = 'none';
-                });
-
-                card.addEventListener('touchmove', (e) => {
-                    if (!isDragging) return;
-                    
-                    currentX = e.touches[0].clientX;
-                    const diff = startX - currentX;
-                    
-                    if (diff > 0 && diff < 160) {
-                        card.style.transform = `translateX(-${diff}px)`;
-                    }
-                });
-
-                card.addEventListener('touchend', () => {
-                    if (!isDragging) return;
-                    isDragging = false;
-                    
-                    card.style.transition = 'transform 0.3s ease';
-                    const diff = startX - currentX;
-                    
-                    if (diff > 80) {
-                        card.classList.add('swiped');
-                        card.style.transform = 'translateX(-160px)';
-                    } else {
-                        card.classList.remove('swiped');
-                        card.style.transform = 'translateX(0)';
-                    }
-                });
-            });
-        }
+        card.addEventListener('touchend', () => {
+            const details = card.querySelector('.payment-card-details');
+            if (!details.classList.contains('expanded') || !isDragging) {
+                return;
+            }
+            
+            isDragging = false;
+            isHorizontalSwipe = null;
+            
+            card.style.transition = 'transform 0.3s ease';
+            const diff = startX - currentX;
+            
+            if (diff > 80) {
+                card.classList.add('swiped');
+                card.style.transform = 'translateX(-160px)';
+            } else {
+                card.classList.remove('swiped');
+                card.style.transform = 'translateX(0)';
+            }
+        });
+    });
+}
 
         function renderList(type) {
             const container = document.getElementById(`paymentsList${type.charAt(0).toUpperCase() + type.slice(1)}`);
