@@ -1134,11 +1134,12 @@ function updateBudgetDisplay() {
 }
 
         function formatDate(dateStr) {
-        const date = new Date(dateStr + 'T00:00:00');
+        const date = new Date(dateStr.includes('T') ? dateStr : dateStr + 'T00:00:00');
         const day = String(date.getDate()).padStart(2, '0');
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const year = date.getFullYear();
-        return `${day}.${month}.${year}`;
+        const time = dateStr.includes('T') ? date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) : '';
+        return time ? `${day}.${month}.${year} ${time}` : `${day}.${month}.${year}`;
         }
 
         function getFilteredData(type) {
@@ -1550,7 +1551,7 @@ function updateBudgetDisplay() {
     submitBtn.textContent = 'Guardando...';
     
     const paymentData = {
-        date: document.getElementById('datePayments').value,
+        date: document.getElementById('datePayments').value + 'T' + new Date().toTimeString().slice(0,5),
         beneficiary: document.getElementById('beneficiaryPayments').value,
         concept: document.getElementById('conceptPayments').value,
         quantity: document.getElementById('quantityPayments').value || null,
@@ -1599,7 +1600,7 @@ function updateBudgetDisplay() {
     submitBtn.textContent = 'Guardando...';
     
     const incomeData = {
-        date: document.getElementById('dateIncome').value,
+        date: document.getElementById('dateIncome').value + 'T' + new Date().toTimeString().slice(0,5),
         beneficiary: document.getElementById('beneficiaryIncome').value,
         receiver: document.getElementById('receiverIncome').value,
         concept: document.getElementById('conceptIncome').value,
