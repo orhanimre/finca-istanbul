@@ -1735,9 +1735,13 @@ window.applyCustomRange = function(type) {
     category: document.getElementById('categoryPayments').value,
     location: document.getElementById('locationPayments').value,
     amount: document.getElementById('amountPayments').value,
-    method: document.getElementById('methodPayments').value,
-    updatedAt: new Date().toISOString()
+    method: document.getElementById('methodPayments').value
 };
+
+// Only add updatedAt when editing an existing payment
+if (editingId) {
+    paymentData.updatedAt = new Date().toISOString();
+}
     
     try {
         if (editingId) {
@@ -1782,9 +1786,13 @@ window.applyCustomRange = function(type) {
     concept: document.getElementById('conceptIncome').value,
     notes: document.getElementById('notesIncome').value || null,
     amount: document.getElementById('amountIncome').value,
-    method: document.getElementById('methodIncome').value,
-    updatedAt: new Date().toISOString()
+    method: document.getElementById('methodIncome').value
 };
+
+// Only add updatedAt when editing an existing income
+if (editingId) {
+    incomeData.updatedAt = new Date().toISOString();
+}
     
     try {
         if (editingId) {
