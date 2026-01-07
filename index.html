@@ -1644,41 +1644,53 @@ window.applyCustomRange = function(type) {
         }
 
         window.editItem = function(id, type) {
-            if (!isAdmin) {
-                alert('Solo los administradores pueden editar');
-                return;
-            }
-            
-            editingId = id;
-            const data = type === 'payments' ? payments : income;
-            const item = data.find(i => i.id === id);
-            const suffix = type.charAt(0).toUpperCase() + type.slice(1);
-            
-            const dateTime = item.date.split('T');
-            document.getElementById(`date${suffix}`).value = dateTime[0];
-            document.getElementById(`time${suffix}`).value = dateTime[1] || '00:00';
-            document.getElementById(`beneficiary${suffix}`).value = item.beneficiary;
-            document.getElementById(`concept${suffix}`).value = item.concept;
-            document.getElementById(`amount${suffix}`).value = item.amount;
-            document.getElementById(`method${suffix}`).value = item.method;
-            
-            if (type === 'payments') {
-                document.getElementById('quantityPayments').value = item.quantity || '';
-                document.getElementById('unitPayments').value = item.unit || '';
-                document.getElementById('categoryPayments').value = item.category;
-                document.getElementById('locationPayments').value = item.location;
-            } else {
-                document.getElementById('receiverIncome').value = item.receiver;
-                document.getElementById('notesIncome').value = item.notes || '';
-            }
-            
-            const titleElement = document.getElementById(`formTitle${suffix}`);
-            titleElement.querySelector('span').textContent = type === 'payments' ? 'Editar Pago' : 'Editar Ingreso';
-            document.getElementById(`addButton${suffix}`).style.display = 'none';
-            document.getElementById(`updateButtons${suffix}`).style.display = 'block';
-            
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+    if (!isAdmin) {
+        alert('Solo los administradores pueden editar');
+        return;
+    }
+    
+    editingId = id;
+    const data = type === 'payments' ? payments : income;
+    const item = data.find(i => i.id === id);
+    const suffix = type.charAt(0).toUpperCase() + type.slice(1);
+    
+    const dateTime = item.date.split('T');
+    document.getElementById(`date${suffix}`).value = dateTime[0];
+    document.getElementById(`time${suffix}`).value = dateTime[1] || '00:00';
+    document.getElementById(`beneficiary${suffix}`).value = item.beneficiary;
+    document.getElementById(`concept${suffix}`).value = item.concept;
+    document.getElementById(`amount${suffix}`).value = item.amount;
+    document.getElementById(`method${suffix}`).value = item.method;
+    
+    if (type === 'payments') {
+        document.getElementById('quantityPayments').value = item.quantity || '';
+        document.getElementById('unitPayments').value = item.unit || '';
+        document.getElementById('categoryPayments').value = item.category;
+        document.getElementById('locationPayments').value = item.location;
+    } else {
+        document.getElementById('receiverIncome').value = item.receiver;
+        document.getElementById('notesIncome').value = item.notes || '';
+    }
+    
+    const titleElement = document.getElementById(`formTitle${suffix}`);
+    titleElement.querySelector('span').textContent = type === 'payments' ? 'Editar Pago' : 'Editar Ingreso';
+    document.getElementById(`addButton${suffix}`).style.display = 'none';
+    document.getElementById(`updateButtons${suffix}`).style.display = 'block';
+    
+    // Auto-expand the form if it's collapsed
+    const formId = type === 'payments' ? 'paymentForm' : 'incomeForm';
+    const form = document.getElementById(formId);
+    const arrow = document.getElementById(`formArrow${suffix}`);
+    const formCard = document.getElementById(`${type}FormCard`);
+    
+    if (form.style.display === 'none' || form.style.display === '') {
+        form.style.display = 'block';
+        arrow.textContent = '▲';
+        formCard.classList.remove('collapsed');
+    }
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
         window.cancelEdit = function(type) {
             editingId = null;
