@@ -722,10 +722,16 @@
     <span id="formArrowPayments">▼</span>
 </div>
                     <form id="paymentForm" style="display: none;">
-                        <div class="form-group">
-                            <label>Fecha</label>
-                            <input type="date" id="datePayments" required>
-                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+    <div class="form-group" style="margin-bottom: 0;">
+        <label>Fecha</label>
+        <input type="date" id="datePayments" required>
+    </div>
+    <div class="form-group" style="margin-bottom: 0;">
+        <label>Hora</label>
+        <input type="time" id="timePayments" required>
+    </div>
+</div>
                         <div class="form-group">
                             <label>Beneficiario</label>
                             <input type="text" id="beneficiaryPayments" placeholder="ej., Constructora ABC" required>
@@ -890,10 +896,16 @@
                     <span id="formArrowIncome">▼</span>
                 </div>
                     <form id="incomeForm" style="display: none;">
-                        <div class="form-group">
-                            <label>Fecha</label>
-                            <input type="date" id="dateIncome" required>
-                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+    <div class="form-group" style="margin-bottom: 0;">
+        <label>Fecha</label>
+        <input type="date" id="dateIncome" required>
+    </div>
+    <div class="form-group" style="margin-bottom: 0;">
+        <label>Hora</label>
+        <input type="time" id="timeIncome" required>
+    </div>
+</div>
                         <div class="form-group">
                             <label>Remitente</label>
                             <select id="beneficiaryIncome" required>
@@ -1018,14 +1030,22 @@
         });
 
         function setTodayDate(type) {
-    const dateInput = document.getElementById(`date${type.charAt(0).toUpperCase() + type.slice(1)}`);
-    if (dateInput) {
+    const suffix = type.charAt(0).toUpperCase() + type.slice(1);
+    const dateInput = document.getElementById(`date${suffix}`);
+    const timeInput = document.getElementById(`time${suffix}`);
+    
+    if (dateInput && timeInput) {
         const today = new Date();
         const year = today.getFullYear();
         const month = String(today.getMonth() + 1).padStart(2, '0');
         const day = String(today.getDate()).padStart(2, '0');
+        const hours = String(today.getHours()).padStart(2, '0');
+        const minutes = String(today.getMinutes()).padStart(2, '0');
+        
         dateInput.value = `${year}-${month}-${day}`;
+        timeInput.value = `${hours}:${minutes}`;
     }
+}
 }
 
         function updateUIForAuth() {
@@ -1504,6 +1524,7 @@ window.applyCustomRange = function(type) {
             <div style="text-align: right;">
             <span style="color: #666;">Fecha:</span>
             <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(item.date)}</span>
+            ${item.createdAt && item.updatedAt && item.updatedAt !== item.createdAt ? `<br><span style="color: #999; font-size: 10px;">Editado: ${formatDate(item.updatedAt)}</span>` : ''}
         </div>
     </div>
     `;
@@ -1540,6 +1561,7 @@ window.applyCustomRange = function(type) {
                         <div style="padding-left: 8px; text-align: right;">
                             <span style="color: #666;">Fecha:</span>
                             <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(item.date)}</span>
+                            ${item.createdAt && item.updatedAt && item.updatedAt !== item.createdAt ? `<br><span style="color: #999; font-size: 10px;">Editado: ${formatDate(item.updatedAt)}</span>` : ''}
                         </div>
                     </div>
                     `;
@@ -1633,7 +1655,9 @@ window.applyCustomRange = function(type) {
             const item = data.find(i => i.id === id);
             const suffix = type.charAt(0).toUpperCase() + type.slice(1);
             
-            document.getElementById(`date${suffix}`).value = item.date;
+            const dateTime = item.date.split('T');
+            document.getElementById(`date${suffix}`).value = dateTime[0];
+            document.getElementById(`time${suffix}`).value = dateTime[1] || '00:00';
             document.getElementById(`beneficiary${suffix}`).value = item.beneficiary;
             document.getElementById(`concept${suffix}`).value = item.concept;
             document.getElementById(`amount${suffix}`).value = item.amount;
@@ -1704,17 +1728,18 @@ window.applyCustomRange = function(type) {
     submitBtn.textContent = 'Guardando...';
     
     const paymentData = {
-        date: document.getElementById('datePayments').value + 'T' + new Date().toTimeString().slice(0,5),
-        beneficiary: document.getElementById('beneficiaryPayments').value,
-        concept: document.getElementById('conceptPayments').value,
-        quantity: document.getElementById('quantityPayments').value || null,
-        unit: document.getElementById('unitPayments').value || null,
-        category: document.getElementById('categoryPayments').value,
-        location: document.getElementById('locationPayments').value,
-        amount: document.getElementById('amountPayments').value,
-        method: document.getElementById('methodPayments').value,
-        updatedAt: new Date().toISOString()
-    };
+    date: document.getElementById('datePayments').value + 'T' + document.getElementById('timePayments').value,
+    beneficiary: document.getElementById('beneficiaryPayments').value,
+    concept: document.getElementById('conceptPayments').value,
+    quantity: document.getElementById('quantityPayments').value || null,
+    unit: document.getElementById('unitPayments').value || null,
+    category: document.getElementById('categoryPayments').value,
+    location: document.getElementById('locationPayments').value,
+    amount: document.getElementById('amountPayments').value,
+    method: document.getElementById('methodPayments').value,
+    createdAt: editingId ? payments.find(p => p.id === editingId).createdAt : new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+};
     
     try {
         if (editingId) {
@@ -1753,15 +1778,16 @@ window.applyCustomRange = function(type) {
     submitBtn.textContent = 'Guardando...';
     
     const incomeData = {
-        date: document.getElementById('dateIncome').value + 'T' + new Date().toTimeString().slice(0,5),
-        beneficiary: document.getElementById('beneficiaryIncome').value,
-        receiver: document.getElementById('receiverIncome').value,
-        concept: document.getElementById('conceptIncome').value,
-        notes: document.getElementById('notesIncome').value || null,
-        amount: document.getElementById('amountIncome').value,
-        method: document.getElementById('methodIncome').value,
-        updatedAt: new Date().toISOString()
-    };
+    date: document.getElementById('dateIncome').value + 'T' + document.getElementById('timeIncome').value,
+    beneficiary: document.getElementById('beneficiaryIncome').value,
+    receiver: document.getElementById('receiverIncome').value,
+    concept: document.getElementById('conceptIncome').value,
+    notes: document.getElementById('notesIncome').value || null,
+    amount: document.getElementById('amountIncome').value,
+    method: document.getElementById('methodIncome').value,
+    createdAt: editingId ? income.find(i => i.id === editingId).createdAt : new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+};
     
     try {
         if (editingId) {
