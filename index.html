@@ -1544,17 +1544,20 @@ function updateBudgetDisplay() {
         }
 
         window.toggleForm = function(type) {
-            const form = document.getElementById(`${type}Form`);
-            const arrow = document.getElementById(`formArrow${type.charAt(0).toUpperCase() + type.slice(1)}`);
+    // Handle both 'payments' and 'payment' to match form IDs
+            const formId = type === 'payments' ? 'paymentForm' : 'incomeForm';
+            const form = document.getElementById(formId);
+            const suffix = type.charAt(0).toUpperCase() + type.slice(1);
+            const arrow = document.getElementById(`formArrow${suffix}`);
     
-            if (form.style.display === 'none') {
+        if (form.style.display === 'none' || form.style.display === '') {
             form.style.display = 'block';
             arrow.textContent = '▲';
-            } else {
-            form.style.display = 'none';
-            arrow.textContent = '▼';
-            }
-}
+        } else {
+        form.style.display = 'none';
+        arrow.textContent = '▼';
+        }
+    }
 
         document.getElementById('paymentForm').addEventListener('submit', async function(e) {
     e.preventDefault();
