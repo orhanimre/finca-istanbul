@@ -1201,18 +1201,44 @@ function updateBudgetDisplay() {
         }
 
         window.changeSummaryPeriod = function(period, type) {
-            if (type === 'payments') {
-                currentPeriodPayments = period;
-            } else {
-                currentPeriodIncome = period;
-            }
-            
-            const section = document.getElementById(`${type}Section`);
-            section.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            updateSummary(type);
-        }
+    if (type === 'payments') {
+        currentPeriodPayments = period;
+    } else {
+        currentPeriodIncome = period;
+    }
+    
+    const section = document.getElementById(`${type}Section`);
+    section.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    // Show/hide custom date range inputs
+    const customRangeDiv = document.getElementById(`customDateRange${type.charAt(0).toUpperCase() + type.slice(1)}`);
+    if (period === 'custom') {
+        customRangeDiv.style.display = 'block';
+    } else {
+        customRangeDiv.style.display = 'none';
+    }
+    
+    updateSummary(type);
+}
+
+window.applyCustomRange = function(type) {
+    const suffix = type.charAt(0).toUpperCase() + type.slice(1);
+    const fromDate = document.getElementById(`customFrom${suffix}`).value;
+    const toDate = document.getElementById(`customTo${suffix}`).value;
+    
+    if (type === 'payments') {
+        customDateFromPayments = fromDate;
+        customDateToPayments = toDate;
+    } else {
+        customDateFromIncome = fromDate;
+        customDateToIncome = toDate;
+    }
+    
+    if (fromDate && toDate) {
+        updateSummary(type);
+    }
+}
 
         window.sortData = function(type) {
             const sortBy = document.getElementById(`sortBy${type.charAt(0).toUpperCase() + type.slice(1)}`).value;
