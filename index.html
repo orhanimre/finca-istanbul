@@ -210,6 +210,13 @@
             border-radius: 12px;
             margin-bottom: 10px;
             box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: background 0.3s ease;
+        }
+        .form-card.collapsed {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+        .form-card.collapsed.income-form {
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
         }
         .form-title {
             font-size: 16px;
@@ -1254,8 +1261,18 @@ function updateBudgetDisplay() {
         window.changeSummaryPeriod = function(period, type) {
     if (type === 'payments') {
         currentPeriodPayments = period;
+        // Reset custom dates when switching away from custom
+        if (period !== 'custom') {
+            customDateFromPayments = null;
+            customDateToPayments = null;
+        }
     } else {
         currentPeriodIncome = period;
+        // Reset custom dates when switching away from custom
+        if (period !== 'custom') {
+            customDateFromIncome = null;
+            customDateToIncome = null;
+        }
     }
     
     const section = document.getElementById(`${type}Section`);
@@ -1287,6 +1304,7 @@ function updateBudgetDisplay() {
     }
     
     updateSummary(type);
+    renderList(type);
 }
 
 window.applyCustomRange = function(type) {
@@ -1649,19 +1667,28 @@ window.applyCustomRange = function(type) {
 
         window.toggleForm = function(type) {
     // Handle both 'payments' and 'payment' to match form IDs
-            const formId = type === 'payments' ? 'paymentForm' : 'incomeForm';
-            const form = document.getElementById(formId);
-            const suffix = type.charAt(0).toUpperCase() + type.slice(1);
-            const arrow = document.getElementById(`formArrow${suffix}`);
+    const formId = type === 'payments' ? 'paymentForm' : 'incomeForm';
+    const form = document.getElementById(formId);
+    const suffix = type.charAt(0).toUpperCase() + type.slice(1);
+    const arrow = document.getElementById(`formArrow${suffix}`);
+    const formCard = document.getElementById(`${type}FormCard`);
     
-        if (form.style.display === 'none' || form.style.display === '') {
-            form.style.display = 'block';
-            arrow.textContent = '▲';
-        } else {
+    if (form.style.display === 'none' || form.style.display === '') {
+        form.style.display = 'block';
+        arrow.textContent = '▲';
+        formCard.classList.remove('collapsed');
+        if (type === 'income') {
+            formCard.classList.remove('income-form');
+        }
+    } else {
         form.style.display = 'none';
         arrow.textContent = '▼';
+        formCard.classList.add('collapsed');
+        if (type === 'income') {
+            formCard.classList.add('income-form');
         }
     }
+}
 
         document.getElementById('paymentForm').addEventListener('submit', async function(e) {
     e.preventDefault();
