@@ -1422,7 +1422,7 @@ window.applyCustomRange = function(type) {
         function renderList(type) {
             const container = document.getElementById(`paymentsList${type.charAt(0).toUpperCase() + type.slice(1)}`);
             const loadingIndicator = document.getElementById(`loadingIndicator${type.charAt(0).toUpperCase() + type.slice(1)}`);
-            const data = type === 'payments' ? payments : income;
+            const data = getFilteredData(type);
             
             loadingIndicator.style.display = 'none';
             
