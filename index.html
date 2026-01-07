@@ -1523,7 +1523,7 @@ window.applyCustomRange = function(type) {
             <div style="text-align: right;">
             <span style="color: #666;">Fecha:</span>
             <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(item.date)}</span>
-            ${item.createdAt && item.updatedAt && item.updatedAt !== item.createdAt ? `<br><span style="color: #999; font-size: 10px;">Editado: ${formatDate(item.updatedAt)}</span>` : ''}
+            ${item.updatedAt ? `<br><span style="color: #999; font-size: 10px;">Editado: ${formatDate(item.updatedAt)}</span>` : ''}
         </div>
     </div>
     `;
@@ -1560,7 +1560,7 @@ window.applyCustomRange = function(type) {
                         <div style="padding-left: 8px; text-align: right;">
                             <span style="color: #666;">Fecha:</span>
                             <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(item.date)}</span>
-                            ${item.createdAt && item.updatedAt && item.updatedAt !== item.createdAt ? `<br><span style="color: #999; font-size: 10px;">Editado: ${formatDate(item.updatedAt)}</span>` : ''}
+                            ${item.updatedAt ? `<br><span style="color: #999; font-size: 10px;">Editado: ${formatDate(item.updatedAt)}</span>` : ''}
                         </div>
                     </div>
                     `;
@@ -1736,7 +1736,6 @@ window.applyCustomRange = function(type) {
     location: document.getElementById('locationPayments').value,
     amount: document.getElementById('amountPayments').value,
     method: document.getElementById('methodPayments').value,
-    createdAt: editingId ? payments.find(p => p.id === editingId).createdAt : new Date().toISOString(),
     updatedAt: new Date().toISOString()
 };
     
@@ -1784,7 +1783,6 @@ window.applyCustomRange = function(type) {
     notes: document.getElementById('notesIncome').value || null,
     amount: document.getElementById('amountIncome').value,
     method: document.getElementById('methodIncome').value,
-    createdAt: editingId ? income.find(i => i.id === editingId).createdAt : new Date().toISOString(),
     updatedAt: new Date().toISOString()
 };
     
