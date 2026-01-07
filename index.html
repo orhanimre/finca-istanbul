@@ -1674,19 +1674,17 @@ window.applyCustomRange = function(type) {
     const formCard = document.getElementById(`${type}FormCard`);
     
     if (form.style.display === 'none' || form.style.display === '') {
-        // Expanding - remove all collapsed classes
+        // Expanding - remove collapsed class only
         form.style.display = 'block';
         arrow.textContent = '▲';
         formCard.classList.remove('collapsed');
-        formCard.classList.remove('income-form');
+        // Don't remove income-form class here, it should stay on the income form
     } else {
-        // Collapsing - add appropriate collapsed classes
+        // Collapsing - add collapsed class
         form.style.display = 'none';
         arrow.textContent = '▼';
         formCard.classList.add('collapsed');
-        if (type === 'income') {
-            formCard.classList.add('income-form');
-        }
+        // income-form class is already there from the HTML, no need to add it
     }
 }
 
