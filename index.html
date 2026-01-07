@@ -671,13 +671,27 @@
                     </div>
 
                     <div class="summary-tabs">
-                        <button class="tab-btn active" onclick="changeSummaryPeriod('all', 'payments')">Todo</button>
-                        <button class="tab-btn" onclick="changeSummaryPeriod('week', 'payments')">Esta Semana</button>
-                        <button class="tab-btn" onclick="changeSummaryPeriod('month', 'payments')">Este Mes</button>
-                        <button class="tab-btn" onclick="changeSummaryPeriod('year', 'payments')">Este Año</button>
-                    </div>
+    <button class="tab-btn active" onclick="changeSummaryPeriod('all', 'payments')">Todo</button>
+    <button class="tab-btn" onclick="changeSummaryPeriod('week', 'payments')">Esta Semana</button>
+    <button class="tab-btn" onclick="changeSummaryPeriod('month', 'payments')">Este Mes</button>
+    <button class="tab-btn" onclick="changeSummaryPeriod('year', 'payments')">Este Año</button>
+    <button class="tab-btn" onclick="changeSummaryPeriod('custom', 'payments')">Personalizado</button>
+</div>
 
-                    <div class="total-box" style="display:flex; gap:12px; align-items:center;">
+<div id="customDateRangePayments" style="display: none; margin-bottom: 10px; padding: 10px; background: rgba(255,255,255,0.2); border-radius: 8px;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+        <div>
+            <label style="font-size: 11px; color: white; opacity: 0.9; display: block; margin-bottom: 4px;">Desde</label>
+            <input type="date" id="customFromPayments" onchange="applyCustomRange('payments')" style="width: 100%; padding: 6px; border: none; border-radius: 6px; font-size: 13px;">
+        </div>
+        <div>
+            <label style="font-size: 11px; color: white; opacity: 0.9; display: block; margin-bottom: 4px;">Hasta</label>
+            <input type="date" id="customToPayments" onchange="applyCustomRange('payments')" style="width: 100%; padding: 6px; border: none; border-radius: 6px; font-size: 13px;">
+        </div>
+    </div>
+</div>
+
+<div class="total-box" style="display:flex; gap:12px; align-items:center;">
                         <div style="flex:2; text-align:left;">
                             <div class="total-label" id="periodLabelPayments">Total Pagado - Todo</div>
                             <div class="total-amount" id="totalAmountPayments">$0.00</div>
@@ -822,13 +836,27 @@
                     </div>
 
                     <div class="summary-tabs">
-                        <button class="tab-btn income-tab active" onclick="changeSummaryPeriod('all', 'income')">Todo</button>
-                        <button class="tab-btn income-tab" onclick="changeSummaryPeriod('week', 'income')">Esta Semana</button>
-                        <button class="tab-btn income-tab" onclick="changeSummaryPeriod('month', 'income')">Este Mes</button>
-                        <button class="tab-btn income-tab" onclick="changeSummaryPeriod('year', 'income')">Este Año</button>
-                    </div>
+    <button class="tab-btn income-tab active" onclick="changeSummaryPeriod('all', 'income')">Todo</button>
+    <button class="tab-btn income-tab" onclick="changeSummaryPeriod('week', 'income')">Esta Semana</button>
+    <button class="tab-btn income-tab" onclick="changeSummaryPeriod('month', 'income')">Este Mes</button>
+    <button class="tab-btn income-tab" onclick="changeSummaryPeriod('year', 'income')">Este Año</button>
+    <button class="tab-btn income-tab" onclick="changeSummaryPeriod('custom', 'income')">Personalizado</button>
+</div>
 
-                    <div class="total-box income" style="display:flex; gap:12px; align-items:center;">
+<div id="customDateRangeIncome" style="display: none; margin-bottom: 10px; padding: 10px; background: rgba(255,255,255,0.2); border-radius: 8px;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+        <div>
+            <label style="font-size: 11px; color: white; opacity: 0.9; display: block; margin-bottom: 4px;">Desde</label>
+            <input type="date" id="customFromIncome" onchange="applyCustomRange('income')" style="width: 100%; padding: 6px; border: none; border-radius: 6px; font-size: 13px;">
+        </div>
+        <div>
+            <label style="font-size: 11px; color: white; opacity: 0.9; display: block; margin-bottom: 4px;">Hasta</label>
+            <input type="date" id="customToIncome" onchange="applyCustomRange('income')" style="width: 100%; padding: 6px; border: none; border-radius: 6px; font-size: 13px;">
+        </div>
+    </div>
+</div>
+
+<div class="total-box income" style="display:flex; gap:12px; align-items:center;">
                         <div style="flex:2; text-align:left;">
                             <div class="total-label" id="periodLabelIncome">Total Recibido - Todo</div>
                             <div class="total-amount" id="totalAmountIncome">$0.00</div>
