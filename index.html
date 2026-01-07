@@ -980,6 +980,10 @@
         let editingId = null;
         let currentPeriodPayments = 'all';
         let currentPeriodIncome = 'all';
+        let customDateFromPayments = null;
+        let customDateToPayments = null;
+        let customDateFromIncome = null;
+        let customDateToIncome = null;
         let currentUser = null;
         let isAdmin = false;
         let currentTab = 'budget';
@@ -1193,6 +1197,18 @@ function updateBudgetDisplay() {
                 // Handle date parsing - check if time is already included
                 const itemDate = new Date(item.date.includes('T') ? item.date : item.date + 'T00:00:00');
                 
+                if (currentPeriod === 'custom') {
+                    const fromDate = type === 'payments' ? customDateFromPayments : customDateFromIncome;
+                    const toDate = type === 'payments' ? customDateToPayments : customDateToIncome;
+                    
+                    if (!fromDate || !toDate) return true;
+                    
+                    const from = new Date(fromDate + 'T00:00:00');
+                    const to = new Date(toDate + 'T23:59:59');
+                    
+                    return itemDate >= from && itemDate <= to;
+                }
+                
                 if (currentPeriod === 'week') {
                     const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
                     weekAgo.setHours(0, 0, 0, 0);
@@ -1221,7 +1237,8 @@ function updateBudgetDisplay() {
                 'all': 'Todo',
                 'week': 'Esta Semana',
                 'month': 'Este Mes',
-                'year': 'Este Año'
+                'year': 'Este Año',
+                'custom': 'Personalizado'
             };
 
             const currentPeriod = type === 'payments' ? currentPeriodPayments : currentPeriodIncome;
@@ -1263,6 +1280,11 @@ window.applyCustomRange = function(type) {
     
     if (!fromDate || !toDate) {
         alert('Por favor selecciona ambas fechas (Desde y Hasta)');
+        return;
+    }
+    
+    if (new Date(fromDate) > new Date(toDate)) {
+        alert('La fecha "Desde" debe ser anterior a la fecha "Hasta"');
         return;
     }
     
