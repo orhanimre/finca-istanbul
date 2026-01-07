@@ -690,8 +690,11 @@
                 </div>
 
                 <div class="form-card" id="paymentFormCard">
-                    <div class="form-title" id="formTitlePayments">Agregar Nuevo Pago</div>
-                    <form id="paymentForm">
+                <div class="form-title" id="formTitlePayments" onclick="toggleForm('payments')" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                    <span>Agregar Nuevo Pago</span>
+                    <span id="formArrowPayments">▼</span>
+                </div>
+                    <form id="paymentForm" style="display: none;">
                         <div class="form-group">
                             <label>Fecha</label>
                             <input type="date" id="datePayments" required>
@@ -838,8 +841,11 @@
                 </div>
 
                 <div class="form-card" id="incomeFormCard">
-                    <div class="form-title" id="formTitleIncome">Agregar Nuevo Ingreso</div>
-                    <form id="incomeForm">
+                <div class="form-title" id="formTitleIncome" onclick="toggleForm('income')" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                    <span>Agregar Nuevo Ingreso</span>
+                    <span id="formArrowIncome">▼</span>
+                </div>
+                    <form id="incomeForm" style="display: none;">
                         <div class="form-group">
                             <label>Fecha</label>
                             <input type="date" id="dateIncome" required>
@@ -1534,6 +1540,19 @@ function updateBudgetDisplay() {
             document.getElementById(`addButton${suffix}`).style.display = 'block';
             document.getElementById(`updateButtons${suffix}`).style.display = 'none';
         }
+
+        window.toggleForm = function(type) {
+            const form = document.getElementById(`${type}Form`);
+            const arrow = document.getElementById(`formArrow${type.charAt(0).toUpperCase() + type.slice(1)}`);
+    
+            if (form.style.display === 'none') {
+            form.style.display = 'block';
+            arrow.textContent = '▲';
+            } else {
+            form.style.display = 'none';
+            arrow.textContent = '▼';
+            }
+}
 
         document.getElementById('paymentForm').addEventListener('submit', async function(e) {
     e.preventDefault();
