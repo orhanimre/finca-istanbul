@@ -1669,7 +1669,6 @@ window.applyCustomRange = function(type) {
         }
 
         window.toggleForm = function(type) {
-    // Handle both 'payments' and 'payment' to match form IDs
     const formId = type === 'payments' ? 'paymentForm' : 'incomeForm';
     const form = document.getElementById(formId);
     const suffix = type.charAt(0).toUpperCase() + type.slice(1);
@@ -1677,17 +1676,15 @@ window.applyCustomRange = function(type) {
     const formCard = document.getElementById(`${type}FormCard`);
     
     if (form.style.display === 'none' || form.style.display === '') {
-        // Expanding - remove collapsed class only
+        // Expanding - remove collapsed class
         form.style.display = 'block';
         arrow.textContent = '▲';
         formCard.classList.remove('collapsed');
-        // Don't remove income-form class here, it should stay on the income form
     } else {
         // Collapsing - add collapsed class
         form.style.display = 'none';
         arrow.textContent = '▼';
         formCard.classList.add('collapsed');
-        // income-form class is already there from the HTML, no need to add it
     }
 }
 
