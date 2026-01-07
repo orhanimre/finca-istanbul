@@ -1370,9 +1370,9 @@ function updateBudgetDisplay() {
                 <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.method}</span>
             </div>
             <div>
-                <span style="color: #666;">Fecha:</span>
-                <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(item.date)}</span>
-            </div>
+            <span style="color: #666;">Fecha:</span>
+            <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(item.date)} ${item.updatedAt ? new Date(item.updatedAt).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) : ''}</span>
+        </div>
         </div>
     `;
 } else {
@@ -1407,8 +1407,8 @@ function updateBudgetDisplay() {
                             <div style="width: 1px; height: 100%; background: #e0e0e0;"></div>
                             <div style="padding-left: 8px;">
                                 <span style="color: #666;">Fecha:</span>
-                                <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(item.date)}</span>
-                            </div>
+                                <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(item.date)} ${item.updatedAt ? new Date(item.updatedAt).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) : ''}</span>
+                        </div>
                         </div>
                     `;
                 }
