@@ -1589,37 +1589,42 @@ window.applyCustomRange = function(type) {
                 }
                 
                 return `
-                    <div class="payment-card-wrapper">
-                        ${isAdmin ? `
-                        <div class="swipe-actions">
-                            <div class="swipe-action edit" onclick="editItem('${item.id}', '${type}')">
-                                ✏️<br>Editar
-                            </div>
-                            <div class="swipe-action delete" onclick="deleteItem('${item.id}', '${type}')">
-                                🗑️<br>Eliminar
-                            </div>
-                        </div>
-                        ` : ''}
-                        <div class="payment-card">
-                            <div class="payment-number ${isIncome ? 'income' : ''}">${index + 1}</div>
-                            <div class="payment-header">
-                                <div class="payment-beneficiary">${item.beneficiary}</div>
-                                <div class="payment-amount ${isIncome ? 'income' : ''}">${formatCurrency(item.amount)}</div>
-                            </div>
-                            ${detailsHTML}
-                            ${isAdmin ? `
-                            <div class="desktop-actions">
-                                <button class="desktop-action-btn edit" onclick="editItem('${item.id}', '${type}')">
-                                    ✏️ Editar
-                                </button>
-                                <button class="desktop-action-btn delete" onclick="deleteItem('${item.id}', '${type}')">
-                                    🗑️ Eliminar
-                                </button>
-                            </div>
-                            ` : ''}
-                        </div>
-                    </div>
-                `;
+    <div class="payment-card-wrapper">
+        ${isAdmin ? `
+        <div class="swipe-actions">
+            <div class="swipe-action edit" onclick="event.stopPropagation(); editItem('${item.id}', '${type}')">
+                ✏️<br>Editar
+            </div>
+            <div class="swipe-action delete" onclick="event.stopPropagation(); deleteItem('${item.id}', '${type}')">
+                🗑️<br>Eliminar
+            </div>
+        </div>
+        ` : ''}
+        <div class="payment-card" onclick="toggleCard(this)">
+            <div class="payment-number ${isIncome ? 'income' : ''}">${index + 1}</div>
+            <div class="payment-header">
+                <div class="payment-beneficiary">
+                    ${item.beneficiary}
+                    <span class="payment-card-toggle">▼</span>
+                </div>
+                <div class="payment-amount ${isIncome ? 'income' : ''}">${formatCurrency(item.amount)}</div>
+            </div>
+            <div class="payment-card-details">
+                ${detailsHTML}
+                ${isAdmin ? `
+                <div class="desktop-actions">
+                    <button class="desktop-action-btn edit" onclick="event.stopPropagation(); editItem('${item.id}', '${type}')">
+                        ✏️ Editar
+                    </button>
+                    <button class="desktop-action-btn delete" onclick="event.stopPropagation(); deleteItem('${item.id}', '${type}')">
+                        🗑️ Eliminar
+                    </button>
+                </div>
+                ` : ''}
+            </div>
+        </div>
+    </div>
+`;
             }).join('');
 
             updateSummary(type);
