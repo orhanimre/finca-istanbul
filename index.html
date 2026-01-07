@@ -1524,7 +1524,8 @@ function updateBudgetDisplay() {
                 document.getElementById('notesIncome').value = item.notes || '';
             }
             
-            document.getElementById(`formTitle${suffix}`).textContent = type === 'payments' ? 'Editar Pago' : 'Editar Ingreso';
+            const titleElement = document.getElementById(`formTitle${suffix}`);
+            titleElement.querySelector('span').textContent = type === 'payments' ? 'Editar Pago' : 'Editar Ingreso';
             document.getElementById(`addButton${suffix}`).style.display = 'none';
             document.getElementById(`updateButtons${suffix}`).style.display = 'block';
             
@@ -1536,7 +1537,8 @@ function updateBudgetDisplay() {
             const suffix = type.charAt(0).toUpperCase() + type.slice(1);
             document.getElementById(`${type}Form`).reset();
             if (isAdmin) setTodayDate(type);
-            document.getElementById(`formTitle${suffix}`).textContent = type === 'payments' ? 'Agregar Nuevo Pago' : 'Agregar Nuevo Ingreso';
+            const titleElement = document.getElementById(`formTitle${suffix}`);
+            titleElement.querySelector('span').textContent = type === 'payments' ? 'Agregar Nuevo Pago' : 'Agregar Nuevo Ingreso';
             document.getElementById(`addButton${suffix}`).style.display = 'block';
             document.getElementById(`updateButtons${suffix}`).style.display = 'none';
         }
