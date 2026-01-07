@@ -370,15 +370,37 @@
         }
         
         .payment-card {
-            background: white;
-            padding: 10px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            position: relative;
-            z-index: 2;
-            transform: translateX(0);
-            transition: transform 0.3s ease;
-        }
+    background: white;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: relative;
+    z-index: 2;
+    transform: translateX(0);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.payment-card-details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.payment-card-details.expanded {
+    max-height: 500px;
+}
+
+.payment-card-toggle {
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 12px;
+    transition: transform 0.3s ease;
+}
+
+.payment-card-toggle.expanded {
+    transform: rotate(180deg);
+}
         
         @media (max-width: 767px) {
             .payment-card {
@@ -1848,6 +1870,13 @@ if (editingId) {
                 }
             }
         }
+        window.toggleCard = function(card) {
+    const details = card.querySelector('.payment-card-details');
+    const toggle = card.querySelector('.payment-card-toggle');
+    
+    details.classList.toggle('expanded');
+    toggle.classList.toggle('expanded');
+}
     </script>
 </body>
 </html>
