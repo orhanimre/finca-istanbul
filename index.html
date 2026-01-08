@@ -1473,29 +1473,17 @@ window.applyCustomRange = function(type) {
         return;
     }
     
-    let csv = '\uFEFF'; // BOM for proper UTF-8 in Excel
+    let csv = '\uFEFF'; // BOM for UTF-8 support
     const currentPeriod = type === 'payments' ? currentPeriodPayments : currentPeriodIncome;
     const labels = { 'all': 'Todo', 'today': 'Hoy', 'week': 'Esta Semana', 'month': 'Este Mes', 'year': 'Este Año', 'custom': 'Personalizado' };
     const total = filtered.reduce((sum, item) => sum + parseFloat(item.amount), 0);
     const title = type === 'payments' ? 'Pagos de Construcción' : 'Ingresos Recibidos';
     
     csv += `${title} - ${labels[currentPeriod]}\n`;
-    csv += `Total,${formatCurrency(total)}\n`;
-    csv += `Cantidad,${filtered.length}\n`;
-    csv += `Fecha de Exportación:,${new Date().toLocaleDateString('es-ES')}\n\n`;
+    csv += `Total;${formatCurrency(total)}\n`;
+    csv += `Cantidad;${filtered.length}\n`;
+    csv += `Fecha de Exportación:;${new Date().toLocaleDateString('es-ES')}\n\n`;
     
-    // Helper to safely escape CSV fields
-    const escapeCSV = (field) => {
-        if (field == null || field === '') return '';
-        const str = String(field);
-        // If field contains comma, quote, or newline → wrap in quotes and escape internal quotes
-        if (str.includes(',') || str.includes('"') || str.includes('\n') || str.includes('\r')) {
-            return '"' + str.replace(/"/g, '""') + '"';
-        }
-        return str;
-    };
-    
-    // Helper to convert UTC to Colombia time
     const toColombiaTime = (dateStr) => {
         if (dateStr.endsWith('Z')) {
             const utcDate = new Date(dateStr);
@@ -1505,41 +1493,40 @@ window.applyCustomRange = function(type) {
             const day = String(utcDate.getDate()).padStart(2, '0');
             const hours = String(utcDate.getHours()).padStart(2, '0');
             const minutes = String(utcDate.getMinutes()).padStart(2, '0');
-            return `${year}-${month}-${day} ${hours}:${minutes}`;
+            return `${day}/${month}/${year} ${hours}:${minutes}`;
         }
-        // Fallback: format local date nicely
         const date = new Date(dateStr.includes('T') ? dateStr : dateStr + 'T00:00:00');
         return date.toLocaleDateString('es-ES') + ' ' + date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
     };
     
     if (type === 'payments') {
-        csv += 'Fecha,Beneficiario,Concepto,Notas,Cantidad,Unidad,Categoría,Área/Lugar,Monto,Método\n';
+        csv += 'Fecha;Beneficiario;Concepto;Notas;Cantidad;Unidad;Categoría;Área/Lugar;Monto;Método\n';
         filtered.forEach(item => {
             csv += [
                 toColombiaTime(item.createdAt),
-                escapeCSV(item.beneficiary),
-                escapeCSV(item.concept),
-                escapeCSV(item.notes),
-                escapeCSV(item.quantity),
-                escapeCSV(item.unit),
-                escapeCSV(item.category),
-                escapeCSV(item.location),
+                item.beneficiary || '',
+                item.concept || '',
+                item.notes || '',
+                item.quantity || '',
+                item.unit || '',
+                item.category || '',
+                item.location || '',
                 item.amount,
-                escapeCSV(item.method)
-            ].join(',') + '\n';
+                item.method || ''
+            ].join(';') + '\n';
         });
     } else { // income
-        csv += 'Fecha,Remitente,Receptor,Concepto,Notas,Monto,Método\n';
+        csv += 'Fecha;Remitente;Receptor;Concepto;Notas;Monto;Método\n';
         filtered.forEach(item => {
             csv += [
                 toColombiaTime(item.createdAt),
-                escapeCSV(item.beneficiary),     // Remitente
-                escapeCSV(item.receiver),        // Receptor
-                escapeCSV(item.concept),
-                escapeCSV(item.notes),
+                item.beneficiary || '',     // Remitente
+                item.receiver || '',        // Receptor
+                item.concept || '',
+                item.notes || '',
                 item.amount,
-                escapeCSV(item.method)
-            ].join(',') + '\n';
+                item.method || ''
+            ].join(';') + '\n';
         });
     }
     
@@ -1555,7 +1542,6 @@ window.applyCustomRange = function(type) {
     link.click();
     document.body.removeChild(link);
 }
-
         window.printList = function(type) {
             window.print();
         }
