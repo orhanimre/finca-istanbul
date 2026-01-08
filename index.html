@@ -1473,23 +1473,29 @@ window.applyCustomRange = function(type) {
         return;
     }
     
-    let csv = '\uFEFF'; // BOM for proper UTF-8 encoding in Excel/Numbers
     const currentPeriod = type === 'payments' ? currentPeriodPayments : currentPeriodIncome;
     const labels = { 'all': 'Todo', 'today': 'Hoy', 'week': 'Esta Semana', 'month': 'Este Mes', 'year': 'Este Año', 'custom': 'Personalizado' };
     const total = filtered.reduce((sum, item) => sum + parseFloat(item.amount), 0);
     const title = type === 'payments' ? 'Pagos de Construcción' : 'Ingresos Recibidos';
     
-    csv += `${title} - ${labels[currentPeriod]}\n`;
-    csv += `Total;${formatCurrency(total)}\n`;
-    csv += `Cantidad;${filtered.length}\n`;
-    csv += `Fecha de Exportación:;${new Date().toLocaleDateString('es-ES')}\n\n`;
+    // Prepare header rows (same as your current summary)
+    const headerRows = [
+        [`${title} - ${labels[currentPeriod]}`],
+        [`Total`, formatCurrency(total)],
+        [`Cantidad`, filtered.length],
+        [`Fecha de Exportación:`, new Date().toLocaleDateString('es-ES')],
+        [] // empty row
+    ];
     
-    // Format date/time in Colombian style: DD/MM/YYYY HH:MM
+    // Data headers and rows
+    let dataHeaders = [];
+    let dataRows = [];
+    
     const toColombiaTime = (dateStr) => {
         let date;
         if (dateStr.endsWith('Z')) {
             date = new Date(dateStr);
-            date.setHours(date.getHours() - 5); // UTC to Colombia time
+            date.setHours(date.getHours() - 5);
         } else {
             date = new Date(dateStr.includes('T') ? dateStr : dateStr + 'T00:00:00');
         }
@@ -1502,10 +1508,9 @@ window.applyCustomRange = function(type) {
     };
     
     if (type === 'payments') {
-        // Header for Pagos
-        csv += 'Fecha;Beneficiario;Concepto;Notas;Cantidad;Unidad;Categoría;Área/Lugar;Monto;Método\n';
+        dataHeaders = ['Fecha', 'Beneficiario', 'Concepto', 'Notas', 'Cantidad', 'Unidad', 'Categoría', 'Área/Lugar', 'Monto', 'Método'];
         filtered.forEach(item => {
-            csv += [
+            dataRows.push([
                 toColombiaTime(item.createdAt),
                 item.beneficiary || '',
                 item.concept || '',
@@ -1514,37 +1519,50 @@ window.applyCustomRange = function(type) {
                 item.unit || '',
                 item.category || '',
                 item.location || '',
-                item.amount,
+                item.amount, // keep as number/string – we'll format it
                 item.method || ''
-            ].join(';') + '\n';
+            ]);
         });
     } else {
-        // Header for Ingresos (already working great)
-        csv += 'Fecha;Remitente;Receptor;Concepto;Notas;Monto;Método\n';
+        dataHeaders = ['Fecha', 'Remitente', 'Receptor', 'Concepto', 'Notas', 'Monto', 'Método'];
         filtered.forEach(item => {
-            csv += [
+            dataRows.push([
                 toColombiaTime(item.createdAt),
-                item.beneficiary || '',     // Remitente
-                item.receiver || '',        // Receptor
+                item.beneficiary || '',
+                item.receiver || '',
                 item.concept || '',
                 item.notes || '',
                 item.amount,
                 item.method || ''
-            ].join(';') + '\n';
+            ]);
         });
     }
     
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    const fileName = `${title.replace(/ /g, '_')}_${new Date().toISOString().split('T')[0]}.csv`;
+    // Combine everything into one array of arrays
+    const wsData = [...headerRows, dataHeaders, ...dataRows];
     
-    link.setAttribute('href', url);
-    link.setAttribute('download', fileName);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // Create worksheet
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    
+    // Apply left alignment to ALL cells
+    const range = XLSX.utils.decode_range(ws['!ref']);
+    for (let R = range.s.r; R <= range.e.r; ++R) {
+        for (let C = range.s.c; C <= range.e.c; ++C) {
+            const cell_address = XLSX.utils.encode_cell({r: R, c: C});
+            if (!ws[cell_address]) continue;
+            if (!ws[cell_address].s) ws[cell_address].s = {};
+            ws[cell_address].s.alignment = { horizontal: 'left' };
+        }
+    }
+    
+    // Optional: Auto-size columns for better look
+    ws['!cols'] = dataHeaders.map(() => ({ wch: 20 })); // adjust width as needed
+    
+    // Create workbook and download
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Datos');
+    const fileName = `${title.replace(/ /g, '_')}_${new Date().toISOString().split('T')[0]}.xlsx`;
+    XLSX.writeFile(wb, fileName);
 }
         window.printList = function(type) {
             window.print();
