@@ -1470,7 +1470,6 @@ window.applyCustomRange = function(type) {
         alert('Error: SheetJS library no cargó correctamente.');
         return;
     }
-
     const filtered = getFilteredData(type);
     
     if (filtered.length === 0) {
@@ -1483,11 +1482,19 @@ window.applyCustomRange = function(type) {
     const total = filtered.reduce((sum, item) => sum + parseFloat(item.amount), 0);
     const title = type === 'payments' ? 'Pagos de Construcción' : 'Ingresos Recibidos';
     
+    // Helper function to format numbers with thousand separators
+    const formatNumber = (num) => {
+        return parseFloat(num).toLocaleString('es-CO', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2
+        });
+    };
+    
     const headerRows = [
-        [`${title} - ${labels[currentPeriod]}`],
-        [`Total`, formatCurrency(total)],
-        [`Cantidad`, filtered.length],
-        [`Fecha de Exportación:`, new Date().toLocaleDateString('es-ES')],
+        [title + ' - ' + labels[currentPeriod]],
+        ['Total', formatCurrency(total)],
+        ['Cantidad', filtered.length],
+        ['Fecha de Exportación:', new Date().toLocaleDateString('es-ES')],
         []
     ];
     
@@ -1522,7 +1529,7 @@ window.applyCustomRange = function(type) {
                 item.unit || '',
                 item.category || '',
                 item.location || '',
-                parseFloat(item.amount),
+                formatNumber(item.amount),  // Format as string with separators
                 item.method || ''
             ]);
         });
@@ -1535,7 +1542,7 @@ window.applyCustomRange = function(type) {
                 item.receiver || '',
                 item.concept || '',
                 item.notes || '',
-                parseFloat(item.amount),
+                formatNumber(item.amount),  // Format as string with separators
                 item.method || ''
             ]);
         });
@@ -1544,7 +1551,7 @@ window.applyCustomRange = function(type) {
     const wsData = [...headerRows, dataHeaders, ...dataRows];
     const ws = XLSX.utils.aoa_to_sheet(wsData);
     
-    // SOLO forzamos alineación izquierda (nada más)
+    // Force left alignment for all cells
     const range = XLSX.utils.decode_range(ws['!ref']);
     for (let R = range.s.r; R <= range.e.r; ++R) {
         for (let C = range.s.c; C <= range.e.c; ++C) {
