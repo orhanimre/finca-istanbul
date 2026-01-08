@@ -1810,7 +1810,7 @@ container.innerHTML = html;
     
     const dateTime = item.date.split('T');
     document.getElementById(`date${suffix}`).value = dateTime[0];
-    document.getElementById(`time${suffix}`).value = dateTime[1] || '00:00';
+    document.getElementById(`time${suffix}`).value = dateTime[1] ? dateTime[1].substring(0, 5) : '00:00';
     document.getElementById(`beneficiary${suffix}`).value = item.beneficiary;
     document.getElementById(`concept${suffix}`).value = item.concept;
     document.getElementById(`amount${suffix}`).value = item.amount;
