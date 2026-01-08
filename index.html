@@ -1510,6 +1510,12 @@ window.applyCustomRange = function(type) {
         return `${day}/${month}/${year} ${hours}:${minutes}`;
     };
     
+    // Helper to format number with dots as thousand separator (no decimals)
+    const formatWithDots = (num) => {
+        if (!num) return '';
+        return parseFloat(num).toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    };
+    
     if (type === 'payments') {
         dataHeaders = ['Fecha', 'Beneficiario', 'Concepto', 'Notas', 'Cantidad', 'Unidad', 'Categoría', 'Área/Lugar', 'Monto', 'Método'];
         filtered.forEach(item => {
@@ -1518,11 +1524,11 @@ window.applyCustomRange = function(type) {
                 item.beneficiary || '',
                 item.concept || '',
                 item.notes || '',
-                item.quantity ? "'" + item.quantity : '',   // ← Forces left alignment
+                formatWithDots(item.quantity),
                 item.unit || '',
                 item.category || '',
                 item.location || '',
-                "'" + item.amount,                          // ← Forces left alignment (invisible apostrophe)
+                formatWithDots(item.amount),
                 item.method || ''
             ]);
         });
@@ -1535,7 +1541,7 @@ window.applyCustomRange = function(type) {
                 item.receiver || '',
                 item.concept || '',
                 item.notes || '',
-                "'" + item.amount,                          // ← Forces left alignment
+                formatWithDots(item.amount),
                 item.method || ''
             ]);
         });
@@ -1544,15 +1550,26 @@ window.applyCustomRange = function(type) {
     const wsData = [...headerRows, dataHeaders, ...dataRows];
     const ws = XLSX.utils.aoa_to_sheet(wsData);
     
-    // Extra safety: force left alignment on all cells
+    // Force left alignment on ALL cells
     const range = XLSX.utils.decode_range(ws['!ref']);
     for (let R = range.s.r; R <= range.e.r; ++R) {
         for (let C = range.s.c; C <= range.e.c; ++C) {
-            const cell = ws[XLSX.utils.encode_cell({r: R, c: C})];
-            if (cell && !cell.s) {
-                cell.s = { alignment: { horizontal: 'left' } };
-            } else if (cell) {
-                cell.s.alignment = { horizontal: 'left' };
+            const cell_address = XLSX.utils.encode_cell({r: R, c: C});
+            if (ws[cell_address]) {
+                if (!ws[cell_address].s) ws[cell_address].s = {};
+                ws[cell_address].s.alignment = { horizontal: 'left' };
+                
+                // Force Monto and Cantidad columns to string type (clean display, left aligned)
+                const colIndex = C;
+                if (type === 'payments') {
+                    if (colIndex === 4 || colIndex === 8) { // Cantidad (col 4), Monto (col 8, 0-based)
+                        ws[cell_address].t = 's';
+                    }
+                } else {
+                    if (colIndex === 5) { // Monto in Ingresos (col 5)
+                        ws[cell_address].t = 's';
+                    }
+                }
             }
         }
     }
@@ -1563,7 +1580,6 @@ window.applyCustomRange = function(type) {
     XLSX.utils.book_append_sheet(wb, ws, 'Datos');
     
     const fileName = `${title.replace(/ /g, '_')}_${new Date().toISOString().split('T')[0]}.xlsx`;
-    
     XLSX.writeFile(wb, fileName);
 }
         window.printList = function(type) {
