@@ -1699,21 +1699,19 @@ Object.keys(groupedData).forEach(dateLabel => {
                         <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.method}</span>
                     </div>
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 3px 0; font-size: 11px;">
+                <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: start;">
     <div>
-        <div style="margin-bottom: 8px;">
-            <span style="color: #666;">Categoría:</span>
-            <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.category}</span>
-        </div>
+        <span style="color: #666;">Categoría:</span>
+        <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.category}</span>
     </div>
-    <div>
-        <div style="margin-bottom: 4px;">
+    <div style="min-width: 0;">
+        <div style="margin-bottom: 2px;">
             <span style="color: #666;">Fecha:</span>
-            <span style="color: #333; font-weight: 500; margin-left: 4px; display: block; font-size: 11px;">${formatDate(item.createdAt)}</span>
         </div>
-        ${item.createdBy ? `<div style="color: #999; font-size: 10px; margin-top: 2px;">Por: ${item.createdBy}</div>` : ''}
-        ${item.updatedAt && item.updatedAt !== item.createdAt ? `<div style="color: #999; font-size: 10px; margin-top: 2px;">Editado: ${formatDate(item.updatedAt)}</div>` : ''}
-        ${item.updatedBy ? `<div style="color: #999; font-size: 10px; margin-top: 2px;">Por: ${item.updatedBy}</div>` : ''}
+        <div style="color: #333; font-weight: 500; font-size: 11px; word-break: break-all;">${formatDate(item.createdAt)}</div>
+        ${item.createdBy ? `<div style="color: #999; font-size: 10px; margin-top: 2px; word-break: break-all;">Por: ${item.createdBy}</div>` : ''}
+        ${item.updatedAt && item.updatedAt !== item.createdAt ? `<div style="color: #999; font-size: 10px; margin-top: 2px; word-break: break-all;">Editado: ${formatDate(item.updatedAt)}</div>` : ''}
+        ${item.updatedBy ? `<div style="color: #999; font-size: 10px; margin-top: 2px; word-break: break-all;">Por: ${item.updatedBy}</div>` : ''}
     </div>
 </div>
             `;
