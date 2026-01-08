@@ -1544,30 +1544,14 @@ window.applyCustomRange = function(type) {
     const wsData = [...headerRows, dataHeaders, ...dataRows];
     const ws = XLSX.utils.aoa_to_sheet(wsData);
     
-    // Force left alignment + Colombian number format on numeric columns
+    // SOLO forzamos alineación izquierda (nada más)
     const range = XLSX.utils.decode_range(ws['!ref']);
     for (let R = range.s.r; R <= range.e.r; ++R) {
         for (let C = range.s.c; C <= range.e.c; ++C) {
             const cell_address = XLSX.utils.encode_cell({r: R, c: C});
-            const cell = ws[cell_address];
-            if (!cell) continue;
-            
-            // Always left align
-            if (!cell.s) cell.s = {};
-            cell.s.alignment = { horizontal: 'left' };
-            
-            // Apply Colombian number format to Monto and Cantidad (only data rows)
-            if (R >= headerRows.length + 1 && typeof cell.v === 'number') {  // Skip headers
-                const colIndex = C;
-                let isMontoOrCantidad = false;
-                if (type === 'payments') {
-                    if (colIndex === 4 || colIndex === 8) isMontoOrCantidad = true; // Cantidad & Monto
-                } else {
-                    if (colIndex === 5) isMontoOrCantidad = true; // Monto
-                }
-                if (isMontoOrCantidad) {
-                    cell.z = '#.##0';  // Forces dots as thousand separator: 1.000.000
-                }
+            if (ws[cell_address]) {
+                if (!ws[cell_address].s) ws[cell_address].s = {};
+                ws[cell_address].s.alignment = { horizontal: 'left' };
             }
         }
     }
