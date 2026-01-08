@@ -1669,9 +1669,9 @@ Object.keys(groupedData).forEach(dateLabel => {
                     <div style="text-align: right;">
     <span style="color: #666;">Fecha:</span>
     <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(item.createdAt)}</span>
-    ${item.createdBy ? `<br><span style="color: #999; font-size: 10px;">Por: ${item.createdBy.split('@')[0]}</span>` : ''}
+    ${item.createdBy ? `<br><span style="color: #999; font-size: 10px;">Por: ${item.createdBy}</span>` : ''}
     ${item.updatedAt && item.updatedAt !== item.createdAt ? `<br><span style="color: #999; font-size: 10px;">Editado: ${formatDate(item.updatedAt)}</span>` : ''}
-    ${item.updatedBy ? `<br><span style="color: #999; font-size: 10px;">Por: ${item.updatedBy.split('@')[0]}</span>` : ''}
+    ${item.updatedBy ? `<br><span style="color: #999; font-size: 10px;">Por: ${item.updatedBy}</span>` : ''}
 </div>
             </div>
             `;
@@ -1699,17 +1699,18 @@ Object.keys(groupedData).forEach(dateLabel => {
                         <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.method}</span>
                     </div>
                 </div>
-                <div style="display: grid; grid-template-columns: 1.5fr 1px 1fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: center;">
+                <div style="display: grid; grid-template-columns: 1.5fr 1px 1fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: start;">
 <div>
     <span style="color: #666;">Categoría:</span>
     <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.category}</span>
 </div>
+<div style="width: 1px; height: 100%; background: #e0e0e0;"></div>
 <div style="padding-left: 8px;">
     <span style="color: #666;">Fecha:</span>
-    <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(item.createdAt)}</span>
-    ${item.createdBy ? `<br><span style="color: #999; font-size: 10px;">Por: ${item.createdBy.split('@')[0]}</span>` : ''}
-    ${item.updatedAt && item.updatedAt !== item.createdAt ? `<br><span style="color: #999; font-size: 10px;">Editado: ${formatDate(item.updatedAt)}</span>` : ''}
-    ${item.updatedBy ? `<br><span style="color: #999; font-size: 10px;">Por: ${item.updatedBy.split('@')[0]}</span>` : ''}
+    <span style="color: #333; font-weight: 500; margin-left: 4px; display: block; word-break: break-word;">${formatDate(item.createdAt)}</span>
+    ${item.createdBy ? `<span style="color: #999; font-size: 10px; display: block; word-break: break-word;">Por: ${item.createdBy}</span>` : ''}
+    ${item.updatedAt && item.updatedAt !== item.createdAt ? `<span style="color: #999; font-size: 10px; display: block; word-break: break-word;">Editado: ${formatDate(item.updatedAt)}</span>` : ''}
+    ${item.updatedBy ? `<span style="color: #999; font-size: 10px; display: block; word-break: break-word;">Por: ${item.updatedBy}</span>` : ''}
 </div>
 </div>
             `;
