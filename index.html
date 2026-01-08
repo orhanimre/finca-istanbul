@@ -1567,21 +1567,24 @@ window.applyCustomRange = function(type) {
     const wsData = [...headerRows, dataHeaders, ...dataRows];
     const ws = XLSX.utils.aoa_to_sheet(wsData);
     
-    // Apply formatting to cells
+    // Apply formatting to cells with proper vertical alignment
     const range = XLSX.utils.decode_range(ws['!ref']);
     for (let R = range.s.r; R <= range.e.r; ++R) {
         for (let C = range.s.c; C <= range.e.c; ++C) {
             const cell_address = XLSX.utils.encode_cell({r: R, c: C});
             if (ws[cell_address]) {
                 if (!ws[cell_address].s) ws[cell_address].s = {};
+                if (!ws[cell_address].s.alignment) ws[cell_address].s.alignment = {};
                 
                 // Apply number format with thousand separator to amount column (no decimals)
                 if (R >= 6 && C === amountColumnIndex && typeof ws[cell_address].v === 'number') {
                     ws[cell_address].z = '#,##0';
-                    ws[cell_address].s.alignment = { horizontal: 'left', wrapText: true, vertical: 'top' };
-                } else {
-                    ws[cell_address].s.alignment = { horizontal: 'left', wrapText: true, vertical: 'top' };
                 }
+                
+                // Force vertical top alignment for all cells
+                ws[cell_address].s.alignment.horizontal = 'left';
+                ws[cell_address].s.alignment.vertical = 'top';
+                ws[cell_address].s.alignment.wrapText = true;
             }
         }
     }
