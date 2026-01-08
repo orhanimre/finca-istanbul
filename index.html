@@ -1698,17 +1698,17 @@ Object.keys(groupedData).forEach(dateLabel => {
                     </div>
                 </div>
                 <div style="display: grid; grid-template-columns: 1.5fr 1px 1fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: center;">
-                <div>
-                    <span style="color: #666;">Categoría:</span>
-                    <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.category}</span>
-                </div>
-                <div style="width: 1px; height: 100%; background: #e0e0e0;"></div>
-                <div style="padding-left: 8px; text-align: right;">
-            <span style="color: #666;">Fecha:</span>
-            <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(item.date)}</span>
-            ${item.updatedAt && item.updatedAt !== item.date ? `<br><span style="color: #999; font-size: 10px;">Editado: ${formatDate(item.updatedAt)}</span>` : ''}
-        </div>
-            </div>
+<div>
+    <span style="color: #666;">Categoría:</span>
+    <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.category}</span>
+</div>
+<div style="width: 1px; height: 100%; background: #e0e0e0;"></div>
+<div style="padding-left: 8px;">
+    <span style="color: #666;">Fecha:</span>
+    <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(item.date)}</span>
+    ${item.updatedAt && item.updatedAt !== item.date ? `<br><span style="color: #999; font-size: 10px;">Editado: ${formatDate(item.updatedAt)}</span>` : ''}
+</div>
+</div>
             `;
         }
         
@@ -1869,22 +1869,23 @@ container.innerHTML = html;
 }
 
         window.toggleForm = function(type) {
-    // Auto-expand the form if it's collapsed
-const formId = type === 'payments' ? 'paymentForm' : 'incomeForm';
-const form = document.getElementById(formId);
-const arrow = document.getElementById(`formArrow${suffix}`);
-const formCardId = type === 'payments' ? 'paymentFormCard' : 'incomeFormCard';
-const formCard = document.getElementById(formCardId);
-
-if (form && (form.style.display === 'none' || form.style.display === '')) {
-    form.style.display = 'block';
-    if (arrow) arrow.textContent = '▲';
-    if (formCard) formCard.classList.remove('collapsed');
-} else {
+    const formId = type === 'payments' ? 'paymentForm' : 'incomeForm';
+    const form = document.getElementById(formId);
+    const suffix = type.charAt(0).toUpperCase() + type.slice(1);  // ✅ Define suffix!
+    const arrow = document.getElementById(`formArrow${suffix}`);
+    const formCardId = type === 'payments' ? 'paymentFormCard' : 'incomeFormCard';
+    const formCard = document.getElementById(formCardId);
+    
+    if (form && (form.style.display === 'none' || form.style.display === '')) {
+        // Expanding - remove collapsed class
+        form.style.display = 'block';
+        if (arrow) arrow.textContent = '▲';
+        if (formCard) formCard.classList.remove('collapsed');
+    } else {
         // Collapsing - add collapsed class
-        form.style.display = 'none';
-        arrow.textContent = '▼';
-        formCard.classList.add('collapsed');
+        if (form) form.style.display = 'none';
+        if (arrow) arrow.textContent = '▼';
+        if (formCard) formCard.classList.add('collapsed');
     }
 }
 
