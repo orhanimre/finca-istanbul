@@ -507,21 +507,50 @@
             color: #333;
             font-weight: 500;
         }
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: white;
-        }
-        .empty-state-icon {
-            font-size: 60px;
-            margin-bottom: 10px;
-        }
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: white;
-            font-size: 16px;
-        }
+        .date-separator {
+    text-align: center;
+    margin: 20px 0 12px 0;
+    position: relative;
+}
+.date-separator-line {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.3);
+    z-index: 1;
+}
+.date-separator-text {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+.date-separator-text.income {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: white;
+}
+.empty-state-icon {
+    font-size: 60px;
+    margin-bottom: 10px;
+}
+.loading {
+    text-align: center;
+    padding: 20px;
+    color: white;
+    font-size: 16px;
+}
 
         .floating-refresh {
     position: fixed;
@@ -1463,6 +1492,29 @@ window.applyCustomRange = function(type) {
             window.print();
         }
 
+        function getDateLabel(dateStr) {
+    const itemDate = new Date(dateStr.includes('T') ? dateStr : dateStr + 'T00:00:00');
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    const itemDateOnly = new Date(itemDate);
+    itemDateOnly.setHours(0, 0, 0, 0);
+    
+    if (itemDateOnly.getTime() === today.getTime()) {
+        return 'Hoy';
+    } else if (itemDateOnly.getTime() === yesterday.getTime()) {
+        return 'Ayer';
+    } else {
+        const day = String(itemDate.getDate()).padStart(2, '0');
+        const month = String(itemDate.getMonth() + 1).padStart(2, '0');
+        const year = itemDate.getFullYear();
+        return `${day}.${month}.${year}`;
+    }
+}
+
         function initSwipeGestures(type) {
     if (window.innerWidth >= 768 || !isAdmin) return;
     
@@ -1564,116 +1616,140 @@ window.applyCustomRange = function(type) {
                 return;
             }
 
-            const isIncome = type === 'income';
-            
-            container.innerHTML = data.map((item, index) => {
-                let detailsHTML = '';
-                
-                if (isIncome) {
-    detailsHTML = `
-        <div style="padding: 6px 0;">
-            <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Receptor:</div>
-            <div style="font-size: 13px; color: #333; font-weight: 500;">${item.receiver}</div>
+            // Group data by date
+const groupedData = {};
+data.forEach(item => {
+    const dateLabel = getDateLabel(item.date);
+    if (!groupedData[dateLabel]) {
+        groupedData[dateLabel] = [];
+    }
+    groupedData[dateLabel].push(item);
+});
+
+const isIncome = type === 'income';
+let html = '';
+let overallIndex = 0;
+
+Object.keys(groupedData).forEach(dateLabel => {
+    html += `
+        <div class="date-separator">
+            <div class="date-separator-line"></div>
+            <span class="date-separator-text ${isIncome ? 'income' : ''}">${dateLabel}</span>
         </div>
-        <div style="padding: 6px 0;">
-            <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Concepto:</div>
-            <div style="font-size: 13px; color: #333; font-weight: 500;">${item.concept}</div>
-        </div>
-        ${item.notes ? `
-        <div style="padding: 6px 0;">
-            <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Notas:</div>
-            <div style="font-size: 12px; color: #ff4444; font-weight: 500;">${item.notes}</div>
-        </div>
-        ` : ''}
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 3px 0; font-size: 11px;">
-        <div>
-            <span style="color: #666;">Método:</span>
-            <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.method}</span>
-        </div>
-            <div style="text-align: right;">
-    <span style="color: #666;">Fecha:</span>
-    <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(item.date)}</span>
-    ${item.updatedAt && item.updatedAt !== item.date ? `<br><span style="color: #999; font-size: 10px;">Editado: ${formatDate(item.updatedAt)}</span>` : ''}
-</div>
-    </div>
     `;
-} else {
-                    detailsHTML = `
-                        <div style="display: grid; grid-template-columns: 1.5fr 1px 1fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: center;">
-                            <div>
-                                <span style="color: #666;">Concepto:</span>
-                                <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.concept}</span>
-                            </div>
-                            <div style="width: 1px; height: 100%; background: #e0e0e0;"></div>
-                            <div style="padding-left: 8px;">
-                                <span style="color: #666;">Área:</span>
-                                <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.location}</span>
-                            </div>
-                        </div>
-                        <div style="display: grid; grid-template-columns: 1.5fr 1px 1fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: center;">
-                            <div>
-                                <span style="color: #666;">${item.quantity ? 'Cantidad:' : 'Categoría:'}</span>
-                                <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.quantity ? item.quantity + ' ' + (item.unit || '') : item.category}</span>
-                            </div>
-                            <div style="width: 1px; height: 100%; background: #e0e0e0;"></div>
-                            <div style="padding-left: 8px;">
-                                <span style="color: #666;">Método:</span>
-                                <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.method}</span>
-                            </div>
-                        </div>
-                        <div style="display: grid; grid-template-columns: 1.5fr 1px 1fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: center;">
-                        <div>
-                            <span style="color: #666;">Categoría:</span>
-                            <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.category}</span>
-                        </div>
-                        <div style="width: 1px; height: 100%; background: #e0e0e0;"></div>
-                        <div style="padding-left: 8px; text-align: right;">
-    <span style="color: #666;">Fecha:</span>
-    <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(item.date)}</span>
-    ${item.updatedAt && item.updatedAt !== item.date ? `<br><span style="color: #999; font-size: 10px;">Editado: ${formatDate(item.updatedAt)}</span>` : ''}
-</div>
-                    </div>
-                    `;
-                }
-                
-                return `
-    <div class="payment-card-wrapper">
-        ${isAdmin ? `
-        <div class="swipe-actions">
-            <div class="swipe-action edit" onclick="event.stopPropagation(); editItem('${item.id}', '${type}')">
-                ✏️<br>Editar
-            </div>
-            <div class="swipe-action delete" onclick="event.stopPropagation(); deleteItem('${item.id}', '${type}')">
-                🗑️<br>Eliminar
-            </div>
-        </div>
-        ` : ''}
-        <div class="payment-card" onclick="toggleCard(this)">
-            <div class="payment-number ${isIncome ? 'income' : ''}">${index + 1}</div>
-            <div class="payment-header">
-                <div class="payment-beneficiary">
-                    ${item.beneficiary}
-                    <span class="payment-card-toggle">▼</span>
+    
+    groupedData[dateLabel].forEach(item => {
+        overallIndex++;
+        let detailsHTML = '';
+        
+        if (isIncome) {
+            detailsHTML = `
+                <div style="padding: 6px 0;">
+                    <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Receptor:</div>
+                    <div style="font-size: 13px; color: #333; font-weight: 500;">${item.receiver}</div>
                 </div>
-                <div class="payment-amount ${isIncome ? 'income' : ''}">${formatCurrency(item.amount)}</div>
-            </div>
-            <div class="payment-card-details">
-                ${detailsHTML}
-                ${isAdmin ? `
-                <div class="desktop-actions">
-                    <button class="desktop-action-btn edit" onclick="event.stopPropagation(); editItem('${item.id}', '${type}')">
-                        ✏️ Editar
-                    </button>
-                    <button class="desktop-action-btn delete" onclick="event.stopPropagation(); deleteItem('${item.id}', '${type}')">
-                        🗑️ Eliminar
-                    </button>
+                <div style="padding: 6px 0;">
+                    <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Concepto:</div>
+                    <div style="font-size: 13px; color: #333; font-weight: 500;">${item.concept}</div>
+                </div>
+                ${item.notes ? `
+                <div style="padding: 6px 0;">
+                    <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Notas:</div>
+                    <div style="font-size: 12px; color: #ff4444; font-weight: 500;">${item.notes}</div>
                 </div>
                 ` : ''}
-            </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 3px 0; font-size: 11px;">
+                <div>
+                    <span style="color: #666;">Método:</span>
+                    <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.method}</span>
+                </div>
+                    <div style="text-align: right;">
+            <span style="color: #666;">Fecha:</span>
+            <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(item.date)}</span>
+            ${item.updatedAt && item.updatedAt !== item.date ? `<br><span style="color: #999; font-size: 10px;">Editado: ${formatDate(item.updatedAt)}</span>` : ''}
         </div>
-    </div>
-`;
-            }).join('');
+            </div>
+            `;
+        } else {
+            detailsHTML = `
+                <div style="display: grid; grid-template-columns: 1.5fr 1px 1fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: center;">
+                    <div>
+                        <span style="color: #666;">Concepto:</span>
+                        <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.concept}</span>
+                    </div>
+                    <div style="width: 1px; height: 100%; background: #e0e0e0;"></div>
+                    <div style="padding-left: 8px;">
+                        <span style="color: #666;">Área:</span>
+                        <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.location}</span>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1.5fr 1px 1fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: center;">
+                    <div>
+                        <span style="color: #666;">${item.quantity ? 'Cantidad:' : 'Categoría:'}</span>
+                        <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.quantity ? item.quantity + ' ' + (item.unit || '') : item.category}</span>
+                    </div>
+                    <div style="width: 1px; height: 100%; background: #e0e0e0;"></div>
+                    <div style="padding-left: 8px;">
+                        <span style="color: #666;">Método:</span>
+                        <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.method}</span>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1.5fr 1px 1fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: center;">
+                <div>
+                    <span style="color: #666;">Categoría:</span>
+                    <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.category}</span>
+                </div>
+                <div style="width: 1px; height: 100%; background: #e0e0e0;"></div>
+                <div style="padding-left: 8px; text-align: right;">
+            <span style="color: #666;">Fecha:</span>
+            <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(item.date)}</span>
+            ${item.updatedAt && item.updatedAt !== item.date ? `<br><span style="color: #999; font-size: 10px;">Editado: ${formatDate(item.updatedAt)}</span>` : ''}
+        </div>
+            </div>
+            `;
+        }
+        
+        html += `
+            <div class="payment-card-wrapper">
+                ${isAdmin ? `
+                <div class="swipe-actions">
+                    <div class="swipe-action edit" onclick="event.stopPropagation(); editItem('${item.id}', '${type}')">
+                        ✏️<br>Editar
+                    </div>
+                    <div class="swipe-action delete" onclick="event.stopPropagation(); deleteItem('${item.id}', '${type}')">
+                        🗑️<br>Eliminar
+                    </div>
+                </div>
+                ` : ''}
+                <div class="payment-card" onclick="toggleCard(this)">
+                    <div class="payment-number ${isIncome ? 'income' : ''}">${overallIndex}</div>
+                    <div class="payment-header">
+                        <div class="payment-beneficiary">
+                            ${item.beneficiary}
+                            <span class="payment-card-toggle">▼</span>
+                        </div>
+                        <div class="payment-amount ${isIncome ? 'income' : ''}">${formatCurrency(item.amount)}</div>
+                    </div>
+                    <div class="payment-card-details">
+                        ${detailsHTML}
+                        ${isAdmin ? `
+                        <div class="desktop-actions">
+                            <button class="desktop-action-btn edit" onclick="event.stopPropagation(); editItem('${item.id}', '${type}')">
+                                ✏️ Editar
+                            </button>
+                            <button class="desktop-action-btn delete" onclick="event.stopPropagation(); deleteItem('${item.id}', '${type}')">
+                                🗑️ Eliminar
+                            </button>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+});
+
+container.innerHTML = html;
 
             updateSummary(type);
             
