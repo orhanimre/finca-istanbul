@@ -1494,6 +1494,27 @@ window.applyCustomRange = function(type) {
     let dataRows = [];
     let amountColumnIndex = -1;
     
+    // Function to wrap text at specified character length
+    const wrapText = (text, maxLength) => {
+        if (!text || text.length <= maxLength) return text;
+        
+        const words = text.split(' ');
+        const lines = [];
+        let currentLine = '';
+        
+        words.forEach(word => {
+            if ((currentLine + word).length <= maxLength) {
+                currentLine += (currentLine ? ' ' : '') + word;
+            } else {
+                if (currentLine) lines.push(currentLine);
+                currentLine = word;
+            }
+        });
+        
+        if (currentLine) lines.push(currentLine);
+        return lines.join('\n');
+    };
+    
     const toColombiaTime = (dateStr) => {
         let date;
         if (dateStr.endsWith('Z')) {
@@ -1516,14 +1537,14 @@ window.applyCustomRange = function(type) {
         filtered.forEach(item => {
             dataRows.push([
                 toColombiaTime(item.createdAt),
-                item.beneficiary || '',
-                item.concept || '',
-                item.notes || '',
+                wrapText(item.beneficiary || '', 20),
+                wrapText(item.concept || '', 20),
+                wrapText(item.notes || '', 25),
                 item.quantity ? parseFloat(item.quantity) : null,
                 item.unit || '',
-                item.category || '',
-                item.location || '',
-                parseFloat(item.amount),  // Keep as number
+                wrapText(item.category || '', 15),
+                wrapText(item.location || '', 15),
+                parseFloat(item.amount),
                 item.method || ''
             ]);
         });
@@ -1533,11 +1554,11 @@ window.applyCustomRange = function(type) {
         filtered.forEach(item => {
             dataRows.push([
                 toColombiaTime(item.createdAt),
-                item.beneficiary || '',
-                item.receiver || '',
-                item.concept || '',
-                item.notes || '',
-                parseFloat(item.amount),  // Keep as number
+                wrapText(item.beneficiary || '', 20),
+                wrapText(item.receiver || '', 20),
+                wrapText(item.concept || '', 20),
+                wrapText(item.notes || '', 25),
+                parseFloat(item.amount),
                 item.method || ''
             ]);
         });
@@ -1555,18 +1576,41 @@ window.applyCustomRange = function(type) {
                 if (!ws[cell_address].s) ws[cell_address].s = {};
                 
                 // Apply number format with thousand separator to amount column (no decimals)
-                // Row 5 is where headers start (0-indexed), so data starts at row 6
                 if (R >= 6 && C === amountColumnIndex && typeof ws[cell_address].v === 'number') {
-                    ws[cell_address].z = '#,##0'; // Number format with thousand separator, no decimals
-                    ws[cell_address].s.alignment = { horizontal: 'left', wrapText: true };
+                    ws[cell_address].z = '#,##0';
+                    ws[cell_address].s.alignment = { horizontal: 'left', wrapText: true, vertical: 'top' };
                 } else {
-                    ws[cell_address].s.alignment = { horizontal: 'left', wrapText: true };
+                    ws[cell_address].s.alignment = { horizontal: 'left', wrapText: true, vertical: 'top' };
                 }
             }
         }
     }
     
-    ws['!cols'] = dataHeaders.map(() => ({ wch: 22 }));
+    // Set narrow column widths to match wrapped text
+    if (type === 'payments') {
+        ws['!cols'] = [
+            { wch: 15 }, // Fecha
+            { wch: 18 }, // Beneficiario
+            { wch: 18 }, // Concepto
+            { wch: 20 }, // Notas
+            { wch: 8 },  // Cantidad
+            { wch: 10 }, // Unidad
+            { wch: 15 }, // Categoría
+            { wch: 15 }, // Área/Lugar
+            { wch: 12 }, // Monto
+            { wch: 12 }  // Método
+        ];
+    } else {
+        ws['!cols'] = [
+            { wch: 15 }, // Fecha
+            { wch: 18 }, // Remitente
+            { wch: 18 }, // Receptor
+            { wch: 18 }, // Concepto
+            { wch: 20 }, // Notas
+            { wch: 12 }, // Monto
+            { wch: 12 }  // Método
+        ];
+    }
     
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Datos');
