@@ -1847,29 +1847,40 @@ container.innerHTML = html;
 }
 
         window.cancelEdit = function(type) {
-            editingId = null;
-            const suffix = type.charAt(0).toUpperCase() + type.slice(1);
-            document.getElementById(`${type}Form`).reset();
-            if (isAdmin) setTodayDate(type);
-            const titleElement = document.getElementById(`formTitle${suffix}`);
-            titleElement.querySelector('span').textContent = type === 'payments' ? 'Agregar Nuevo Pago' : 'Agregar Nuevo Ingreso';
-            document.getElementById(`addButton${suffix}`).style.display = 'block';
-            document.getElementById(`updateButtons${suffix}`).style.display = 'none';
-        }
-
-        window.toggleForm = function(type) {
+    editingId = null;
+    const suffix = type.charAt(0).toUpperCase() + type.slice(1);
     const formId = type === 'payments' ? 'paymentForm' : 'incomeForm';
     const form = document.getElementById(formId);
-    const suffix = type.charAt(0).toUpperCase() + type.slice(1);
-    const arrow = document.getElementById(`formArrow${suffix}`);
-    const formCard = document.getElementById(`${type}FormCard`);
-    
-    if (form.style.display === 'none' || form.style.display === '') {
-        // Expanding - remove collapsed class
-        form.style.display = 'block';
-        arrow.textContent = '▲';
-        formCard.classList.remove('collapsed');
-    } else {
+    if (form) {
+        form.reset();
+    }
+    if (isAdmin) setTodayDate(type);
+    const titleElement = document.getElementById(`formTitle${suffix}`);
+    if (titleElement) {
+        const span = titleElement.querySelector('span');
+        if (span) {
+            span.textContent = type === 'payments' ? 'Agregar Nuevo Pago' : 'Agregar Nuevo Ingreso';
+        }
+    }
+    const addBtn = document.getElementById(`addButton${suffix}`);
+    const updateBtns = document.getElementById(`updateButtons${suffix}`);
+    if (addBtn) addBtn.style.display = 'block';
+    if (updateBtns) updateBtns.style.display = 'none';
+}
+
+        window.toggleForm = function(type) {
+    // Auto-expand the form if it's collapsed
+const formId = type === 'payments' ? 'paymentForm' : 'incomeForm';
+const form = document.getElementById(formId);
+const arrow = document.getElementById(`formArrow${suffix}`);
+const formCardId = type === 'payments' ? 'paymentFormCard' : 'incomeFormCard';
+const formCard = document.getElementById(formCardId);
+
+if (form && (form.style.display === 'none' || form.style.display === '')) {
+    form.style.display = 'block';
+    if (arrow) arrow.textContent = '▲';
+    if (formCard) formCard.classList.remove('collapsed');
+} else {
         // Collapsing - add collapsed class
         form.style.display = 'none';
         arrow.textContent = '▼';
