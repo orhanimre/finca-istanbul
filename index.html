@@ -1699,19 +1699,22 @@ Object.keys(groupedData).forEach(dateLabel => {
                         <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.method}</span>
                     </div>
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1px 1.2fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: start;">
-<div>
-    <span style="color: #666;">Categoría:</span>
-    <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.category}</span>
-</div>
-<div style="width: 1px; min-height: 20px; background: #e0e0e0;"></div>
-<div style="padding-left: 8px; overflow: visible;">
-    <div style="color: #666; font-size: 11px; margin-bottom: 2px;">Fecha:</div>
-    <div style="color: #333; font-weight: 500; font-size: 10px;">${formatDate(item.createdAt)}</div>
-    ${item.createdBy ? `<div style="color: #999; font-size: 9px; margin-top: 2px;">Por: ${item.createdBy}</div>` : ''}
-    ${item.updatedAt && item.updatedAt !== item.createdAt ? `<div style="color: #999; font-size: 9px; margin-top: 2px;">Editado: ${formatDate(item.updatedAt)}</div>` : ''}
-    ${item.updatedBy ? `<div style="color: #999; font-size: 9px; margin-top: 2px;">Por: ${item.updatedBy}</div>` : ''}
-</div>
+                <div style="padding: 6px 0; font-size: 11px;">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+        <div>
+            <span style="color: #666;">Categoría:</span>
+            <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.category}</span>
+        </div>
+    </div>
+    <div style="margin-top: 6px; padding-top: 6px; border-top: 1px solid #f0f0f0;">
+        <div style="margin-bottom: 3px;">
+            <span style="color: #666;">Fecha:</span>
+            <span style="color: #333; font-weight: 500; margin-left: 4px; font-size: 11px;">${formatDate(item.createdAt)}</span>
+        </div>
+        ${item.createdBy ? `<div style="color: #999; font-size: 10px; margin-top: 2px;">Por: ${item.createdBy}</div>` : ''}
+        ${item.updatedAt && item.updatedAt !== item.createdAt ? `<div style="color: #999; font-size: 10px; margin-top: 2px;">Editado: ${formatDate(item.updatedAt)}</div>` : ''}
+        ${item.updatedBy ? `<div style="color: #999; font-size: 10px; margin-top: 2px;">Por: ${item.updatedBy}</div>` : ''}
+    </div>
 </div>
             `;
         }
