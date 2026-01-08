@@ -1677,7 +1677,7 @@ Object.keys(groupedData).forEach(dateLabel => {
             `;
         } else {
             detailsHTML = `
-                <div style="display: grid; grid-template-columns: 1.5fr 1px 1fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: center;">
+                <div style="display: grid; grid-template-columns: 1fr 1px 1fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: start;">
                     <div>
                         <span style="color: #666;">Concepto:</span>
                         <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.concept}</span>
@@ -1688,7 +1688,7 @@ Object.keys(groupedData).forEach(dateLabel => {
                         <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.location}</span>
                     </div>
                 </div>
-                <div style="display: grid; grid-template-columns: 1.5fr 1px 1fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: center;">
+                <div style="display: grid; grid-template-columns: 1fr 1px 1fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: start;">
                     <div>
                         <span style="color: #666;">${item.quantity ? 'Cantidad:' : 'Categoría:'}</span>
                         <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.quantity ? item.quantity + ' ' + (item.unit || '') : item.category}</span>
@@ -1700,21 +1700,21 @@ Object.keys(groupedData).forEach(dateLabel => {
                     </div>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1px 1fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: start;">
-    <div>
-        <span style="color: #666;">Categoría:</span>
-        <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.category}</span>
-    </div>
-    <div style="width: 1px; height: 100%; background: #e0e0e0;"></div>
-    <div style="padding-left: 8px;">
-        <div>
-            <span style="color: #666;">Fecha:</span>
-            <span style="color: #333; font-weight: 500; margin-left: 4px; font-size: 10px;">${formatDate(item.createdAt)}</span>
-        </div>
-        ${item.createdBy ? `<div style="color: #999; font-size: 10px; margin-top: 2px;">Por: ${item.createdBy}</div>` : ''}
-        ${item.updatedAt && item.updatedAt !== item.createdAt ? `<div style="color: #999; font-size: 10px; margin-top: 2px;">Editado: ${formatDate(item.updatedAt)}</div>` : ''}
-        ${item.updatedBy ? `<div style="color: #999; font-size: 10px; margin-top: 2px;">Por: ${item.updatedBy}</div>` : ''}
-    </div>
-</div>
+                    <div>
+                        <span style="color: #666;">Categoría:</span>
+                        <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.category}</span>
+                    </div>
+                    <div style="width: 1px; height: 100%; background: #e0e0e0;"></div>
+                    <div style="padding-left: 8px;">
+                        <div>
+                            <span style="color: #666;">Fecha:</span>
+                            <span style="color: #333; font-weight: 500; margin-left: 4px; font-size: 10px;">${formatDate(item.createdAt)}</span>
+                        </div>
+                        ${item.createdBy ? `<div style="color: #999; font-size: 10px; margin-top: 2px;">Por: ${item.createdBy}</div>` : ''}
+                        ${item.updatedAt && item.updatedAt !== item.createdAt ? `<div style="color: #999; font-size: 10px; margin-top: 2px;">Editado: ${formatDate(item.updatedAt)}</div>` : ''}
+                        ${item.updatedBy ? `<div style="color: #999; font-size: 10px; margin-top: 2px;">Por: ${item.updatedBy}</div>` : ''}
+                    </div>
+                </div>
             `;
         }
         
