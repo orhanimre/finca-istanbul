@@ -1466,6 +1466,12 @@ window.applyCustomRange = function(type) {
         }
 
         window.exportToExcel = function(type) {
+    if (typeof XLSX === 'undefined') {
+        alert('Error: SheetJS library no cargó correctamente. Revisa la consola para más detalles.');
+        console.error('XLSX no está definido - verifica el <script> de SheetJS');
+        return;
+    }
+
     const filtered = getFilteredData(type);
     
     if (filtered.length === 0) {
@@ -1478,16 +1484,14 @@ window.applyCustomRange = function(type) {
     const total = filtered.reduce((sum, item) => sum + parseFloat(item.amount), 0);
     const title = type === 'payments' ? 'Pagos de Construcción' : 'Ingresos Recibidos';
     
-    // Prepare header rows (same as your current summary)
     const headerRows = [
         [`${title} - ${labels[currentPeriod]}`],
         [`Total`, formatCurrency(total)],
         [`Cantidad`, filtered.length],
         [`Fecha de Exportación:`, new Date().toLocaleDateString('es-ES')],
-        [] // empty row
+        [] 
     ];
     
-    // Data headers and rows
     let dataHeaders = [];
     let dataRows = [];
     
@@ -1519,7 +1523,7 @@ window.applyCustomRange = function(type) {
                 item.unit || '',
                 item.category || '',
                 item.location || '',
-                item.amount, // keep as number/string – we'll format it
+                parseFloat(item.amount), // better as number for Excel
                 item.method || ''
             ]);
         });
@@ -1532,37 +1536,41 @@ window.applyCustomRange = function(type) {
                 item.receiver || '',
                 item.concept || '',
                 item.notes || '',
-                item.amount,
+                parseFloat(item.amount),
                 item.method || ''
             ]);
         });
     }
     
-    // Combine everything into one array of arrays
     const wsData = [...headerRows, dataHeaders, ...dataRows];
-    
-    // Create worksheet
     const ws = XLSX.utils.aoa_to_sheet(wsData);
     
-    // Apply left alignment to ALL cells
+    // Left align everything
     const range = XLSX.utils.decode_range(ws['!ref']);
     for (let R = range.s.r; R <= range.e.r; ++R) {
         for (let C = range.s.c; C <= range.e.c; ++C) {
-            const cell_address = XLSX.utils.encode_cell({r: R, c: C});
-            if (!ws[cell_address]) continue;
-            if (!ws[cell_address].s) ws[cell_address].s = {};
-            ws[cell_address].s.alignment = { horizontal: 'left' };
+            const cell = ws[XLSX.utils.encode_cell({r: R, c: C})];
+            if (cell) {
+                if (!cell.s) cell.s = {};
+                cell.s.alignment = { horizontal: 'left' };
+            }
         }
     }
     
-    // Optional: Auto-size columns for better look
-    ws['!cols'] = dataHeaders.map(() => ({ wch: 20 })); // adjust width as needed
+    // Better column widths
+    ws['!cols'] = dataHeaders.map(() => ({ wch: 22 }));
     
-    // Create workbook and download
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Datos');
+    
     const fileName = `${title.replace(/ /g, '_')}_${new Date().toISOString().split('T')[0]}.xlsx`;
-    XLSX.writeFile(wb, fileName);
+    
+    try {
+        XLSX.writeFile(wb, fileName);
+    } catch (err) {
+        alert('Error al generar el archivo: ' + err.message);
+        console.error(err);
+    }
 }
         window.printList = function(type) {
             window.print();
