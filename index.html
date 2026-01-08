@@ -1510,12 +1510,6 @@ window.applyCustomRange = function(type) {
         return `${day}/${month}/${year} ${hours}:${minutes}`;
     };
     
-    // Helper to format number with dots as thousand separator (no decimals)
-    const formatWithDots = (num) => {
-        if (!num) return '';
-        return parseFloat(num).toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-    };
-    
     if (type === 'payments') {
         dataHeaders = ['Fecha', 'Beneficiario', 'Concepto', 'Notas', 'Cantidad', 'Unidad', 'Categoría', 'Área/Lugar', 'Monto', 'Método'];
         filtered.forEach(item => {
@@ -1524,11 +1518,11 @@ window.applyCustomRange = function(type) {
                 item.beneficiary || '',
                 item.concept || '',
                 item.notes || '',
-                formatWithDots(item.quantity),
+                item.quantity ? parseFloat(item.quantity) : 0,
                 item.unit || '',
                 item.category || '',
                 item.location || '',
-                formatWithDots(item.amount),
+                parseFloat(item.amount),
                 item.method || ''
             ]);
         });
@@ -1541,7 +1535,7 @@ window.applyCustomRange = function(type) {
                 item.receiver || '',
                 item.concept || '',
                 item.notes || '',
-                formatWithDots(item.amount),
+                parseFloat(item.amount),
                 item.method || ''
             ]);
         });
@@ -1558,18 +1552,6 @@ window.applyCustomRange = function(type) {
             if (ws[cell_address]) {
                 if (!ws[cell_address].s) ws[cell_address].s = {};
                 ws[cell_address].s.alignment = { horizontal: 'left' };
-                
-                // Force Monto and Cantidad columns to string type (clean display, left aligned)
-                const colIndex = C;
-                if (type === 'payments') {
-                    if (colIndex === 4 || colIndex === 8) { // Cantidad (col 4), Monto (col 8, 0-based)
-                        ws[cell_address].t = 's';
-                    }
-                } else {
-                    if (colIndex === 5) { // Monto in Ingresos (col 5)
-                        ws[cell_address].t = 's';
-                    }
-                }
             }
         }
     }
@@ -1582,6 +1564,7 @@ window.applyCustomRange = function(type) {
     const fileName = `${title.replace(/ /g, '_')}_${new Date().toISOString().split('T')[0]}.xlsx`;
     XLSX.writeFile(wb, fileName);
 }
+
         window.printList = function(type) {
             window.print();
         }
