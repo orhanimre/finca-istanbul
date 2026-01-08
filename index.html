@@ -1981,7 +1981,13 @@ container.innerHTML = html;
 };
 
 if (editingId) {
-    paymentData.updatedAt = new Date().toISOString();
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    paymentData.updatedAt = `${year}-${month}-${day}T${hours}:${minutes}`;
     paymentData.updatedBy = currentUser.email;
 } else {
     paymentData.createdBy = currentUser.email;
@@ -2034,7 +2040,13 @@ if (editingId) {
 };
 
 if (editingId) {
-    incomeData.updatedAt = new Date().toISOString();
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    incomeData.updatedAt = `${year}-${month}-${day}T${hours}:${minutes}`;
     incomeData.updatedBy = currentUser.email;
 } else {
     incomeData.createdBy = currentUser.email;
