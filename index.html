@@ -1691,35 +1691,35 @@ Object.keys(groupedData).forEach(dateLabel => {
         let detailsHTML = '';
         
         if (isIncome) {
-            detailsHTML = `
-                <div style="padding: 6px 0;">
-                    <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Receptor:</div>
-                    <div style="font-size: 13px; color: #333; font-weight: 500;">${item.receiver}</div>
-                </div>
-                <div style="padding: 6px 0;">
-                    <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Concepto:</div>
-                    <div style="font-size: 13px; color: #333; font-weight: 500;">${item.concept}</div>
-                </div>
-                ${item.notes ? `
-                <div style="padding: 6px 0;">
-                    <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Notas:</div>
-                    <div style="font-size: 12px; color: #ff4444; font-weight: 500;">${item.notes}</div>
-                </div>
-                ` : ''}
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 3px 0; font-size: 11px;">
-                <div>
-                    <span style="color: #666;">Método:</span>
-                    <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.method}</span>
-                </div>
-                    <div style="text-align: right;">
-    <span style="color: #666;">Fecha:</span>
-    <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(item.createdAt)}</span>
-    ${item.createdBy ? `<br><span style="color: #999; font-size: 10px;">Por: ${item.createdBy}</span>` : ''}
-    ${item.updatedAt && item.updatedAt !== item.createdAt ? `<br><span style="color: #999; font-size: 10px;">Editado: ${formatDate(item.updatedAt)}</span>` : ''}
-    ${item.updatedBy ? `<br><span style="color: #999; font-size: 10px;">Por: ${item.updatedBy}</span>` : ''}
-</div>
+    detailsHTML = `
+        <div style="padding: 6px 0; border-bottom: 1px solid #f0f0f0;">
+            <span style="font-size: 12px; color: #666;">Receptor:</span>
+            <span style="font-size: 13px; color: #333; font-weight: 500; margin-left: 4px;">${item.receiver}</span>
+        </div>
+        <div style="padding: 6px 0; border-bottom: 1px solid #f0f0f0;">
+            <span style="font-size: 12px; color: #666;">Concepto:</span>
+            <span style="font-size: 13px; color: #333; font-weight: 500; margin-left: 4px;">${item.concept}</span>
+        </div>
+        ${item.notes ? `
+        <div style="padding: 6px 0; border-bottom: 1px solid #f0f0f0;">
+            <span style="font-size: 12px; color: #666;">Notas:</span>
+            <span style="font-size: 12px; color: #ff4444; font-weight: 500; margin-left: 4px;">${item.notes}</span>
+        </div>
+        ` : ''}
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 6px 0; font-size: 11px;">
+            <div>
+                <span style="color: #666;">Método:</span>
+                <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.method}</span>
             </div>
-            `;
+            <div style="text-align: right;">
+                <span style="color: #666;">Fecha:</span>
+                <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(item.createdAt)}</span>
+                ${item.createdBy ? `<br><span style="color: #999; font-size: 10px;">Por: ${item.createdBy}</span>` : ''}
+                ${item.updatedAt && item.updatedAt !== item.createdAt ? `<br><span style="color: #999; font-size: 10px;">Editado: ${formatDate(item.updatedAt)}</span>` : ''}
+                ${item.updatedBy ? `<br><span style="color: #999; font-size: 10px;">Por: ${item.updatedBy}</span>` : ''}
+            </div>
+        </div>
+    `;
         } else {
     detailsHTML = `
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 6px 0;">
