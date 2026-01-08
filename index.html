@@ -2142,13 +2142,17 @@ if (editingId) {
                 }
             }
         }
-        window.toggleCard = function(card) {
-    const details = card.querySelector('.payment-card-details');
-    const toggle = card.querySelector('.payment-card-toggle');
-    
-    details.classList.toggle('expanded');
-    toggle.classList.toggle('expanded');
-}
+                window.toggleCard = function(card) {
+            const details = card.querySelector('.payment-card-details');
+            const toggle = card.querySelector('.payment-card-toggle');
+            
+            details.classList.toggle('expanded');
+            toggle.classList.toggle('expanded');
+        }
     </script>
+
+    <!-- This loads the Excel export library -->
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+
 </body>
 </html>
