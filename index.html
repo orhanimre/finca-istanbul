@@ -1277,7 +1277,7 @@ function updateBudgetDisplay() {
 
 return data.filter(item => {
     // Handle date parsing - check if time is already included
-    const itemDate = new Date(item.date.includes('T') ? item.date : item.date + 'T00:00:00');
+    const itemDate = new Date(item.createdAt.includes('T') ? item.createdAt : item.createdAt + 'T00:00:00');
     
     if (currentPeriod === 'custom') {
         const fromDate = type === 'payments' ? customDateFromPayments : customDateFromIncome;
@@ -1425,9 +1425,9 @@ window.applyCustomRange = function(type) {
             data.sort((a, b) => {
                 switch(sortBy) {
                     case 'date-desc':
-                        return new Date(b.date) - new Date(a.date);
-                    case 'date-asc':
-                        return new Date(a.date) - new Date(b.date);
+                        return new Date(b.createdAt) - new Date(a.createdAt);
+                case 'date-asc':
+                        return new Date(a.createdAt) - new Date(b.createdAt);
                     case 'amount-desc':
                         return parseFloat(b.amount) - parseFloat(a.amount);
                     case 'amount-asc':
@@ -1466,12 +1466,12 @@ window.applyCustomRange = function(type) {
             if (type === 'payments') {
                 csv += 'Fecha,Beneficiario,Concepto,Cantidad,Unidad,Categoría,Área/Lugar,Monto,Método\n';
                 filtered.forEach(item => {
-                    csv += `${item.date},${item.beneficiary},${item.concept},${item.quantity||''},${item.unit||''},${item.category},${item.location},${item.amount},${item.method}\n`;
+                    csv += `${item.createdAt},${item.beneficiary},${item.concept},${item.quantity||''},${item.unit||''},${item.category},${item.location},${item.amount},${item.method}\n`;
                 });
             } else {
                 csv += 'Fecha,Remitente,Receptor,Concepto,Notas,Monto,Método\n';
                 filtered.forEach(item => {
-                    csv += `${item.date},${item.beneficiary},${item.receiver},${item.concept},${item.notes||''},${item.amount},${item.method}\n`;
+                    csv += `${item.createdAt},${item.beneficiary},${item.receiver},${item.concept},${item.notes||''},${item.amount},${item.method}\n`;
                 });
             }
             
@@ -1619,7 +1619,7 @@ window.applyCustomRange = function(type) {
             // Group data by date
 const groupedData = {};
 data.forEach(item => {
-    const dateLabel = getDateLabel(item.date);
+    const dateLabel = getDateLabel(item.createdAt);
     if (!groupedData[dateLabel]) {
         groupedData[dateLabel] = [];
     }
@@ -1668,8 +1668,8 @@ Object.keys(groupedData).forEach(dateLabel => {
                 </div>
                     <div style="text-align: right;">
             <span style="color: #666;">Fecha:</span>
-            <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(item.date)}</span>
-            ${item.updatedAt && item.updatedAt !== item.date ? `<br><span style="color: #999; font-size: 10px;">Editado: ${formatDate(item.updatedAt)}</span>` : ''}
+            <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(item.createdAt)}</span>
+${item.updatedAt && item.updatedAt !== item.createdAt ? `<br><span style="color: #999; font-size: 10px;">Editado: ${formatDate(item.updatedAt)}</span>` : ''}
         </div>
             </div>
             `;
@@ -1705,8 +1705,8 @@ Object.keys(groupedData).forEach(dateLabel => {
 <div style="width: 1px; height: 100%; background: #e0e0e0;"></div>
 <div style="padding-left: 8px;">
     <span style="color: #666;">Fecha:</span>
-    <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(item.date)}</span>
-    ${item.updatedAt && item.updatedAt !== item.date ? `<br><span style="color: #999; font-size: 10px;">Editado: ${formatDate(item.updatedAt)}</span>` : ''}
+    <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(item.createdAt)}</span>
+${item.updatedAt && item.updatedAt !== item.createdAt ? `<br><span style="color: #999; font-size: 10px;">Editado: ${formatDate(item.updatedAt)}</span>` : ''}
 </div>
 </div>
             `;
@@ -1765,7 +1765,7 @@ container.innerHTML = html;
             if (!currentUser) return;
             
             try {
-                const q = query(collection(db, 'payments'), orderBy('date', 'desc'));
+                const q = query(collection(db, 'payments'), orderBy('createdAt', 'desc'));
                 const querySnapshot = await getDocs(q);
                 payments = [];
                 querySnapshot.forEach((doc) => {
@@ -1783,7 +1783,7 @@ container.innerHTML = html;
             if (!currentUser) return;
             
             try {
-                const q = query(collection(db, 'income'), orderBy('date', 'desc'));
+                const q = query(collection(db, 'income'), orderBy('createdAt', 'desc'));
                 const querySnapshot = await getDocs(q);
                 income = [];
                 querySnapshot.forEach((doc) => {
@@ -1808,7 +1808,7 @@ container.innerHTML = html;
     const item = data.find(i => i.id === id);
     const suffix = type.charAt(0).toUpperCase() + type.slice(1);
     
-    const dateTime = item.date.split('T');
+    const dateTime = item.createdAt.split('T');
     document.getElementById(`date${suffix}`).value = dateTime[0];
     document.getElementById(`time${suffix}`).value = dateTime[1] ? dateTime[1].substring(0, 5) : '00:00';
     document.getElementById(`beneficiary${suffix}`).value = item.beneficiary;
@@ -1905,7 +1905,7 @@ container.innerHTML = html;
     submitBtn.textContent = 'Guardando...';
     
     const paymentData = {
-    date: document.getElementById('datePayments').value + 'T' + document.getElementById('timePayments').value,
+    createdAt: document.getElementById('datePayments').value + 'T' + document.getElementById('timePayments').value,
     beneficiary: document.getElementById('beneficiaryPayments').value,
     concept: document.getElementById('conceptPayments').value,
     quantity: document.getElementById('quantityPayments').value || null,
@@ -1958,7 +1958,7 @@ if (editingId) {
     submitBtn.textContent = 'Guardando...';
     
     const incomeData = {
-    date: document.getElementById('dateIncome').value + 'T' + document.getElementById('timeIncome').value,
+    createdAt: document.getElementById('dateIncome').value + 'T' + document.getElementById('timeIncome').value,
     beneficiary: document.getElementById('beneficiaryIncome').value,
     receiver: document.getElementById('receiverIncome').value,
     concept: document.getElementById('conceptIncome').value,
