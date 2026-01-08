@@ -1467,8 +1467,7 @@ window.applyCustomRange = function(type) {
 
         window.exportToExcel = function(type) {
     if (typeof XLSX === 'undefined') {
-        alert('Error: SheetJS library no cargó correctamente. Revisa la consola para más detalles.');
-        console.error('XLSX no está definido - verifica el <script> de SheetJS');
+        alert('Error: SheetJS library no cargó correctamente.');
         return;
     }
 
@@ -1489,7 +1488,7 @@ window.applyCustomRange = function(type) {
         [`Total`, formatCurrency(total)],
         [`Cantidad`, filtered.length],
         [`Fecha de Exportación:`, new Date().toLocaleDateString('es-ES')],
-        [] 
+        []
     ];
     
     let dataHeaders = [];
@@ -1519,11 +1518,11 @@ window.applyCustomRange = function(type) {
                 item.beneficiary || '',
                 item.concept || '',
                 item.notes || '',
-                item.quantity || '',
+                item.quantity ? "'" + item.quantity : '',   // ← Forces left alignment
                 item.unit || '',
                 item.category || '',
                 item.location || '',
-                parseFloat(item.amount), // better as number for Excel
+                "'" + item.amount,                          // ← Forces left alignment (invisible apostrophe)
                 item.method || ''
             ]);
         });
@@ -1536,7 +1535,7 @@ window.applyCustomRange = function(type) {
                 item.receiver || '',
                 item.concept || '',
                 item.notes || '',
-                parseFloat(item.amount),
+                "'" + item.amount,                          // ← Forces left alignment
                 item.method || ''
             ]);
         });
@@ -1545,19 +1544,19 @@ window.applyCustomRange = function(type) {
     const wsData = [...headerRows, dataHeaders, ...dataRows];
     const ws = XLSX.utils.aoa_to_sheet(wsData);
     
-    // Left align everything
+    // Extra safety: force left alignment on all cells
     const range = XLSX.utils.decode_range(ws['!ref']);
     for (let R = range.s.r; R <= range.e.r; ++R) {
         for (let C = range.s.c; C <= range.e.c; ++C) {
             const cell = ws[XLSX.utils.encode_cell({r: R, c: C})];
-            if (cell) {
-                if (!cell.s) cell.s = {};
+            if (cell && !cell.s) {
+                cell.s = { alignment: { horizontal: 'left' } };
+            } else if (cell) {
                 cell.s.alignment = { horizontal: 'left' };
             }
         }
     }
     
-    // Better column widths
     ws['!cols'] = dataHeaders.map(() => ({ wch: 22 }));
     
     const wb = XLSX.utils.book_new();
@@ -1565,12 +1564,7 @@ window.applyCustomRange = function(type) {
     
     const fileName = `${title.replace(/ /g, '_')}_${new Date().toISOString().split('T')[0]}.xlsx`;
     
-    try {
-        XLSX.writeFile(wb, fileName);
-    } catch (err) {
-        alert('Error al generar el archivo: ' + err.message);
-        console.error(err);
-    }
+    XLSX.writeFile(wb, fileName);
 }
         window.printList = function(type) {
             window.print();
