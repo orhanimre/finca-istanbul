@@ -2029,16 +2029,21 @@ container.innerHTML = html;
         window.toggleForm = function(type) {
     const formId = type === 'payments' ? 'paymentForm' : 'incomeForm';
     const form = document.getElementById(formId);
-    const suffix = type.charAt(0).toUpperCase() + type.slice(1);  // ✅ Define suffix!
+    const suffix = type.charAt(0).toUpperCase() + type.slice(1);
     const arrow = document.getElementById(`formArrow${suffix}`);
     const formCardId = type === 'payments' ? 'paymentFormCard' : 'incomeFormCard';
     const formCard = document.getElementById(formCardId);
     
     if (form && (form.style.display === 'none' || form.style.display === '')) {
-        // Expanding - remove collapsed class
+        // Expanding - remove collapsed class and update date/time
         form.style.display = 'block';
         if (arrow) arrow.textContent = '▲';
         if (formCard) formCard.classList.remove('collapsed');
+        
+        // Update date and time to current values when expanding (only if not editing)
+        if (!editingId && isAdmin) {
+            setTodayDate(type);
+        }
     } else {
         // Collapsing - add collapsed class
         if (form) form.style.display = 'none';
@@ -2061,6 +2066,11 @@ container.innerHTML = html;
     const originalText = submitBtn.textContent;
     submitBtn.disabled = true;
     submitBtn.textContent = 'Guardando...';
+    
+    // Update time one final time right before submitting (only if not editing)
+    if (!editingId) {
+        setTodayDate('payments');
+    }
     
     const paymentData = {
     createdAt: document.getElementById('datePayments').value + 'T' + document.getElementById('timePayments').value,
@@ -2123,6 +2133,11 @@ if (editingId) {
     const originalText = submitBtn.textContent;
     submitBtn.disabled = true;
     submitBtn.textContent = 'Guardando...';
+    
+    // Update time one final time right before submitting (only if not editing)
+    if (!editingId) {
+        setTodayDate('income');
+    }
     
     const incomeData = {
     createdAt: document.getElementById('dateIncome').value + 'T' + document.getElementById('timeIncome').value,
