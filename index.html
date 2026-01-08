@@ -1264,63 +1264,80 @@ function updateBudgetDisplay() {
 }
 
         function formatDate(dateStr) {
-        const date = new Date(dateStr.includes('T') ? dateStr : dateStr + 'T00:00:00');
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = date.getFullYear();
-        const time = dateStr.includes('T') ? date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) : '';
-        return time ? `${day}.${month}.${year} ${time}` : `${day}.${month}.${year}`;
-        }
+    let date;
+    
+    // Check if it's UTC format (ends with Z)
+    if (dateStr.endsWith('Z')) {
+        date = new Date(dateStr);
+        // Convert to Colombia time (UTC-5)
+        date.setHours(date.getHours() - 5);
+    } else {
+        date = new Date(dateStr.includes('T') ? dateStr : dateStr + 'T00:00:00');
+    }
+    
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const time = dateStr.includes('T') ? date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) : '';
+    return time ? `${day}.${month}.${year} ${time}` : `${day}.${month}.${year}`;
+}
 
         function getFilteredData(type) {
-            const data = type === 'payments' ? payments : income;
-            const currentPeriod = type === 'payments' ? currentPeriodPayments : currentPeriodIncome;
-            const now = new Date();
-            
-            if (currentPeriod === 'all') return data;
+    const data = type === 'payments' ? payments : income;
+    const currentPeriod = type === 'payments' ? currentPeriodPayments : currentPeriodIncome;
+    const now = new Date();
+    
+    if (currentPeriod === 'all') return data;
 
-return data.filter(item => {
-    // Handle date parsing - check if time is already included
-    const itemDate = new Date(item.createdAt.includes('T') ? item.createdAt : item.createdAt + 'T00:00:00');
-    
-    if (currentPeriod === 'custom') {
-        const fromDate = type === 'payments' ? customDateFromPayments : customDateFromIncome;
-        const toDate = type === 'payments' ? customDateToPayments : customDateToIncome;
+    return data.filter(item => {
+        let itemDate;
         
-        if (!fromDate || !toDate) return true;
-        
-        const from = new Date(fromDate + 'T00:00:00');
-        const to = new Date(toDate + 'T23:59:59');
-        
-        return itemDate >= from && itemDate <= to;
-    }
-    
-    if (currentPeriod === 'today') {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        return itemDate >= today && itemDate < tomorrow;
-    }
-    
-    if (currentPeriod === 'week') {
-        const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-        weekAgo.setHours(0, 0, 0, 0);
-        return itemDate >= weekAgo;
-    }
-    
-    if (currentPeriod === 'month') {
-        return itemDate.getMonth() === now.getMonth() && 
-               itemDate.getFullYear() === now.getFullYear();
-    }
-    
-    if (currentPeriod === 'year') {
-        return itemDate.getFullYear() === now.getFullYear();
-    }
-    
-    return true;
-});
+        // Handle UTC format
+        if (item.createdAt.endsWith('Z')) {
+            itemDate = new Date(item.createdAt);
+            itemDate.setHours(itemDate.getHours() - 5); // Convert to Colombia time
+        } else {
+            itemDate = new Date(item.createdAt.includes('T') ? item.createdAt : item.createdAt + 'T00:00:00');
         }
+        
+        if (currentPeriod === 'custom') {
+            const fromDate = type === 'payments' ? customDateFromPayments : customDateFromIncome;
+            const toDate = type === 'payments' ? customDateToPayments : customDateToIncome;
+            
+            if (!fromDate || !toDate) return true;
+            
+            const from = new Date(fromDate + 'T00:00:00');
+            const to = new Date(toDate + 'T23:59:59');
+            
+            return itemDate >= from && itemDate <= to;
+        }
+        
+        if (currentPeriod === 'today') {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            return itemDate >= today && itemDate < tomorrow;
+        }
+        
+        if (currentPeriod === 'week') {
+            const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            weekAgo.setHours(0, 0, 0, 0);
+            return itemDate >= weekAgo;
+        }
+        
+        if (currentPeriod === 'month') {
+            return itemDate.getMonth() === now.getMonth() && 
+                   itemDate.getFullYear() === now.getFullYear();
+        }
+        
+        if (currentPeriod === 'year') {
+            return itemDate.getFullYear() === now.getFullYear();
+        }
+        
+        return true;
+    });
+}
 
         function updateSummary(type) {
     const filtered = getFilteredData(type);
@@ -1449,55 +1466,79 @@ window.applyCustomRange = function(type) {
         }
 
         window.exportToExcel = function(type) {
-            const filtered = getFilteredData(type);
-            
-            if (filtered.length === 0) {
-                alert('No hay datos para exportar');
-                return;
-            }
-            
-            let csv = '\uFEFF';
-            const currentPeriod = type === 'payments' ? currentPeriodPayments : currentPeriodIncome;
-            const labels = { 'all': 'Todo', 'today': 'Hoy', 'week': 'Esta Semana', 'month': 'Este Mes', 'year': 'Este Año', 'custom': 'Personalizado' };
-            const total = filtered.reduce((sum, item) => sum + parseFloat(item.amount), 0);
-            const title = type === 'payments' ? 'Pagos de Construcción' : 'Ingresos Recibidos';
-            
-            csv += `${title} - ${labels[currentPeriod]}\n`;
-            csv += `Total,${formatCurrency(total)}\n`;
-            csv += `Cantidad,${filtered.length}\n`;
-            csv += `Fecha de Exportación:,${new Date().toLocaleDateString('es-ES')}\n\n`;
-            
-            if (type === 'payments') {
-                csv += 'Fecha,Beneficiario,Concepto,Notas,Cantidad,Unidad,Categoría,Área/Lugar,Monto,Método\n';
-                filtered.forEach(item => {
-                    csv += `${item.createdAt},${item.beneficiary},${item.concept},${item.notes||''},${item.quantity||''},${item.unit||''},${item.category},${item.location},${item.amount},${item.method}\n`;
-                });
-            } else {
-                csv += 'Fecha,Remitente,Receptor,Concepto,Notas,Monto,Método\n';
-                filtered.forEach(item => {
-                    csv += `${item.createdAt},${item.beneficiary},${item.receiver},${item.concept},${item.notes||''},${item.amount},${item.method}\n`;
-                });
-            }
-            
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            const fileName = `${title.replace(/ /g, '_')}_${new Date().toISOString().split('T')[0]}.csv`;
-            
-            link.setAttribute('href', url);
-            link.setAttribute('download', fileName);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+    const filtered = getFilteredData(type);
+    
+    if (filtered.length === 0) {
+        alert('No hay datos para exportar');
+        return;
+    }
+    
+    let csv = '\uFEFF';
+    const currentPeriod = type === 'payments' ? currentPeriodPayments : currentPeriodIncome;
+    const labels = { 'all': 'Todo', 'today': 'Hoy', 'week': 'Esta Semana', 'month': 'Este Mes', 'year': 'Este Año', 'custom': 'Personalizado' };
+    const total = filtered.reduce((sum, item) => sum + parseFloat(item.amount), 0);
+    const title = type === 'payments' ? 'Pagos de Construcción' : 'Ingresos Recibidos';
+    
+    csv += `${title} - ${labels[currentPeriod]}\n`;
+    csv += `Total,${formatCurrency(total)}\n`;
+    csv += `Cantidad,${filtered.length}\n`;
+    csv += `Fecha de Exportación:,${new Date().toLocaleDateString('es-ES')}\n\n`;
+    
+    // Helper to convert UTC to Colombia time
+    const toColombiaTime = (dateStr) => {
+        if (dateStr.endsWith('Z')) {
+            const utcDate = new Date(dateStr);
+            utcDate.setHours(utcDate.getHours() - 5);
+            const year = utcDate.getFullYear();
+            const month = String(utcDate.getMonth() + 1).padStart(2, '0');
+            const day = String(utcDate.getDate()).padStart(2, '0');
+            const hours = String(utcDate.getHours()).padStart(2, '0');
+            const minutes = String(utcDate.getMinutes()).padStart(2, '0');
+            return `${year}-${month}-${day}T${hours}:${minutes}`;
         }
+        return dateStr;
+    };
+    
+    if (type === 'payments') {
+        csv += 'Fecha,Beneficiario,Concepto,Notas,Cantidad,Unidad,Categoría,Área/Lugar,Monto,Método\n';
+        filtered.forEach(item => {
+            csv += `${toColombiaTime(item.createdAt)},${item.beneficiary},${item.concept},${item.notes||''},${item.quantity||''},${item.unit||''},${item.category},${item.location},${item.amount},${item.method}\n`;
+        });
+    } else {
+        csv += 'Fecha,Remitente,Receptor,Concepto,Notas,Monto,Método\n';
+        filtered.forEach(item => {
+            csv += `${toColombiaTime(item.createdAt)},${item.beneficiary},${item.receiver},${item.concept},${item.notes||''},${item.amount},${item.method}\n`;
+        });
+    }
+    
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    const fileName = `${title.replace(/ /g, '_')}_${new Date().toISOString().split('T')[0]}.csv`;
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', fileName);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
 
         window.printList = function(type) {
             window.print();
         }
 
         function getDateLabel(dateStr, amount = null) {
-    const itemDate = new Date(dateStr.includes('T') ? dateStr : dateStr + 'T00:00:00');
+    let itemDate;
+    
+    // Handle UTC format
+    if (dateStr.endsWith('Z')) {
+        itemDate = new Date(dateStr);
+        itemDate.setHours(itemDate.getHours() - 5); // Convert to Colombia time
+    } else {
+        itemDate = new Date(dateStr.includes('T') ? dateStr : dateStr + 'T00:00:00');
+    }
+    
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
