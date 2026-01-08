@@ -1473,7 +1473,7 @@ window.applyCustomRange = function(type) {
         return;
     }
     
-    let csv = '\uFEFF'; // BOM for UTF-8 support
+    let csv = '\uFEFF'; // BOM for proper UTF-8 encoding in Excel/Numbers
     const currentPeriod = type === 'payments' ? currentPeriodPayments : currentPeriodIncome;
     const labels = { 'all': 'Todo', 'today': 'Hoy', 'week': 'Esta Semana', 'month': 'Este Mes', 'year': 'Este Año', 'custom': 'Personalizado' };
     const total = filtered.reduce((sum, item) => sum + parseFloat(item.amount), 0);
@@ -1484,22 +1484,25 @@ window.applyCustomRange = function(type) {
     csv += `Cantidad;${filtered.length}\n`;
     csv += `Fecha de Exportación:;${new Date().toLocaleDateString('es-ES')}\n\n`;
     
+    // Format date/time in Colombian style: DD/MM/YYYY HH:MM
     const toColombiaTime = (dateStr) => {
+        let date;
         if (dateStr.endsWith('Z')) {
-            const utcDate = new Date(dateStr);
-            utcDate.setHours(utcDate.getHours() - 5);
-            const year = utcDate.getFullYear();
-            const month = String(utcDate.getMonth() + 1).padStart(2, '0');
-            const day = String(utcDate.getDate()).padStart(2, '0');
-            const hours = String(utcDate.getHours()).padStart(2, '0');
-            const minutes = String(utcDate.getMinutes()).padStart(2, '0');
-            return `${day}/${month}/${year} ${hours}:${minutes}`;
+            date = new Date(dateStr);
+            date.setHours(date.getHours() - 5); // UTC to Colombia time
+        } else {
+            date = new Date(dateStr.includes('T') ? dateStr : dateStr + 'T00:00:00');
         }
-        const date = new Date(dateStr.includes('T') ? dateStr : dateStr + 'T00:00:00');
-        return date.toLocaleDateString('es-ES') + ' ' + date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${day}/${month}/${year} ${hours}:${minutes}`;
     };
     
     if (type === 'payments') {
+        // Header for Pagos
         csv += 'Fecha;Beneficiario;Concepto;Notas;Cantidad;Unidad;Categoría;Área/Lugar;Monto;Método\n';
         filtered.forEach(item => {
             csv += [
@@ -1515,7 +1518,8 @@ window.applyCustomRange = function(type) {
                 item.method || ''
             ].join(';') + '\n';
         });
-    } else { // income
+    } else {
+        // Header for Ingresos (already working great)
         csv += 'Fecha;Remitente;Receptor;Concepto;Notas;Monto;Método\n';
         filtered.forEach(item => {
             csv += [
