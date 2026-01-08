@@ -1699,18 +1699,18 @@ Object.keys(groupedData).forEach(dateLabel => {
                         <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.method}</span>
                     </div>
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1px 1fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: start;">
+                <div style="display: grid; grid-template-columns: 1.5fr 1px 1fr; gap: 8px; padding: 3px 0; font-size: 11px; align-items: start;">
 <div>
     <span style="color: #666;">Categoría:</span>
     <span style="color: #333; font-weight: 500; margin-left: 4px;">${item.category}</span>
 </div>
 <div style="width: 1px; min-height: 20px; background: #e0e0e0;"></div>
-<div style="padding-left: 8px; overflow: hidden;">
+<div style="padding-left: 8px; overflow: hidden; min-width: 0;">
     <div style="color: #666; font-size: 11px; margin-bottom: 2px;">Fecha:</div>
-    <div style="color: #333; font-weight: 500; font-size: 11px; word-wrap: break-word; overflow-wrap: break-word;">${formatDate(item.createdAt)}</div>
-    ${item.createdBy ? `<div style="color: #999; font-size: 10px; word-wrap: break-word; overflow-wrap: break-word; margin-top: 2px;">Por: ${item.createdBy}</div>` : ''}
-    ${item.updatedAt && item.updatedAt !== item.createdAt ? `<div style="color: #999; font-size: 10px; word-wrap: break-word; overflow-wrap: break-word; margin-top: 2px;">Editado: ${formatDate(item.updatedAt)}</div>` : ''}
-    ${item.updatedBy ? `<div style="color: #999; font-size: 10px; word-wrap: break-word; overflow-wrap: break-word; margin-top: 2px;">Por: ${item.updatedBy}</div>` : ''}
+    <div style="color: #333; font-weight: 500; font-size: 11px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal;">${formatDate(item.createdAt)}</div>
+    ${item.createdBy ? `<div style="color: #999; font-size: 10px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; margin-top: 2px;">Por: ${item.createdBy}</div>` : ''}
+    ${item.updatedAt && item.updatedAt !== item.createdAt ? `<div style="color: #999; font-size: 10px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; margin-top: 2px;">Editado: ${formatDate(item.updatedAt)}</div>` : ''}
+    ${item.updatedBy ? `<div style="color: #999; font-size: 10px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; margin-top: 2px;">Por: ${item.updatedBy}</div>` : ''}
 </div>
 </div>
             `;
