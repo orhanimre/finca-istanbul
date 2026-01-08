@@ -1063,6 +1063,8 @@
         let currentUser = null;
         let isAdmin = false;
         let currentTab = 'budget';
+        let paymentTimeInterval = null;
+        let incomeTimeInterval = null;
 
         const ADMIN_EMAILS = [
             'orhanimre@gmail.com',
@@ -2012,7 +2014,26 @@ container.innerHTML = html;
     if (form) {
         form.reset();
     }
-    if (isAdmin) setTodayDate(type);
+    if (isAdmin) {
+        setTodayDate(type);
+        
+        // Restart the time interval after canceling edit
+        if (type === 'payments') {
+            if (paymentTimeInterval) clearInterval(paymentTimeInterval);
+            paymentTimeInterval = setInterval(() => {
+                if (!editingId) {
+                    setTodayDate('payments');
+                }
+            }, 1000);
+        } else {
+            if (incomeTimeInterval) clearInterval(incomeTimeInterval);
+            incomeTimeInterval = setInterval(() => {
+                if (!editingId) {
+                    setTodayDate('income');
+                }
+            }, 1000);
+        }
+    }
     const titleElement = document.getElementById(`formTitle${suffix}`);
     if (titleElement) {
         const span = titleElement.querySelector('span');
@@ -2043,12 +2064,38 @@ container.innerHTML = html;
         // Update date and time to current values when expanding (only if not editing)
         if (!editingId && isAdmin) {
             setTodayDate(type);
+            
+            // Start updating time every second while form is open
+            if (type === 'payments') {
+                if (paymentTimeInterval) clearInterval(paymentTimeInterval);
+                paymentTimeInterval = setInterval(() => {
+                    if (!editingId) {
+                        setTodayDate('payments');
+                    }
+                }, 1000); // Update every second
+            } else {
+                if (incomeTimeInterval) clearInterval(incomeTimeInterval);
+                incomeTimeInterval = setInterval(() => {
+                    if (!editingId) {
+                        setTodayDate('income');
+                    }
+                }, 1000); // Update every second
+            }
         }
     } else {
-        // Collapsing - add collapsed class
+        // Collapsing - add collapsed class and stop time updates
         if (form) form.style.display = 'none';
         if (arrow) arrow.textContent = '▼';
         if (formCard) formCard.classList.add('collapsed');
+        
+        // Clear the interval when form is collapsed
+        if (type === 'payments' && paymentTimeInterval) {
+            clearInterval(paymentTimeInterval);
+            paymentTimeInterval = null;
+        } else if (type === 'income' && incomeTimeInterval) {
+            clearInterval(incomeTimeInterval);
+            incomeTimeInterval = null;
+        }
     }
 }
 
