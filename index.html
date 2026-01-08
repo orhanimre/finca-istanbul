@@ -1558,9 +1558,9 @@ window.applyCustomRange = function(type) {
                 // Row 5 is where headers start (0-indexed), so data starts at row 6
                 if (R >= 6 && C === amountColumnIndex && typeof ws[cell_address].v === 'number') {
                     ws[cell_address].z = '#,##0'; // Number format with thousand separator, no decimals
-                    ws[cell_address].s.alignment = { horizontal: 'left' };
+                    ws[cell_address].s.alignment = { horizontal: 'left', wrapText: true };
                 } else {
-                    ws[cell_address].s.alignment = { horizontal: 'left' };
+                    ws[cell_address].s.alignment = { horizontal: 'left', wrapText: true };
                 }
             }
         }
