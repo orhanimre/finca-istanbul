@@ -2133,9 +2133,10 @@ container.innerHTML = html;
     submitBtn.disabled = true;
     submitBtn.textContent = 'Guardando...';
     
-    // Update time one final time right before submitting (only if not editing)
-    if (!editingId) {
-        setTodayDate('payments');
+    // Stop auto-update interval before saving
+    if (paymentTimeInterval) {
+        clearInterval(paymentTimeInterval);
+        paymentTimeInterval = null;
     }
     
     const paymentData = {
@@ -2200,9 +2201,10 @@ if (editingId) {
     submitBtn.disabled = true;
     submitBtn.textContent = 'Guardando...';
     
-    // Update time one final time right before submitting (only if not editing)
-    if (!editingId) {
-        setTodayDate('income');
+    // Stop auto-update interval before saving
+    if (incomeTimeInterval) {
+        clearInterval(incomeTimeInterval);
+        incomeTimeInterval = null;
     }
     
     const incomeData = {
