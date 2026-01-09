@@ -786,9 +786,25 @@
                             <input type="text" id="beneficiaryPayments" placeholder="ej., Constructora ABC" required>
                         </div>
                         <div class="form-group">
-                            <label>Concepto</label>
-                            <input type="text" id="conceptPayments" placeholder="ej., Cemento gris" required>
-                        </div>
+    <div class="form-group">
+    <label>Concepto</label>
+    <select id="conceptPayments" onchange="toggleConceptOther()" required>
+        <option value="">Seleccionar concepto</option>
+        <option>Mano de obra día</option>
+        <option>Cemento gris</option>
+        <option>Arena lavada</option>
+        <option>Grava</option>
+        <option>Bloques/Ladrillos</option>
+        <option>Varillas (hierro)</option>
+        <option>Alambre de amarre</option>
+        <option>Flete/Transporte</option>
+        <option value="otro">Otro (especificar)</option>
+    </select>
+</div>
+<div class="form-group" id="conceptOtherPayments" style="display: none;">
+    <label>Especificar Concepto</label>
+    <input type="text" id="conceptOtherInputPayments" placeholder="Describe el concepto">
+</div>
                         <div class="form-group">
                             <label>Notas (Opcional)</label>
                             <textarea id="notesPayments" placeholder="Detalles adicionales del pago"></textarea>
@@ -1971,7 +1987,27 @@ container.innerHTML = html;
     document.getElementById(`date${suffix}`).value = dateTime[0];
     document.getElementById(`time${suffix}`).value = dateTime[1] ? dateTime[1].substring(0, 5) : '00:00';
     document.getElementById(`beneficiary${suffix}`).value = item.beneficiary;
+    if (type === 'payments') {
+    const conceptSelect = document.getElementById('conceptPayments');
+    const conceptOtherDiv = document.getElementById('conceptOtherPayments');
+    const conceptOtherInput = document.getElementById('conceptOtherInputPayments');
+    
+    // Check if the concept exists in the dropdown
+    const optionExists = Array.from(conceptSelect.options).some(opt => opt.value === item.concept);
+    
+    if (optionExists) {
+        conceptSelect.value = item.concept;
+        conceptOtherDiv.style.display = 'none';
+        conceptOtherInput.required = false;
+    } else {
+        conceptSelect.value = 'otro';
+        conceptOtherDiv.style.display = 'block';
+        conceptOtherInput.value = item.concept;
+        conceptOtherInput.required = true;
+    }
+} else {
     document.getElementById(`concept${suffix}`).value = item.concept;
+}
     document.getElementById(`amount${suffix}`).value = item.amount;
     document.getElementById(`method${suffix}`).value = item.method;
     
@@ -2124,6 +2160,20 @@ container.innerHTML = html;
         }
     }
 }
+    window.toggleConceptOther = function() {
+    const conceptSelect = document.getElementById('conceptPayments');
+    const conceptOtherDiv = document.getElementById('conceptOtherPayments');
+    const conceptOtherInput = document.getElementById('conceptOtherInputPayments');
+    
+    if (conceptSelect.value === 'otro') {
+        conceptOtherDiv.style.display = 'block';
+        conceptOtherInput.required = true;
+    } else {
+        conceptOtherDiv.style.display = 'none';
+        conceptOtherInput.required = false;
+        conceptOtherInput.value = '';
+    }
+}
 
         document.getElementById('paymentForm').addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -2149,7 +2199,9 @@ container.innerHTML = html;
     const paymentData = {
     createdAt: document.getElementById('datePayments').value + 'T' + document.getElementById('timePayments').value,
     beneficiary: document.getElementById('beneficiaryPayments').value,
-    concept: document.getElementById('conceptPayments').value,
+    concept: document.getElementById('conceptPayments').value === 'otro' 
+    ? document.getElementById('conceptOtherInputPayments').value 
+    : document.getElementById('conceptPayments').value,
     notes: document.getElementById('notesPayments').value || null,
     quantity: document.getElementById('quantityPayments').value || null,
     unit: document.getElementById('unitPayments').value || null,
