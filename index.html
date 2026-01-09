@@ -2056,53 +2056,17 @@ container.innerHTML = html;
     const formCard = document.getElementById(formCardId);
     
     if (form && (form.style.display === 'none' || form.style.display === '')) {
-        // Expanding - remove collapsed class and update date/time
+        // Expanding
         form.style.display = 'block';
         if (arrow) arrow.textContent = '▲';
         if (formCard) formCard.classList.remove('collapsed');
         
-        // Update date and time to current values when expanding (only if not editing)
+        // Only set time once when opening, if not editing
         if (!editingId && isAdmin) {
             setTodayDate(type);
-            
-            // Add event listeners to stop auto-update when user manually changes time/date
-            const dateInput = document.getElementById(`date${suffix}`);
-            const timeInput = document.getElementById(`time${suffix}`);
-            
-            const stopAutoUpdate = () => {
-                if (type === 'payments' && paymentTimeInterval) {
-                    clearInterval(paymentTimeInterval);
-                    paymentTimeInterval = null;
-                } else if (type === 'income' && incomeTimeInterval) {
-                    clearInterval(incomeTimeInterval);
-                    incomeTimeInterval = null;
-                }
-            };
-            
-            dateInput.addEventListener('input', stopAutoUpdate);
-            timeInput.addEventListener('input', stopAutoUpdate);
-            dateInput.addEventListener('change', stopAutoUpdate);
-            timeInput.addEventListener('change', stopAutoUpdate);
-            
-            // Start updating time every second while form is open
-            if (type === 'payments') {
-                if (paymentTimeInterval) clearInterval(paymentTimeInterval);
-                paymentTimeInterval = setInterval(() => {
-                    if (!editingId) {
-                        setTodayDate('payments');
-                    }
-                }, 1000); // Update every second
-            } else {
-                if (incomeTimeInterval) clearInterval(incomeTimeInterval);
-                incomeTimeInterval = setInterval(() => {
-                    if (!editingId) {
-                        setTodayDate('income');
-                    }
-                }, 1000); // Update every second
-            }
         }
     } else {
-        // Collapsing - add collapsed class and stop time updates
+        // Collapsing
         if (form) form.style.display = 'none';
         if (arrow) arrow.textContent = '▼';
         if (formCard) formCard.classList.add('collapsed');
