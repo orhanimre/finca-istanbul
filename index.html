@@ -2061,9 +2061,52 @@ container.innerHTML = html;
         if (arrow) arrow.textContent = '▲';
         if (formCard) formCard.classList.remove('collapsed');
         
-        // Only set time once when opening, if not editing
+        // Only auto-update if not editing
         if (!editingId && isAdmin) {
             setTodayDate(type);
+            
+            // Add event listeners to stop auto-update when user manually changes time/date
+            const dateInput = document.getElementById(`date${suffix}`);
+            const timeInput = document.getElementById(`time${suffix}`);
+            
+            const stopAutoUpdate = () => {
+                if (type === 'payments' && paymentTimeInterval) {
+                    clearInterval(paymentTimeInterval);
+                    paymentTimeInterval = null;
+                } else if (type === 'income' && incomeTimeInterval) {
+                    clearInterval(incomeTimeInterval);
+                    incomeTimeInterval = null;
+                }
+            };
+            
+            // Remove old listeners first to avoid duplicates
+            dateInput.removeEventListener('input', stopAutoUpdate);
+            timeInput.removeEventListener('input', stopAutoUpdate);
+            dateInput.removeEventListener('change', stopAutoUpdate);
+            timeInput.removeEventListener('change', stopAutoUpdate);
+            
+            // Add new listeners
+            dateInput.addEventListener('input', stopAutoUpdate, { once: true });
+            timeInput.addEventListener('input', stopAutoUpdate, { once: true });
+            dateInput.addEventListener('change', stopAutoUpdate, { once: true });
+            timeInput.addEventListener('change', stopAutoUpdate, { once: true });
+            
+            // Start updating time every second while form is open
+            if (type === 'payments') {
+                if (paymentTimeInterval) clearInterval(paymentTimeInterval);
+                paymentTimeInterval = setInterval(() => {
+                    if (!editingId) {
+                        setTodayDate('payments');
+                    }
+                }, 1000);
+            } else {
+                if (incomeTimeInterval) clearInterval(incomeTimeInterval);
+                incomeTimeInterval = setInterval(() => {
+                    if (!editingId) {
+                        setTodayDate('income');
+                    }
+                }, 1000);
+            }
         }
     } else {
         // Collapsing
