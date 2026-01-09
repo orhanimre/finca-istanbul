@@ -848,26 +848,36 @@
                                 <label>Área/Lugar</label>
                                 <select id="locationPayments" required>
                                     <option value="">Seleccionar</option>
-                                    <option>Cimentación</option>
-                                    <option>Estructura</option>
-                                    <option>Paredes/Muros</option>
-                                    <option>Techo</option>
-                                    <option>Pisos</option>
-                                    <option>Baños</option>
-                                    <option>Cocina</option>
-                                    <option>Habitaciones</option>
-                                    <option>Sala/Comedor</option>
-                                    <option>Escaleras</option>              <!-- NEW -->
-                                    <option>Garaje</option>                 <!-- NEW -->
-                                    <option>Patio/Terraza</option>          <!-- NEW -->
-                                    <option>Fachada</option>
-                                    <option>Cerco perimetral</option>       <!-- NEW -->
-                                    <option>Instalación eléctrica</option>
-                                    <option>Instalación sanitaria</option>
-                                    <option>Ventanas/Puertas</option>
-                                    <option>Jardinería</option>
-                                    <option>General</option>
-                                    <option>Otros</option>
+
+<!-- PHASE 1: FOUNDATION & STRUCTURE -->
+<option>Cimentación</option>           <!-- 1. Foundation first -->
+<option>Sótano</option>                <!-- 2. Basement (if applicable) -->
+<option>Estructura</option>            <!-- 3. Main structure/columns -->
+<option>Paredes/Muros</option>         <!-- 4. Walls -->
+<option>Techo</option>                 <!-- 5. Roof -->
+<option>Escaleras</option>             <!-- 6. Stairs -->
+
+<!-- PHASE 2: INSTALLATIONS -->
+<option>Instalación eléctrica</option> <!-- 7. Electrical rough-in -->
+<option>Instalación sanitaria</option> <!-- 8. Plumbing rough-in -->
+
+<!-- PHASE 3: INTERIOR FINISHING -->
+<option>Pisos</option>                 <!-- 9. Flooring -->
+<option>Baños</option>                 <!-- 10. Bathrooms -->
+<option>Cocina</option>                <!-- 11. Kitchen -->
+<option>Habitaciones</option>          <!-- 12. Bedrooms -->
+<option>Sala/Comedor</option>          <!-- 13. Living/Dining -->
+<option>Ventanas/Puertas</option>      <!-- 14. Windows/Doors -->
+
+<!-- PHASE 4: EXTERIOR FINISHING -->
+<option>Fachada</option>               <!-- 15. Facade -->
+<option>Garaje</option>                <!-- 16. Garage -->
+<option>Patio/Terraza</option>         <!-- 17. Patio/Terrace -->
+<option>Cerco perimetral</option>      <!-- 18. Perimeter fence -->
+<option>Jardinería</option>            <!-- 19. Landscaping (last) -->
+
+<!-- GENERAL OPTIONS -->
+<option>General</option>               <!-- For multiple areas -->
                                 </select>
                             </div>
                         </div>
