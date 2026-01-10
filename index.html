@@ -1319,10 +1319,8 @@
                     <option value="">Seleccionar</option>
 
                     <!-- PHASE 1: FOUNDATION & STRUCTURE -->
-                    <option>Cimentación</option>
+                    <option>Fundación</option>
                     <!-- 1. Foundation first -->
-                    <option>Sótano</option>
-                    <!-- 2. Basement (if applicable) -->
                     <option>Estructura</option>
                     <!-- 3. Main structure/columns -->
                     <option>Paredes/Muros</option>
@@ -3430,13 +3428,16 @@
       // Help examples for each concept
       const helpExamples = {
         "Mano de obra día": [
-          "👷 CIMENTACIÓN Y SÓTANO:",
-          "• 8 horas excavación manual para sótano, 3 trabajadores",
-          "• 2 albañiles fundación, 10 horas, vigas de cimentación",
+          "👷 FUNDACIÓN:",
+          "• 8 horas excavación manual para fundación, 3 trabajadores",
+          "• 2 albañiles fundación, 10 horas, vigas de fundación",
           "• 1 oficial nivelación y compactación, 6 horas",
           "• 3 ayudantes limpieza de excavación, día completo",
           "• 1 maestro replanteo y trazado de ejes, 4 horas",
           "• Excavación con retroexcavadora, 5 horas operador",
+          "• Excavación tanque séptico finca, 3 trabajadores, 2 días", // ← NUEVO
+          "• Construcción pozo séptico 2m, 2 albañiles, 8 horas", // ← NUEVO
+          "• Nivelación terreno acceso finca, 2 operarios, día completo", // ← NUEVO
           "",
           "👷 ESTRUCTURA:",
           "• 2 albañiles fundición de columnas piso 1, 8 horas",
@@ -3446,6 +3447,8 @@
           "• Vibrado de concreto en 6 columnas, 3 horas",
           "• 3 albañiles fundición de vigas piso 2, día completo",
           "• Desencofrado de columnas, 2 trabajadores, 4 horas",
+          "• Fundición placa entrepiso 1-2, 4 trabajadores, 10 horas", // ← NUEVO
+          "• Fundición escalera concreto a piso 2, 3 trabajadores, día completo", // ← NUEVO
           "",
           "👷 MAMPOSTERÍA:",
           "• 2 albañiles levantamiento de muros 1er piso, 8 horas",
@@ -3479,18 +3482,22 @@
           "• Impermeabilización terraza, 1 maestro, día completo",
           "• Jardinería y siembra césped, 2 trabajadores, 8 horas",
           "• Limpieza general de obra, 3 ayudantes, 6 horas",
-          "• Instalación tanque de agua, 2 oficiales, 4 horas"
+          "• Instalación tanque de agua, 2 oficiales, 4 horas",
+          "• Limpieza y desmonte vegetación finca, 4 trabajadores, 2 días", // ← NUEVO
+          "• Instalación sistema drenaje terreno, 1 maestro, día completo", // ← NUEVO
         ],
         "Materiales de construcción": [
-          "🏗️ CIMENTACIÓN:",
+          "🏗️ FUNDACIÓN:",
           "• 20 sacos cemento gris x 50kg para fundación",
           "• 4 m³ arena lavada, mezcla de cimientos",
-          "• 3 m³ grava 3/4\", concreto columnas",
-          "• 2 m³ piedra para base cimentación",
+          '• 3 m³ grava 3/4", concreto columnas',
+          "• 2 m³ piedra para base fundación",
           "• 15 varillas #4 corrugadas de 6m, columnas piso 1",
           "• 10 kg alambre negro #18 para amarre",
-          "• 8 m³ material relleno para compactación sótano",
+          "• 8 m³ material relleno para compactación", // ← MODIFICADO (sin "sótano")
           "• 30 sacos cemento para fundición 8 columnas",
+          "• 5 m³ grava para drenajes y caminos finca", // ← NUEVO
+          "• 50 m² geotextil para sistema de drenaje", // ← NUEVO
           "",
           "🧱 MAMPOSTERÍA:",
           "• 200 bloques #5 (12x20x40cm) para muros habitaciones",
@@ -3504,22 +3511,24 @@
           "• 40 tablas pino 1x12x3.5m para formaletas columnas",
           "• 6 planchas triplex 15mm reutilizable",
           "• 20 alfajías y 15 puntales metálicos alquiler",
-          "• 5 kg clavos 3\" para armar formaletas",
+          '• 5 kg clavos 3" para armar formaletas',
           "• 100 amarres plásticos para asegurar formaleta",
           "• 25 tablas para formaleta vigas techo",
           "",
           "🔩 ACERO Y COMPLEMENTOS:",
           "• 50 m² malla electrosoldada 15x15cm piso",
           "• 30 m malla eslabonada cerramiento posterior",
-          "• 8 perfiles ángulo 2\"x2\" estructura metálica",
-          "• 10 platinas 1/4\" x 2\" refuerzo",
+          '• 8 perfiles ángulo 2"x2" estructura metálica',
+          '• 10 platinas 1/4" x 2" refuerzo',
           "• 2 kg electrodos 6013 para soldadura",
+          "• 30 postes madera inmunizada 3m cerco finca", // ← NUEVO
+          "• 100m alambre púa calibre 12.5 cerramiento", // ← NUEVO
           "",
           "💧 IMPERMEABILIZACIÓN:",
           "• 4 galones impermeabilizante líquido terraza",
-          "• 20 m² membrana asfáltica muros sótano",
+          "• 20 m² membrana asfáltica muros de contención", // ← MODIFICADO (sin "sótano")
           "• 10 litros pintura bituminosa anti-humedad",
-          "• 15 m² manto asfáltico techo principal"
+          "• 15 m² manto asfáltico techo principal",
         ],
         "Materiales de acabados": [
           "🎨 PINTURA:",
@@ -3555,7 +3564,7 @@
           "• 30 metros molduras MDF blancas techo sala",
           "• 20 metros cornisas decorativas yeso",
           "• 3 rieles cortinas 2.5m aluminio",
-          "• 2 barras decorativas 3m madera"
+          "• 2 barras decorativas 3m madera",
         ],
         "Materiales de carpintería": [
           "🚪 PUERTAS:",
@@ -3585,14 +3594,14 @@
           "• 2 planchas melamina wengué",
           "",
           "🔩 HERRAJES:",
-          "• 15 pares bisagras libro 3\" acero",
+          '• 15 pares bisagras libro 3" acero',
           "• 20 bisagras cazoleta para closet",
           "• 4 cerraduras pomo para habitaciones",
           "• 1 cerradura seguridad 3 puntos puerta principal",
           "• 6 picaportes baño dorados",
           "• 12 pares rieles cajones telescópicos 40cm",
           "• 2 juegos correderas puertas closet 2.4m",
-          "• 8 tiradores acero inox 12cm cocina"
+          "• 8 tiradores acero inox 12cm cocina",
         ],
         "Materiales eléctricos": [
           "⚡ CABLES Y CONDUCTORES:",
@@ -3625,11 +3634,11 @@
           "• 100 tacos y tornillos #8 montaje",
           "",
           "🔧 TUBERÍA Y ACCESORIOS:",
-          "• 80m tubería conduit PVC 1/2\" naranja",
-          "• 50m tubería conduit 3/4\" circuitos principales",
-          "• 40 codos 90° PVC 1/2\"",
-          "• 20 uniones PVC 1/2\"",
-          "• 50 abrazaderas tipo omega 1/2\"",
+          '• 80m tubería conduit PVC 1/2" naranja',
+          '• 50m tubería conduit 3/4" circuitos principales',
+          '• 40 codos 90° PVC 1/2"',
+          '• 20 uniones PVC 1/2"',
+          '• 50 abrazaderas tipo omega 1/2"',
           "• 10 rollos cinta aislante 3M negra",
           "• 3 rollos cinta roja/azul/verde identificación fases",
           "",
@@ -3640,37 +3649,37 @@
           "• 2 reflectores LED 50W exteriores fachada/patio",
           "• 4 apliques decorativos pared habitaciones",
           "• 8 portalámparas E27 bakelita",
-          "• 10m tira LED RGB con control cocina"
+          "• 10m tira LED RGB con control cocina",
         ],
         "Materiales sanitarios": [
           "💧 TUBERÍA SANITARIA (DESAGÜE):",
-          "• 15m tubería PVC sanitaria 2\" lavamanos",
-          "• 25m tubería PVC sanitaria 3\" desagües generales",
-          "• 20m tubería PVC sanitaria 4\" sanitarios",
-          "• 10m tubería PVC sanitaria 6\" bajante principal",
-          "• 12 codos 90° sanitarios 3\"",
+          '• 15m tubería PVC sanitaria 2" lavamanos',
+          '• 25m tubería PVC sanitaria 3" desagües generales',
+          '• 20m tubería PVC sanitaria 4" sanitarios',
+          '• 10m tubería PVC sanitaria 6" bajante principal',
+          '• 12 codos 90° sanitarios 3"',
           "• 6 codos 45° cambio dirección",
-          "• 8 yees/tees 3\" ramificaciones baños",
+          '• 8 yees/tees 3" ramificaciones baños',
           "• 4 sifones PVC lavamanos",
-          "• 3 tapones registro con tapa 4\"",
+          '• 3 tapones registro con tapa 4"',
           "",
           "🚰 TUBERÍA PRESIÓN (AGUA POTABLE):",
-          "• 60m tubería PVC presión 1/2\" ramales",
-          "• 30m tubería PVC presión 3/4\" línea principal",
-          "• 10m tubería PVC presión 1\" acometida",
-          "• 20 codos 90° presión 1/2\"",
-          "• 15 tees presión 1/2\" para derivaciones",
+          '• 60m tubería PVC presión 1/2" ramales',
+          '• 30m tubería PVC presión 3/4" línea principal',
+          '• 10m tubería PVC presión 1" acometida',
+          '• 20 codos 90° presión 1/2"',
+          '• 15 tees presión 1/2" para derivaciones',
           "• 10 uniones adaptadores macho/hembra",
-          "• 8 reducciones 3/4\" a 1/2\"",
+          '• 8 reducciones 3/4" a 1/2"',
           "• 6 tapones presión varios",
           "",
           "🔧 VÁLVULAS Y CONTROLES:",
-          "• 8 válvulas paso 1/2\" tipo bola",
-          "• 2 válvulas compuerta 3/4\" principal",
+          '• 8 válvulas paso 1/2" tipo bola',
+          '• 2 válvulas compuerta 3/4" principal',
           "• 4 llaves paso angulares lavamanos cromadas",
-          "• 2 válvulas check 3/4\" anti-retorno",
+          '• 2 válvulas check 3/4" anti-retorno',
           "• 2 flotadores tanques agua",
-          "• 3 llaves nariz 1/2\" jardín",
+          '• 3 llaves nariz 1/2" jardín',
           "",
           "🚽 APARATOS SANITARIOS:",
           "• 2 sanitarios tanque dual flush blanco",
@@ -3692,8 +3701,12 @@
           "• 1 tanque agua elevado 1000L polietileno",
           "• 1 tanque subterráneo 2000L cisterna",
           "• 1 bomba periférica 1HP Pedrollo",
-          "• 1 bomba achique 1/2HP para sótano",
+          "• 1 bomba achique 1/2HP para fundación", // ← MODIFICADO (sin "sótano")
           "• 1 tanque hidro-neumático 24L presión constante",
+          "• 1 tanque séptico prefabricado 1500L finca", // ← NUEVO
+          "• 2 anillos concreto pozo séptico 1m diámetro", // ← NUEVO
+          "• 1 tapa registro pozo séptico hierro fundido", // ← NUEVO
+          '• 20m tubería PVC 4" desagüe a pozo séptico', // ← NUEVO
           "",
           "🧰 ACCESORIOS:",
           "• 2 frascos pegante PVC presión 240ml",
@@ -3702,7 +3715,7 @@
           "• 3 rollos teflón cinta para roscas",
           "• 3 desagües cromados lavamanos",
           "• 2 sifones flexibles lavaplatos",
-          "• 4 rejillas piso acero inox 10x10cm baños"
+          "• 4 rejillas piso acero inox 10x10cm baños",
         ],
         "Flete/Transporte": [
           "🚛 TRANSPORTE DE MATERIALES:",
@@ -3712,6 +3725,8 @@
           "• Flete materiales eléctricos completos casa (cables, breakers)",
           "• Transporte 40 m² cerámica + pegamentos desde bodega",
           "• Viaje 3 puertas + 4 ventanas desde carpintería",
+          "• Transporte materiales camino destapado finca, viaje especial", // ← NUEVO
+          "• Flete 4x4 materiales pesados acceso difícil finca", // ← NUEVO
           "",
           "🏗️ TRANSPORTE DE EQUIPOS:",
           "• Flete mezcladora concreto ida y vuelta",
@@ -3721,7 +3736,7 @@
           "",
           "♻️ RETIRO DE ESCOMBROS:",
           "• 2 viajes volqueta escombros a botadero (8 m³)",
-          "• Transporte tierra excavación sótano 15 m³",
+          "• Transporte tierra excavación fundación 15 m³",
           "• Retiro chatarra metálica y desperdicios obra",
           "• Viaje limpieza sobrantes acabados",
           "",
@@ -3729,20 +3744,21 @@
           "• Alquiler camión mudanza mezcladora + andamios",
           "• Taxi carga compras urgentes sanitarios",
           "• Domicilio express 5 sacos cemento faltantes",
-          "• Flete devolución materiales sobrantes ferretería"
+          "• Flete devolución materiales sobrantes ferretería",
         ],
         "Alquiler de equipos": [
           "🔨 EQUIPOS DE CONSTRUCCIÓN:",
           "• Mezcladora concreto 2 sacos, 3 días alquiler",
           "• Vibrador concreto eléctrico, 2 días fundición columnas",
-          "• Cortadora disco 14\" concreto, 1 semana",
-          "• Pulidora 7\" con 5 discos corte, 4 días",
+          '• Cortadora disco 14" concreto, 1 semana',
+          '• Pulidora 7" con 5 discos corte, 4 días',
           "• Rotomartillo SDS potente, 1 semana instalaciones",
           "• Martillo demoledor eléctrico, 2 días romper pisos",
           "• Compactadora bailarina, 3 días compactación relleno",
           "",
           "⚙️ EQUIPOS ELÉCTRICOS:",
           "• Planta eléctrica 5KW, 1 mes obra sin luz",
+          "• Planta eléctrica 10KW finca sin energía, 3 meses", // ← NUEVO (opción más grande)
           "• Compresor aire 25L pintura, 1 semana acabados",
           "• Pistola pintar eléctrica, 3 días fachada",
           "• Hidrolavadora 1500PSI limpieza final, 2 días",
@@ -3759,20 +3775,22 @@
           "• 3 arneses + líneas vida, 1 mes seguridad",
           "",
           "🚜 MAQUINARIA PESADA:",
-          "• Retroexcavadora excavación sótano, 4 días completos",
+          "• Retroexcavadora excavación fundación, 4 días completos",
           "• Minicargador limpieza terreno, 2 días",
           "• Volqueta transporte tierra, 6 viajes",
+          "• Motosierra desmonte árboles finca, 5 días", // ← NUEVO
           "",
           "💧 BOMBEO Y DRENAJE:",
-          "• Bomba achique sumergible sótano inundado, 1 semana",
+          "• Bomba achique sumergible fundación inundada, 1 semana", // ← MODIFICADO (sin "sótano")
           "• Motobomba desagüe excavación, 3 días",
+          "• Motobomba gasolina agua de quebrada finca, 1 semana", // ← NUEVO
           "",
           "🧰 HERRAMIENTAS ESPECIALES:",
           "• 5 carretillas obra reforzadas, 2 meses",
           "• Cortadora cerámica profesional mesa, 1 semana",
-          "• Sierra circular mesa 10\", 5 días carpintería",
-          "• Dobladora varillas hasta 1/2\", 1 semana estructura"
-        ]
+          '• Sierra circular mesa 10", 5 días carpintería',
+          '• Dobladora varillas hasta 1/2", 1 semana estructura',
+        ],
       };
 
       window.showHelpModal = function () {
