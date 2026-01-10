@@ -736,6 +736,122 @@
           color: black !important;
         }
       }
+      /* Help button next to Notas */
+      .help-icon {
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        background: #667eea;
+        color: white;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 18px;
+        font-size: 12px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-left: 6px;
+        transition: all 0.3s;
+        vertical-align: middle;
+      }
+
+      .help-icon:hover {
+        background: #5568d3;
+        transform: scale(1.1);
+      }
+
+      /* Help Modal/Popup */
+      .help-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 10000;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .help-modal.active {
+        display: flex;
+      }
+
+      .help-modal-content {
+        background: white;
+        border-radius: 12px;
+        max-width: 500px;
+        width: 100%;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      }
+
+      .help-modal-header {
+        padding: 20px;
+        border-bottom: 2px solid #f0f0f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 12px 12px 0 0;
+      }
+
+      .help-modal-header h3 {
+        font-size: 18px;
+        margin: 0;
+      }
+
+      .help-modal-close {
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        padding: 0;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: background 0.3s;
+      }
+
+      .help-modal-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .help-modal-body {
+        padding: 20px;
+      }
+
+      .help-modal-body ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .help-modal-body li {
+        padding: 8px 0;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 14px;
+        color: #333;
+      }
+
+      .help-modal-body li:before {
+        content: "•";
+        color: #667eea;
+        font-weight: bold;
+        font-size: 18px;
+        margin-right: 8px;
+      }
+
+      .help-modal-body li:last-child {
+        border-bottom: none;
+      }
     </style>
   </head>
 
@@ -1162,7 +1278,15 @@
                 />
               </div>
               <div class="form-group">
-                <label>Notas (Opcional)</label>
+                <label>
+                  Notas (Opcional)
+                  <span
+                    class="help-icon"
+                    onclick="showHelpModal()"
+                    title="Ver ejemplos"
+                    >?</span
+                  >
+                </label>
                 <textarea
                   id="notesPayments"
                   placeholder="Detalles adicionales del pago"
@@ -2384,10 +2508,10 @@
             { wch: 18 }, // Beneficiario
             { wch: 18 }, // Concepto
             { wch: 20 }, // Notas
-            { wch: 15 }, // Categoría ← Fixed
-            { wch: 15 }, // Área/Lugar ← Fixed
-            { wch: 8 }, // Cantidad ← Fixed
-            { wch: 10 }, // Unidad ← Fixed
+            { wch: 15 }, // Categoría ← FIXED
+            { wch: 15 }, // Área/Lugar ← FIXED
+            { wch: 8 }, // Cantidad ← FIXED
+            { wch: 10 }, // Unidad ← FIXED
             { wch: 12 }, // Monto
             { wch: 12 }, // Método
           ];
@@ -3287,9 +3411,170 @@
         details.classList.toggle("expanded");
         toggle.classList.toggle("expanded");
       };
+
+      // Help examples for each concept
+      const helpExamples = {
+        "Mano de obra día": [
+          "Albañil fundación/sótano",
+          "Albañil fundición de columnas",
+          "Albañil levantamiento de muros",
+          "Ayudante mezcla de concreto",
+          "Maestro instalación eléctrica",
+          "Maestro instalación sanitaria",
+          "Electricista cableado",
+          "Plomero instalación tuberías",
+          "Carpintero instalación de puertas/ventanas",
+          "Pintor interior/exterior",
+          "Enchapador de cerámica",
+          "Maestro acabados y estuco",
+          "Excavación para sótano",
+        ],
+        "Materiales de construcción": [
+          "Cemento gris (sacos)",
+          "Arena lavada (m³)",
+          "Grava (m³)",
+          "Bloques #4, #5, #6",
+          "Ladrillos #5, #6",
+          "Varillas #3, #4, #5 (corrugadas)",
+          "Alambre de amarre (kg)",
+          "Clavos (kg)",
+          "Madera para formaleta",
+          "Piedra para cimientos/sótano",
+          "Malla electrosoldada",
+          "Material de relleno para sótano",
+        ],
+        "Materiales de acabados": [
+          "Pintura vinílica interior",
+          "Pintura esmalte exterior",
+          "Estuco blanco/gris",
+          "Cerámica para pisos (m²)",
+          "Porcelanato (m²)",
+          "Enchape para baños/cocina (m²)",
+          "Piso laminado (m²)",
+          "Guardaescobas/zócalos",
+          "Pegamento para cerámica",
+          "Fragüe/boquilla",
+          "Impermeabilizante para sótano",
+          "Pintura epóxica para sótano",
+        ],
+        "Materiales de carpintería": [
+          "Puerta principal madera/metálica",
+          "Puertas interiores",
+          "Ventanas aluminio/PVC",
+          "Marcos de madera/aluminio",
+          "Closets modulares",
+          "Muebles de cocina",
+          "Tableros MDF/aglomerado",
+          "Bisagras y cerraduras",
+          "Rieles para closet",
+        ],
+        "Materiales eléctricos": [
+          "Cable THHN calibre 8, 10, 12, 14",
+          "Interruptores sencillos/dobles",
+          "Tomacorrientes dobles/triples",
+          "Caja de breakers",
+          "Breakers 15A, 20A, 30A",
+          "Tubería conduit PVC/metálica",
+          "Cajas eléctricas",
+          "Cinta aislante",
+          "Lámpara LED/fluorescente",
+          "Reflectores exteriores",
+          "Iluminación para sótano",
+        ],
+        "Materiales sanitarios": [
+          'Tubería PVC sanitaria 2", 3", 4"',
+          'Tubería PVC presión 1/2", 3/4"',
+          "Codos 90°, 45°",
+          "Tees, reducciones",
+          "Uniones y adaptadores",
+          "Sanitario con tanque",
+          "Lavamanos con pedestal/mueble",
+          "Ducha/regadera",
+          "Grifería lavamanos/cocina",
+          "Tanque de agua elevado",
+          "Sifones",
+          "Válvulas de paso",
+          "Bomba de agua para sótano",
+          "Desagüe para sótano",
+        ],
+        "Flete/Transporte": [
+          "Transporte de materiales desde ferretería",
+          "Viaje a depósito de construcción",
+          "Flete de arena/grava (volqueta)",
+          "Alquiler de camión",
+          "Transporte de escombros",
+          "Viaje a bodega de acabados",
+        ],
+        "Alquiler de equipos": [
+          "Mezcladora de concreto",
+          "Andamios metálicos/tubulares",
+          "Vibrador para concreto",
+          "Cortadora de cerámica",
+          "Taladro percutor",
+          "Pulidora/esmeril angular",
+          "Compresor de aire",
+          "Nivel láser",
+          "Escalera extensible",
+          "Carretilla",
+          "Retroexcavadora para sótano",
+          "Bomba de achique para sótano",
+        ],
+      };
+
+      window.showHelpModal = function () {
+        const conceptSelect = document.getElementById("conceptPayments");
+        const selectedConcept = conceptSelect.value;
+
+        if (
+          !selectedConcept ||
+          selectedConcept === "otro" ||
+          selectedConcept === ""
+        ) {
+          alert("Por favor selecciona un Concepto primero");
+          return;
+        }
+
+        const examples = helpExamples[selectedConcept];
+        if (!examples) {
+          alert("No hay ejemplos disponibles para este concepto");
+          return;
+        }
+
+        const modal = document.getElementById("helpModal");
+        const title = document.getElementById("helpModalTitle");
+        const list = document.getElementById("helpModalList");
+
+        title.textContent = `💡 Ejemplos para: ${selectedConcept}`;
+
+        list.innerHTML = examples.map((ex) => `<li>${ex}</li>`).join("");
+
+        modal.classList.add("active");
+      };
+
+      window.closeHelpModal = function (event) {
+        const modal = document.getElementById("helpModal");
+        if (!event || event.target === modal) {
+          modal.classList.remove("active");
+        }
+      };
     </script>
 
     <!-- This loads the Excel export library -->
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+
+    <!-- Help Modal -->
+    <div id="helpModal" class="help-modal" onclick="closeHelpModal(event)">
+      <div class="help-modal-content" onclick="event.stopPropagation()">
+        <div class="help-modal-header">
+          <h3 id="helpModalTitle">💡 Ejemplos</h3>
+          <button class="help-modal-close" onclick="closeHelpModal()">
+            &times;
+          </button>
+        </div>
+        <div class="help-modal-body">
+          <ul id="helpModalList"></ul>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
