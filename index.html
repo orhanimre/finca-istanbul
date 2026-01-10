@@ -2301,24 +2301,24 @@
             "Beneficiario",
             "Concepto",
             "Notas",
-            "Cantidad",
-            "Unidad",
-            "Categoría",
-            "Área/Lugar",
+            "Categoría", // ← Moved up
+            "Área/Lugar", // ← Moved up
+            "Cantidad", // ← Moved down
+            "Unidad", // ← Moved down
             "Monto",
             "Método",
           ];
-          amountColumnIndex = 8; // Monto is at index 8
+          amountColumnIndex = 8; // Monto is still at index 8 (same position)
           filtered.forEach((item) => {
             dataRows.push([
               toColombiaTime(item.createdAt),
               wrapText(item.beneficiary || "", 20),
               wrapText(item.concept || "", 20),
               wrapText(item.notes || "", 25),
-              item.quantity ? parseFloat(item.quantity) : null,
-              item.unit || "",
-              wrapText(item.category || "", 15),
-              wrapText(item.location || "", 15),
+              wrapText(item.category || "", 15), // ← Moved up
+              wrapText(item.location || "", 15), // ← Moved up
+              item.quantity ? parseFloat(item.quantity) : null, // ← Moved down
+              item.unit || "", // ← Moved down
               parseFloat(item.amount),
               item.method || "",
             ]);
@@ -2384,10 +2384,10 @@
             { wch: 18 }, // Beneficiario
             { wch: 18 }, // Concepto
             { wch: 20 }, // Notas
-            { wch: 8 }, // Cantidad
-            { wch: 10 }, // Unidad
-            { wch: 15 }, // Categoría
-            { wch: 15 }, // Área/Lugar
+            { wch: 15 }, // Categoría ← Fixed
+            { wch: 15 }, // Área/Lugar ← Fixed
+            { wch: 8 }, // Cantidad ← Fixed
+            { wch: 10 }, // Unidad ← Fixed
             { wch: 12 }, // Monto
             { wch: 12 }, // Método
           ];
