@@ -1134,18 +1134,18 @@
                 <label>Concepto</label>
                 <select
                   id="conceptPayments"
-                  onchange="toggleConceptOther()"
+                  onchange="handleConceptChange()"
                   required
                 >
                   <option value="">Seleccionar concepto</option>
                   <option>Mano de obra día</option>
-                  <option>Cemento gris</option>
-                  <option>Arena lavada</option>
-                  <option>Grava</option>
-                  <option>Bloques/Ladrillos</option>
-                  <option>Varillas (hierro)</option>
-                  <option>Alambre de amarre</option>
+                  <option>Materiales de construcción</option>
+                  <option>Materiales de acabados</option>
+                  <option>Materiales de carpintería</option>
+                  <option>Materiales eléctricos</option>
+                  <option>Materiales sanitarios</option>
                   <option>Flete/Transporte</option>
+                  <option>Alquiler de equipos</option>
                   <option value="otro">Otro (especificar)</option>
                 </select>
               </div>
@@ -3057,20 +3057,53 @@
           }
         }
       };
-      window.toggleConceptOther = function () {
+      // Mapping of concepts to categories and areas
+      const conceptMapping = {
+        "Mano de obra día": { category: "Construcción", area: "" },
+        "Materiales de construcción": { category: "Materiales", area: "" },
+        "Materiales de acabados": { category: "Materiales", area: "" },
+        "Materiales de carpintería": { category: "Materiales", area: "" },
+        "Materiales eléctricos": {
+          category: "Instalaciones",
+          area: "Instalación eléctrica",
+        },
+        "Materiales sanitarios": {
+          category: "Instalaciones",
+          area: "Instalación sanitaria",
+        },
+        "Flete/Transporte": { category: "Logística", area: "General" },
+        "Alquiler de equipos": { category: "Equipos", area: "General" },
+        otro: { category: "", area: "" },
+      };
+
+      window.handleConceptChange = function () {
         const conceptSelect = document.getElementById("conceptPayments");
         const conceptOtherDiv = document.getElementById("conceptOtherPayments");
         const conceptOtherInput = document.getElementById(
           "conceptOtherInputPayments"
         );
+        const categorySelect = document.getElementById("categoryPayments");
+        const locationSelect = document.getElementById("locationPayments");
 
-        if (conceptSelect.value === "otro") {
+        const selectedConcept = conceptSelect.value;
+
+        // Handle "Otro" option
+        if (selectedConcept === "otro") {
           conceptOtherDiv.style.display = "block";
           conceptOtherInput.required = true;
+          categorySelect.value = "";
+          locationSelect.value = "";
         } else {
           conceptOtherDiv.style.display = "none";
           conceptOtherInput.required = false;
           conceptOtherInput.value = "";
+
+          // Auto-fill category and area based on mapping
+          if (conceptMapping[selectedConcept]) {
+            const mapping = conceptMapping[selectedConcept];
+            categorySelect.value = mapping.category;
+            locationSelect.value = mapping.area;
+          }
         }
       };
 
