@@ -2188,10 +2188,16 @@
           }
 
           if (currentPeriod === "week") {
-            const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-            weekAgo.setHours(0, 0, 0, 0);
-            return itemDate >= weekAgo;
-          }
+  // Get the start of the current week (Monday)
+  const today = new Date(now);
+  today.setHours(0, 0, 0, 0);
+  const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, etc.
+  const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // If Sunday, go back 6 days to Monday
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - daysFromMonday);
+  monday.setHours(0, 0, 0, 0);
+  return itemDate >= monday;
+}
 
           if (currentPeriod === "month") {
             return (
