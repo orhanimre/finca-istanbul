@@ -544,7 +544,7 @@
         padding-left: 32px;
       }
 
-      .payment-beneficiary {
+      .payment-sender {
         font-size: 13px;
         font-weight: 600;
         color: #333;
@@ -1241,7 +1241,7 @@
                 <label>Beneficiario</label>
                 <input
                   type="text"
-                  id="beneficiaryPayments"
+                  id="senderPayments"
                   placeholder="ej., Constructora ABC"
                   required
                 />
@@ -1456,7 +1456,7 @@
                 <option value="date-asc">Fecha (Más antigua)</option>
                 <option value="amount-desc">Monto (Mayor a menor)</option>
                 <option value="amount-asc">Monto (Menor a mayor)</option>
-                <option value="beneficiary">Beneficiario (A-Z)</option>
+                <option value="sender">Beneficiario (A-Z)</option>
                 <option value="category">Categoría</option>
               </select>
             </div>
@@ -1714,7 +1714,7 @@
               </div>
               <div class="form-group">
                 <label>Remitente</label>
-                <select id="beneficiaryIncome" required>
+                <select id="senderIncome" required>
                   <option value="">Seleccionar remitente</option>
                   <option>Marizuly Naranjo Parra</option>
                 </select>
@@ -1797,7 +1797,7 @@
                 <option value="date-asc">Fecha (Más antigua)</option>
                 <option value="amount-desc">Monto (Mayor a menor)</option>
                 <option value="amount-asc">Monto (Menor a mayor)</option>
-                <option value="beneficiary">Remitente (A-Z)</option>
+                <option value="sender">Remitente (A-Z)</option>
               </select>
             </div>
           </div>
@@ -2340,8 +2340,8 @@
               return parseFloat(b.amount) - parseFloat(a.amount);
             case "amount-asc":
               return parseFloat(a.amount) - parseFloat(b.amount);
-            case "beneficiary":
-              return a.beneficiary.localeCompare(b.beneficiary);
+            case "sender":
+              return a.sender.localeCompare(b.sender);
             case "category":
               return (a.category || "").localeCompare(b.category || "");
             default:
@@ -2449,7 +2449,7 @@
           filtered.forEach((item) => {
             dataRows.push([
               toColombiaTime(item.createdAt),
-              wrapText(item.beneficiary || "", 20),
+              wrapText(item.sender || "", 20),
               wrapText(item.concept || "", 20),
               wrapText(item.notes || "", 25),
               wrapText(item.category || "", 15), // ← Moved up
@@ -2474,7 +2474,7 @@
           filtered.forEach((item) => {
             dataRows.push([
               toColombiaTime(item.createdAt),
-              wrapText(item.beneficiary || "", 20),
+              wrapText(item.sender || "", 20),
               wrapText(item.receiver || "", 20),
               wrapText(item.concept || "", 20),
               wrapText(item.notes || "", 25),
@@ -2899,8 +2899,8 @@
               isIncome ? "income" : ""
             }">${overallIndex}</div>
             <div class="payment-header">
-                <div class="payment-beneficiary">
-                    ${item.beneficiary}
+                <div class="payment-sender">
+                    ${item.sender}
                     <span class="payment-card-toggle">▼</span>
                 </div>
                 <div class="payment-amount ${
@@ -2999,8 +2999,8 @@
         document.getElementById(`time${suffix}`).value = dateTime[1]
           ? dateTime[1].substring(0, 5)
           : "00:00";
-        document.getElementById(`beneficiary${suffix}`).value =
-          item.beneficiary;
+        document.getElementById(`sender${suffix}`).value =
+          item.sender;
         if (type === "payments") {
           const conceptSelect = document.getElementById("conceptPayments");
           const conceptOtherDiv = document.getElementById(
@@ -3274,7 +3274,7 @@
               document.getElementById("datePayments").value +
               "T" +
               document.getElementById("timePayments").value,
-            beneficiary: document.getElementById("beneficiaryPayments").value,
+            sender: document.getElementById("senderPayments").value,
             concept:
               document.getElementById("conceptPayments").value === "otro"
                 ? document.getElementById("conceptOtherInputPayments").value
@@ -3352,7 +3352,7 @@
               document.getElementById("dateIncome").value +
               "T" +
               document.getElementById("timeIncome").value,
-            beneficiary: document.getElementById("beneficiaryIncome").value,
+            sender: document.getElementById("senderIncome").value,
             receiver: document.getElementById("receiverIncome").value,
             concept: document.getElementById("conceptIncome").value,
             notes: document.getElementById("notesIncome").value || null,
