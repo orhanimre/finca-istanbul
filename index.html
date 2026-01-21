@@ -1310,56 +1310,56 @@
                     <option>Instalaciones</option>
                     <option>Logística</option>
                     <option>Equipos</option>
-                     <option>Trámites/Servicios</option>
+                    <option>Trámites/Servicios</option>
                     <option>Otros</option>
                   </select>
                 </div>
                 <div class="form-group" style="margin-bottom: 0">
-  <label>Área/Lugar</label>
-  <select id="locationPayments" required>
-    <option value="">Seleccionar</option>
+                  <label>Área/Lugar</label>
+                  <select id="locationPayments" required>
+                    <option value="">Seleccionar</option>
 
-    <!-- ADMINISTRATIVE/GOVERNMENT OFFICES -->
-        <option>Alcaldía</option>
-    <option>EPM</option>
-    <option>Curaduría</option>
-    <option>Notaría</option>
-    <option>Catastro</option>
-    <option>Planeación</option>
-    <option>Registro Público</option>
-    <option>Secretaría de Obras</option>
-    <option>CORNARE</option>
+                    <!-- ADMINISTRATIVE/GOVERNMENT OFFICES -->
+                    <option>Alcaldía</option>
+                    <option>EPM</option>
+                    <option>Curaduría</option>
+                    <option>Notaría</option>
+                    <option>Catastro</option>
+                    <option>Planeación</option>
+                    <option>Registro Público</option>
+                    <option>Secretaría de Obras</option>
+                    <option>CORNARE</option>
 
-    <!-- PHASE 1: FOUNDATION & STRUCTURE -->
-    <option>Fundación</option>
-    <option>Estructura</option>
-    <option>Paredes/Muros</option>
-    <option>Techo</option>
-    <option>Escaleras</option>
+                    <!-- PHASE 1: FOUNDATION & STRUCTURE -->
+                    <option>Fundación</option>
+                    <option>Estructura</option>
+                    <option>Paredes/Muros</option>
+                    <option>Techo</option>
+                    <option>Escaleras</option>
 
-    <!-- PHASE 2: INSTALLATIONS -->
-    <option>Instalación eléctrica</option>
-    <option>Instalación sanitaria</option>
+                    <!-- PHASE 2: INSTALLATIONS -->
+                    <option>Instalación eléctrica</option>
+                    <option>Instalación sanitaria</option>
 
-    <!-- PHASE 3: INTERIOR FINISHING -->
-    <option>Pisos</option>
-    <option>Baños</option>
-    <option>Cocina</option>
-    <option>Habitaciones</option>
-    <option>Sala/Comedor</option>
-    <option>Ventanas/Puertas</option>
+                    <!-- PHASE 3: INTERIOR FINISHING -->
+                    <option>Pisos</option>
+                    <option>Baños</option>
+                    <option>Cocina</option>
+                    <option>Habitaciones</option>
+                    <option>Sala/Comedor</option>
+                    <option>Ventanas/Puertas</option>
 
-    <!-- PHASE 4: EXTERIOR FINISHING -->
-    <option>Fachada</option>
-    <option>Garaje</option>
-    <option>Patio/Terraza</option>
-    <option>Cerco perimetral</option>
-    <option>Jardinería</option>
+                    <!-- PHASE 4: EXTERIOR FINISHING -->
+                    <option>Fachada</option>
+                    <option>Garaje</option>
+                    <option>Patio/Terraza</option>
+                    <option>Cerco perimetral</option>
+                    <option>Jardinería</option>
 
-    <!-- GENERAL OPTIONS -->
-    <option>General</option>
-  </select>
-</div>
+                    <!-- GENERAL OPTIONS -->
+                    <option>General</option>
+                  </select>
+                </div>
               </div>
               <div
                 style="
@@ -1383,16 +1383,61 @@
                   <label>Unidad</label>
                   <select id="unitPayments">
                     <option value="">Seleccionar</option>
+
+                    <!-- WEIGHT -->
                     <option>kg</option>
+                    <option>lb</option>
+                    <option>ton</option>
+
+                    <!-- VOLUME -->
                     <option>lt</option>
-                    <option>m</option>
-                    <option>m²</option>
+                    <option>gal</option>
                     <option>m³</option>
+
+                    <!-- LENGTH -->
+                    <option>m</option>
+                    <option>cm</option>
+                    <option>ml</option>
+                    <!-- metros lineales -->
+
+                    <!-- AREA -->
+                    <option>m²</option>
+
+                    <!-- QUANTITY -->
                     <option>unidades</option>
+                    <option>pares</option>
+                    <option>juegos</option>
+                    <option>piezas</option>
+
+                    <!-- PACKAGING -->
+                    <option>sacos</option>
+                    <option>bultos</option>
                     <option>bolsas</option>
                     <option>cajas</option>
+                    <option>canecas</option>
+                    <option>tambores</option>
+                    <option>galones</option>
+                    <option>tarros</option>
+
+                    <!-- CONSTRUCTION SPECIFIC -->
+                    <option>bloques</option>
+                    <option>ladrillos</option>
+                    <option>varillas</option>
+                    <option>tablas</option>
+                    <option>tejas</option>
+                    <option>viajes</option>
+                    <!-- for transport -->
+
+                    <!-- TIME -->
                     <option>días</option>
                     <option>horas</option>
+                    <option>jornales</option>
+
+                    <!-- OTHER -->
+                    <option>compra</option>
+                    <!-- for mixed purchases -->
+                    <option>servicio</option>
+                    <option>global</option>
                   </select>
                 </div>
               </div>
@@ -3194,23 +3239,23 @@
       };
       // Mapping of concepts to categories and areas
       const conceptMapping = {
-  "Mano de obra día": { category: "Construcción", area: "" },
-  "Materiales de construcción": { category: "Materiales", area: "" },
-  "Materiales de acabados": { category: "Materiales", area: "" },
-  "Materiales de carpintería": { category: "Materiales", area: "" },
-  "Materiales eléctricos": {
-    category: "Instalaciones",
-    area: "Instalación eléctrica",
-  },
-  "Materiales sanitarios": {
-    category: "Instalaciones",
-    area: "Instalación sanitaria",
-  },
-  "Flete/Transporte": { category: "Logística", area: "General" },
-  "Alquiler de equipos": { category: "Equipos", area: "General" },
-  "Administración": { category: "Trámites/Servicios", area: "General" }, // ← ADD THIS
-  otro: { category: "", area: "" },
-};
+        "Mano de obra día": { category: "Construcción", area: "" },
+        "Materiales de construcción": { category: "Materiales", area: "" },
+        "Materiales de acabados": { category: "Materiales", area: "" },
+        "Materiales de carpintería": { category: "Materiales", area: "" },
+        "Materiales eléctricos": {
+          category: "Instalaciones",
+          area: "Instalación eléctrica",
+        },
+        "Materiales sanitarios": {
+          category: "Instalaciones",
+          area: "Instalación sanitaria",
+        },
+        "Flete/Transporte": { category: "Logística", area: "General" },
+        "Alquiler de equipos": { category: "Equipos", area: "General" },
+        Administración: { category: "Trámites/Servicios", area: "" },
+        otro: { category: "", area: "" },
+      };
 
       window.handleConceptChange = function () {
         const conceptSelect = document.getElementById("conceptPayments");
