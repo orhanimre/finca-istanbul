@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
@@ -12,8 +12,8 @@
       }
 
       body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          sans-serif;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         min-height: 100vh;
         padding: 0;
@@ -1262,6 +1262,7 @@
                   <option>Materiales sanitarios</option>
                   <option>Flete/Transporte</option>
                   <option>Alquiler de equipos</option>
+                  <option>Administración</option>
                   <option value="otro">Otro (especificar)</option>
                 </select>
               </div>
@@ -1309,64 +1310,56 @@
                     <option>Instalaciones</option>
                     <option>Logística</option>
                     <option>Equipos</option>
-                    <option>Administrativo</option>
+                     <option>Trámites/Servicios</option>
                     <option>Otros</option>
                   </select>
                 </div>
                 <div class="form-group" style="margin-bottom: 0">
-                  <label>Área/Lugar</label>
-                  <select id="locationPayments" required>
-                    <option value="">Seleccionar</option>
+  <label>Área/Lugar</label>
+  <select id="locationPayments" required>
+    <option value="">Seleccionar</option>
 
-                    <!-- PHASE 1: FOUNDATION & STRUCTURE -->
-                    <option>Fundación</option>
-                    <!-- 1. Foundation first -->
-                    <option>Estructura</option>
-                    <!-- 3. Main structure/columns -->
-                    <option>Paredes/Muros</option>
-                    <!-- 4. Walls -->
-                    <option>Techo</option>
-                    <!-- 5. Roof -->
-                    <option>Escaleras</option>
-                    <!-- 6. Stairs -->
+    <!-- ADMINISTRATIVE/GOVERNMENT OFFICES -->
+        <option>Alcaldía</option>
+    <option>EPM</option>
+    <option>Curaduría</option>
+    <option>Notaría</option>
+    <option>Catastro</option>
+    <option>Planeación</option>
+    <option>Registro Público</option>
+    <option>Secretaría de Obras</option>
+    <option>CORNARE</option>
 
-                    <!-- PHASE 2: INSTALLATIONS -->
-                    <option>Instalación eléctrica</option>
-                    <!-- 7. Electrical rough-in -->
-                    <option>Instalación sanitaria</option>
-                    <!-- 8. Plumbing rough-in -->
+    <!-- PHASE 1: FOUNDATION & STRUCTURE -->
+    <option>Fundación</option>
+    <option>Estructura</option>
+    <option>Paredes/Muros</option>
+    <option>Techo</option>
+    <option>Escaleras</option>
 
-                    <!-- PHASE 3: INTERIOR FINISHING -->
-                    <option>Pisos</option>
-                    <!-- 9. Flooring -->
-                    <option>Baños</option>
-                    <!-- 10. Bathrooms -->
-                    <option>Cocina</option>
-                    <!-- 11. Kitchen -->
-                    <option>Habitaciones</option>
-                    <!-- 12. Bedrooms -->
-                    <option>Sala/Comedor</option>
-                    <!-- 13. Living/Dining -->
-                    <option>Ventanas/Puertas</option>
-                    <!-- 14. Windows/Doors -->
+    <!-- PHASE 2: INSTALLATIONS -->
+    <option>Instalación eléctrica</option>
+    <option>Instalación sanitaria</option>
 
-                    <!-- PHASE 4: EXTERIOR FINISHING -->
-                    <option>Fachada</option>
-                    <!-- 15. Facade -->
-                    <option>Garaje</option>
-                    <!-- 16. Garage -->
-                    <option>Patio/Terraza</option>
-                    <!-- 17. Patio/Terrace -->
-                    <option>Cerco perimetral</option>
-                    <!-- 18. Perimeter fence -->
-                    <option>Jardinería</option>
-                    <!-- 19. Landscaping (last) -->
+    <!-- PHASE 3: INTERIOR FINISHING -->
+    <option>Pisos</option>
+    <option>Baños</option>
+    <option>Cocina</option>
+    <option>Habitaciones</option>
+    <option>Sala/Comedor</option>
+    <option>Ventanas/Puertas</option>
 
-                    <!-- GENERAL OPTIONS -->
-                    <option>General</option>
-                    <!-- For multiple areas -->
-                  </select>
-                </div>
+    <!-- PHASE 4: EXTERIOR FINISHING -->
+    <option>Fachada</option>
+    <option>Garaje</option>
+    <option>Patio/Terraza</option>
+    <option>Cerco perimetral</option>
+    <option>Jardinería</option>
+
+    <!-- GENERAL OPTIONS -->
+    <option>General</option>
+  </select>
+</div>
               </div>
               <div
                 style="
@@ -2036,11 +2029,11 @@
       function updateBudgetDisplay() {
         const totalIncome = income.reduce(
           (sum, item) => sum + parseFloat(item.amount),
-          0
+          0,
         );
         const totalPayments = payments.reduce(
           (sum, item) => sum + parseFloat(item.amount),
-          0
+          0,
         );
         const budget = totalIncome - totalPayments;
 
@@ -2087,9 +2080,8 @@
           const month = String(lastIncomeDate.getMonth() + 1).padStart(2, "0");
           const year = lastIncomeDate.getFullYear();
           const dateStr = `${day}.${month}.${year}`;
-          document.getElementById(
-            "lastUpdatedIncome"
-          ).textContent = `Última actualización de Ingresos: ${dateStr} ${timeStr}`;
+          document.getElementById("lastUpdatedIncome").textContent =
+            `Última actualización de Ingresos: ${dateStr} ${timeStr}`;
         } else {
           document.getElementById("lastUpdatedIncome").textContent =
             "Última actualización de Ingresos: --";
@@ -2105,9 +2097,8 @@
           const month = String(lastPaymentDate.getMonth() + 1).padStart(2, "0");
           const year = lastPaymentDate.getFullYear();
           const dateStr = `${day}.${month}.${year}`;
-          document.getElementById(
-            "lastUpdatedPayments"
-          ).textContent = `Última actualización de Pagos: ${dateStr} ${timeStr}`;
+          document.getElementById("lastUpdatedPayments").textContent =
+            `Última actualización de Pagos: ${dateStr} ${timeStr}`;
         } else {
           document.getElementById("lastUpdatedPayments").textContent =
             "Última actualización de Pagos: --";
@@ -2124,7 +2115,7 @@
           date.setHours(date.getHours() - 5);
         } else {
           date = new Date(
-            dateStr.includes("T") ? dateStr : dateStr + "T00:00:00"
+            dateStr.includes("T") ? dateStr : dateStr + "T00:00:00",
           );
         }
 
@@ -2161,7 +2152,7 @@
             itemDate = new Date(
               item.createdAt.includes("T")
                 ? item.createdAt
-                : item.createdAt + "T00:00:00"
+                : item.createdAt + "T00:00:00",
             );
           }
 
@@ -2190,16 +2181,16 @@
           }
 
           if (currentPeriod === "week") {
-  // Get the start of the current week (Monday)
-  const today = new Date(now);
-  today.setHours(0, 0, 0, 0);
-  const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, etc.
-  const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // If Sunday, go back 6 days to Monday
-  const monday = new Date(today);
-  monday.setDate(today.getDate() - daysFromMonday);
-  monday.setHours(0, 0, 0, 0);
-  return itemDate >= monday;
-}
+            // Get the start of the current week (Monday)
+            const today = new Date(now);
+            today.setHours(0, 0, 0, 0);
+            const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, etc.
+            const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // If Sunday, go back 6 days to Monday
+            const monday = new Date(today);
+            monday.setDate(today.getDate() - daysFromMonday);
+            monday.setHours(0, 0, 0, 0);
+            return itemDate >= monday;
+          }
 
           if (currentPeriod === "month") {
             return (
@@ -2220,7 +2211,7 @@
         const filtered = getFilteredData(type);
         const total = filtered.reduce(
           (sum, item) => sum + parseFloat(item.amount),
-          0
+          0,
         );
         const count = filtered.length;
 
@@ -2238,13 +2229,13 @@
         const label = type === "payments" ? "Total Pagado" : "Total Recibido";
 
         document.getElementById(
-          `periodLabel${type.charAt(0).toUpperCase() + type.slice(1)}`
+          `periodLabel${type.charAt(0).toUpperCase() + type.slice(1)}`,
         ).textContent = `${label} - ${labels[currentPeriod]}`;
         document.getElementById(
-          `totalAmount${type.charAt(0).toUpperCase() + type.slice(1)}`
+          `totalAmount${type.charAt(0).toUpperCase() + type.slice(1)}`,
         ).textContent = formatCurrency(total);
         document.getElementById(
-          `paymentCount${type.charAt(0).toUpperCase() + type.slice(1)}`
+          `paymentCount${type.charAt(0).toUpperCase() + type.slice(1)}`,
         ).textContent = count;
       }
 
@@ -2273,7 +2264,7 @@
 
         // Show/hide custom date range inputs
         const customRangeDiv = document.getElementById(
-          `customDateRange${type.charAt(0).toUpperCase() + type.slice(1)}`
+          `customDateRange${type.charAt(0).toUpperCase() + type.slice(1)}`,
         );
         if (period === "custom") {
           customRangeDiv.style.display = "block";
@@ -2287,12 +2278,12 @@
           const today = new Date();
           const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
           const firstDayStr = `${firstDay.getFullYear()}-${String(
-            firstDay.getMonth() + 1
+            firstDay.getMonth() + 1,
           ).padStart(2, "0")}-01`;
 
           // Set "Hasta" to today
           const todayStr = `${today.getFullYear()}-${String(
-            today.getMonth() + 1
+            today.getMonth() + 1,
           ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
 
           fromInput.value = firstDayStr;
@@ -2334,7 +2325,7 @@
 
       window.sortData = function (type) {
         const sortBy = document.getElementById(
-          `sortBy${type.charAt(0).toUpperCase() + type.slice(1)}`
+          `sortBy${type.charAt(0).toUpperCase() + type.slice(1)}`,
         ).value;
         const data = type === "payments" ? payments : income;
 
@@ -2384,7 +2375,7 @@
         };
         const total = filtered.reduce(
           (sum, item) => sum + parseFloat(item.amount),
-          0
+          0,
         );
         const title =
           type === "payments" ? "Pagos de Construcción" : "Ingresos Recibidos";
@@ -2429,7 +2420,7 @@
             date.setHours(date.getHours() - 5);
           } else {
             date = new Date(
-              dateStr.includes("T") ? dateStr : dateStr + "T00:00:00"
+              dateStr.includes("T") ? dateStr : dateStr + "T00:00:00",
             );
           }
           const day = String(date.getDate()).padStart(2, "0");
@@ -2570,7 +2561,7 @@
           itemDate.setHours(itemDate.getHours() - 5); // Convert to Colombia time
         } else {
           itemDate = new Date(
-            dateStr.includes("T") ? dateStr : dateStr + "T00:00:00"
+            dateStr.includes("T") ? dateStr : dateStr + "T00:00:00",
           );
         }
 
@@ -2601,7 +2592,7 @@
         const cards = document.querySelectorAll(
           `#paymentsList${
             type.charAt(0).toUpperCase() + type.slice(1)
-          } .payment-card`
+          } .payment-card`,
         );
 
         cards.forEach((card) => {
@@ -2627,7 +2618,7 @@
               isHorizontalSwipe = null;
               card.style.transition = "none";
             },
-            { passive: true }
+            { passive: true },
           );
 
           card.addEventListener("touchmove", (e) => {
@@ -2687,10 +2678,10 @@
 
       function renderList(type) {
         const container = document.getElementById(
-          `paymentsList${type.charAt(0).toUpperCase() + type.slice(1)}`
+          `paymentsList${type.charAt(0).toUpperCase() + type.slice(1)}`,
         );
         const loadingIndicator = document.getElementById(
-          `loadingIndicator${type.charAt(0).toUpperCase() + type.slice(1)}`
+          `loadingIndicator${type.charAt(0).toUpperCase() + type.slice(1)}`,
         );
         const data = getFilteredData(type);
 
@@ -2702,8 +2693,8 @@
                     <div class="empty-state">
                         <div class="empty-state-icon">📋</div>
                         <p>No hay ${emptyMsg} todavía. ${
-            isAdmin ? "¡Agrega el primero arriba!" : ""
-          }</p>
+                          isAdmin ? "¡Agrega el primero arriba!" : ""
+                        }</p>
                     </div>
                 `;
           updateSummary(type);
@@ -2728,7 +2719,7 @@
           // Calculate total for this date group
           const dailyTotal = groupedData[dateLabel].reduce(
             (sum, item) => sum + parseFloat(item.amount),
-            0
+            0,
           );
 
           html += `
@@ -2778,7 +2769,7 @@
             <div style="text-align: right;">
                 <span style="color: #666;">Fecha:</span>
                 <span style="color: #333; font-weight: 500; margin-left: 4px;">${formatDate(
-                  item.createdAt
+                  item.createdAt,
                 )}</span>
                 ${
                   item.createdBy
@@ -2788,7 +2779,7 @@
                 ${
                   item.updatedAt && item.updatedAt !== item.createdAt
                     ? `<br><span style="color: #999; font-size: 10px;">Editado: ${formatDate(
-                        item.updatedAt
+                        item.updatedAt,
                       )}</span>`
                     : ""
                 }
@@ -2860,7 +2851,7 @@
                     <div>
                         <span style="font-size: 11px; color: #666;">Fecha:</span>
                         <span style="font-size: 11px; color: #333; font-weight: 500; margin-left: 4px;">${formatDate(
-                          item.createdAt
+                          item.createdAt,
                         )}</span>
                     </div>
                     ${
@@ -2871,7 +2862,7 @@
                     ${
                       item.updatedAt && item.updatedAt !== item.createdAt
                         ? `<div style="color: #999; font-size: 10px; margin-top: 2px;">Editado: ${formatDate(
-                            item.updatedAt
+                            item.updatedAt,
                           )}</div>`
                         : ""
                     }
@@ -2953,7 +2944,7 @@
         try {
           const q = query(
             collection(db, "payments"),
-            orderBy("createdAt", "desc")
+            orderBy("createdAt", "desc"),
           );
           const querySnapshot = await getDocs(q);
           payments = [];
@@ -2975,7 +2966,7 @@
         try {
           const q = query(
             collection(db, "income"),
-            orderBy("createdAt", "desc")
+            orderBy("createdAt", "desc"),
           );
           const querySnapshot = await getDocs(q);
           income = [];
@@ -3007,20 +2998,19 @@
         document.getElementById(`time${suffix}`).value = dateTime[1]
           ? dateTime[1].substring(0, 5)
           : "00:00";
-        document.getElementById(`sender${suffix}`).value =
-          item.sender;
+        document.getElementById(`sender${suffix}`).value = item.sender;
         if (type === "payments") {
           const conceptSelect = document.getElementById("conceptPayments");
           const conceptOtherDiv = document.getElementById(
-            "conceptOtherPayments"
+            "conceptOtherPayments",
           );
           const conceptOtherInput = document.getElementById(
-            "conceptOtherInputPayments"
+            "conceptOtherInputPayments",
           );
 
           // Check if the concept exists in the dropdown
           const optionExists = Array.from(conceptSelect.options).some(
-            (opt) => opt.value === item.concept
+            (opt) => opt.value === item.concept,
           );
 
           if (optionExists) {
@@ -3204,28 +3194,29 @@
       };
       // Mapping of concepts to categories and areas
       const conceptMapping = {
-        "Mano de obra día": { category: "Construcción", area: "" },
-        "Materiales de construcción": { category: "Materiales", area: "" },
-        "Materiales de acabados": { category: "Materiales", area: "" },
-        "Materiales de carpintería": { category: "Materiales", area: "" },
-        "Materiales eléctricos": {
-          category: "Instalaciones",
-          area: "Instalación eléctrica",
-        },
-        "Materiales sanitarios": {
-          category: "Instalaciones",
-          area: "Instalación sanitaria",
-        },
-        "Flete/Transporte": { category: "Logística", area: "General" },
-        "Alquiler de equipos": { category: "Equipos", area: "General" },
-        otro: { category: "", area: "" },
-      };
+  "Mano de obra día": { category: "Construcción", area: "" },
+  "Materiales de construcción": { category: "Materiales", area: "" },
+  "Materiales de acabados": { category: "Materiales", area: "" },
+  "Materiales de carpintería": { category: "Materiales", area: "" },
+  "Materiales eléctricos": {
+    category: "Instalaciones",
+    area: "Instalación eléctrica",
+  },
+  "Materiales sanitarios": {
+    category: "Instalaciones",
+    area: "Instalación sanitaria",
+  },
+  "Flete/Transporte": { category: "Logística", area: "General" },
+  "Alquiler de equipos": { category: "Equipos", area: "General" },
+  "Administración": { category: "Trámites/Servicios", area: "General" }, // ← ADD THIS
+  otro: { category: "", area: "" },
+};
 
       window.handleConceptChange = function () {
         const conceptSelect = document.getElementById("conceptPayments");
         const conceptOtherDiv = document.getElementById("conceptOtherPayments");
         const conceptOtherInput = document.getElementById(
-          "conceptOtherInputPayments"
+          "conceptOtherInputPayments",
         );
         const categorySelect = document.getElementById("categoryPayments");
         const locationSelect = document.getElementById("locationPayments");
@@ -3263,7 +3254,7 @@
 
           const submitBtn = editingId
             ? document.querySelector(
-                '#updateButtonsPayments button[type="submit"]'
+                '#updateButtonsPayments button[type="submit"]',
               )
             : document.getElementById("addButtonPayments");
 
@@ -3341,7 +3332,7 @@
 
           const submitBtn = editingId
             ? document.querySelector(
-                '#updateButtonsIncome button[type="submit"]'
+                '#updateButtonsIncome button[type="submit"]',
               )
             : document.getElementById("addButtonIncome");
 
